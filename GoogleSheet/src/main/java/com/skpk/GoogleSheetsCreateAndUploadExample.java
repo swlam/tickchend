@@ -32,7 +32,7 @@ public class GoogleSheetsCreateAndUploadExample {
 
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    private static final String SHEET_NAME = "NewSheet";
+    private static final String SHEET_NAME = "NewSheet2";
     private static final String SPREADSHEET_ID = "1tRHVd0bGURbiLOVvUqDn1nA2kv7j0W0OIvo6bxn5c54";
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
@@ -51,7 +51,7 @@ public class GoogleSheetsCreateAndUploadExample {
         }
 
         // Upload data to the sheet
-        uploadDataToSheet(service, SPREADSHEET_ID, SHEET_NAME);
+        uploadDataToSheet_demo(service, SPREADSHEET_ID, SHEET_NAME);
     }
 
     private static boolean checkSheetExists(Sheets service, String spreadsheetId, String sheetName) throws IOException {
@@ -77,7 +77,65 @@ public class GoogleSheetsCreateAndUploadExample {
         System.out.println("Sheet '" + sheetName + "' created successfully.");
     }
 
-    private static void uploadDataToSheet(Sheets service, String spreadsheetId, String sheetName) throws IOException {
+
+    public static void upload(String sheetName, List<List<Object>> values) throws Exception{
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        // Check if the sheet exists
+        boolean sheetExists = checkSheetExists(service, SPREADSHEET_ID, sheetName);
+
+        if (!sheetExists) {
+            // Create the new sheet
+            createSheet(service, SPREADSHEET_ID, sheetName);
+        }
+
+        String range = sheetName + "!A1";
+        ValueRange body = new ValueRange().setValues(values);
+
+        // Data to write to the sheet
+        service.spreadsheets().values()
+                .update(SPREADSHEET_ID, range, body)
+                .setValueInputOption("RAW")
+                .execute();
+
+
+        System.out.println("Data uploaded to sheet '" + sheetName + "' successfully.");
+    }
+
+    private static void uploadDataToSheet(Sheets service, String spreadsheetId, String sheetName, List<List<Object>> values) throws IOException {
+        String range = sheetName + "!A1";
+
+//        String message = titles.toString();
+        // 准备数据，这里假设我们将字符串按行分割并插入到 Google Sheet 中
+//        List<List<Object>> values = new ArrayList<>();
+//        String[] lines = message.split("\t");
+//        values.add(Arrays.asList(dataLines));  // 将整个 lines 数组作为一行添加到 values 中
+
+        ValueRange body = new ValueRange().setValues(values);
+
+        // Data to write to the sheet
+        service.spreadsheets().values()
+                .update(spreadsheetId, range, body)
+                .setValueInputOption("RAW")
+                .execute();
+//        ValueRange body = new ValueRange()
+//                .setValues(List.of(
+//                        List.of("Name", "Age"),
+//                        List.of("John Doe", "300")
+//                ));
+
+        // Write data to the sheet
+        service.spreadsheets().values()
+                .update(spreadsheetId, range, body)
+                .setValueInputOption("RAW")
+                .execute();
+        System.out.println("Data uploaded to sheet '" + sheetName + "' successfully.");
+    }
+
+    private static void uploadDataToSheet_demo(Sheets service, String spreadsheetId, String sheetName) throws IOException {
         String range = sheetName + "!A1";
         String targetMonth = "12";
         String interval = "D";
