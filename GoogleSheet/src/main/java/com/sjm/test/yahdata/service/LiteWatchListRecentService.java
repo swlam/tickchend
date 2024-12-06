@@ -66,7 +66,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-//			CODE_POOL =   USStockListConfig.MAIN;
+			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
 //			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
@@ -153,7 +153,7 @@ public class LiteWatchListRecentService extends BaseApp{
 			log.info("Interval (D/W/M): "+DEFAULT_INTERVAL);
 //			lastBean.getTxnDateInt()
 			List<InstantPerformanceResult> results = instantPerformanceResultList.stream().filter(x-> x.getCurrentStockBean().getTxnDateInt() == lastBean.getTxnDateInt()).toList();
-			this.exportSimple(results, DEFAULT_INTERVAL, targetMonth);
+			this.exportSimple(results, COUNTRY_MARKET, DEFAULT_INTERVAL, targetMonth);
 
 			if(!statisticsResultList.isEmpty())
 				DailySummaryReport.exportStat(statisticsResultList);
@@ -341,7 +341,7 @@ public class LiteWatchListRecentService extends BaseApp{
 	}
 
 	
-	public void exportSimple(List<InstantPerformanceResult> recentHighList,String interval, String targetMonth) {
+	public void exportSimple(List<InstantPerformanceResult> recentHighList, String market , String interval, String targetMonth) {
 		List<InstantPerformanceResult>  sortedList = recentHighList.parallelStream()
 				.sorted(Comparator.comparing(InstantPerformanceResult::getDailyCandleStatus))
 				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
@@ -627,7 +627,8 @@ public class LiteWatchListRecentService extends BaseApp{
 		}
 		System.out.println("\n"+msg);
         try {
-            GoogleSheetsCreateAndUploadExample.upload("AUTO_"+Const.MARKET_US, values);
+			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market:"AUTO_"+market;
+            GoogleSheetsCreateAndUploadExample.upload("AUTO_"+market, values);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
