@@ -66,7 +66,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-			CODE_POOL =   USStockListConfig.MAIN;
+//			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
 //			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
@@ -357,13 +357,14 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
-		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tPrice Status\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
 		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態");
 		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t昨今日平均線有支持/阻力");
-				
+		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
 		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
 		msg.append("\t近期GAP Type\t裂口大小%\t裂口Vol Pct\tGAP Type日期");
@@ -501,7 +502,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //				msg.append("\t"+ elemt.getPrev1DayVolDescription());	//Volume(-1D)
 //				msg.append("\t"+ elemt.getDailyVolDescription());	//Volume
 				msg.append("\t"+ elemt.getRecentMonthDaysVolumeStatus());
-				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());
+
 				
 				//方向(小浪)  e.g. result : 升破前頂-堅-Day(1)
 //				String pnt = elemt.getWaveTopBottomStatus().getStockTrendStatus()==null?"":elemt.getWaveTopBottomStatus().getStockTrendStatus()+"-"+elemt.getWaveTopBottomStatus().getBreakDegree()+"-"+elemt.getWaveTopBottomStatus().getStockTrendRemark();
@@ -532,7 +533,8 @@ public class LiteWatchListRecentService extends BaseApp{
 
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
-				
+				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日Last穿頭破腳/破腳穿頭
+
 				msg.append("\t"+ GeneralHelper.to100(elemt.getRsi9()));	//RSI
 				msg.append("\t"+ (elemt.getRsiDiverence().getDivergenceType()==null?"":elemt.getRsiDiverence().getDivergenceType()));	//RSI DIVERENCE
 				
@@ -630,8 +632,8 @@ public class LiteWatchListRecentService extends BaseApp{
 		}
 		System.out.println("\n"+msg);
         try {
-			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market:"AUTO_"+market;
-            GoogleSheetsCreateAndUploadExample.upload("AUTO_"+market, values);
+			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market+interval:"AUTO_"+market+interval;
+            GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

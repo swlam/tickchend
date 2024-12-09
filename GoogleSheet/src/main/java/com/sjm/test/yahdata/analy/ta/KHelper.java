@@ -7,13 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.maas.util.GeneralHelper;
 
 //import org.apache.log4j.Logger;
 
-import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAndHigherCloseAnalyzer;
 import com.sjm.test.yahdata.analy.bean.GapBean;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.conts.Const;

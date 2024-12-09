@@ -6,9 +6,8 @@ import com.sjm.test.yahdata.analy.conts.Const;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
-public class LargeCandleStickAndHigherCloseAnalyzer {
+public class LargeCandleStickAnalyzer {
 
     public static String findLargeCandlestickAndHigherClose(List<StockBean> stockData, int recentDaysCount) {
         if(stockData.size()< recentDaysCount)
@@ -19,7 +18,7 @@ public class LargeCandleStickAndHigherCloseAnalyzer {
 
         // 找到最近10天内具有最大烛身和第二大烛身的股票数据
         List<StockBean> topTwoCandleBodies = recentStockData.stream()
-                .sorted(Comparator.comparingDouble(LargeCandleStickAndHigherCloseAnalyzer::getCandleBodySize).reversed())
+                .sorted(Comparator.comparingDouble(LargeCandleStickAnalyzer::getCandleBodySize).reversed())
                 .limit(2)
                 .toList();
 
@@ -80,7 +79,7 @@ public class LargeCandleStickAndHigherCloseAnalyzer {
 
         // 找到最近10天内具有最大烛身和第二大烛身的股票数据
         List<StockBean> topTwoCandleBodies = recentStockData.stream()
-                .sorted(Comparator.comparingDouble(LargeCandleStickAndHigherCloseAnalyzer::getCandleBodySize).reversed())
+                .sorted(Comparator.comparingDouble(LargeCandleStickAnalyzer::getCandleBodySize).reversed())
                 .limit(2)
                 .toList();
 
