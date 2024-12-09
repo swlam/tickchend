@@ -13,6 +13,7 @@ import com.maas.util.GeneralHelper;
 
 //import org.apache.log4j.Logger;
 
+import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAndHigherCloseAnalyzer;
 import com.sjm.test.yahdata.analy.bean.GapBean;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.conts.Const;
@@ -709,81 +710,7 @@ public class KHelper {
 	
 	
 	
-	public static String getBigDarkBodyWithinTheDays(List<StockBean> srcstockList, int noOfDay) {
-		if(srcstockList.size()< noOfDay)
-			return Const.SPACE;
-		
-		StockBean last = srcstockList.get(srcstockList.size()-1);
-		
-		List<StockBean> stockList = srcstockList.subList(srcstockList.size()- noOfDay, srcstockList.size());
 
-		Double avgBodyChgPct = stockList.stream().mapToDouble(StockBean::getBodyDailyChgPct).average().orElse(0);		
-		Double maxBodyChgPct = stockList.stream().mapToDouble(StockBean::getBodyDailyChgPct).max().orElse(0);
-		Double avgVol = stockList.stream().mapToDouble(StockBean::getVolume).average().orElse(0);
-		Double maxVol = stockList.stream().mapToDouble(StockBean::getVolume).max().orElse(0);
-		List<StockBean> bigDarkList = new ArrayList<StockBean>(10);
-		
-		int idx = 1;
-		for(; idx < stockList.size(); idx++) 
-		{
-			StockBean prev = stockList.get(idx-1);
-			StockBean curr = stockList.get(idx);
-			
-			boolean isTargetK = (curr.getDayChgPct() < 0 && prev.getBodyBottom() > curr.getBodyBottom());
-			
-			double ratioPrice = curr.getBodyDailyChgPct() / avgBodyChgPct;
-			double ratioPriceCounterMaxPct = curr.getBodyDailyChgPct() / maxBodyChgPct;
-			double ratioVolCounterAvg = curr.getVolume() / avgVol;
-//			double ratioVolCounterMax = curr.getVolume() / maxVol;
-			
-			if(!isTargetK)
-				continue;
-			
-			if (ratioPrice >1.5 && ratioPriceCounterMaxPct>=0.7 && ratioVolCounterAvg>1.2 ) {
-				bigDarkList.add(curr);
-			}
-			
-//			if(requireCheckVol) {
-//				if(ratioPrice >1.5 && curr.getDayVolumeChgPct()>1.8 && ratioPriceCounterMaxPct>=0.7 ) {
-//					bigDarkList.add(curr);
-//				}
-//			}else {
-//				if(ratioPrice >1.5 && curr.getDayVolumeChgPct()<0.6 && ratioPriceCounterMaxPct>=0.7 ) {
-//					bigDarkList.add(curr);
-//				}
-//			}
-			
-			
-		}// end loop
-		
-		// process the big dark stockbean
-		List<StockBean> descBigDarkListList = bigDarkList.stream()
-                .sorted(Comparator.comparingDouble(StockBean::getTxnDateInt).reversed())
-                .collect(Collectors.toList());
-		
-		List<String> resultMsgAll = new ArrayList<String>();
-		List<String> resultMsgNonCover = new ArrayList<String>();
-		int cntNonCoverBigDarkHighest = 0;
-		for(StockBean sk : descBigDarkListList) {
-			if( last.getC() > sk.getBodyTop() && last.getH() > sk.getH()) {
-				resultMsgAll.add(sk.getTxnDate()+"填");
-			}else {
-				resultMsgAll.add(sk.getTxnDate());
-				resultMsgNonCover.add(sk.getTxnDate());
-				cntNonCoverBigDarkHighest ++;
-			}
-		}
-
-		if(resultMsgAll.isEmpty())
-			return Const.SPACE;
-		
-		if(cntNonCoverBigDarkHighest==0) {
-			return String.format("全填:%d, %s", resultMsgAll.size(),  resultMsgAll.get(0));
-		}else {
-			return String.format("未填:%d of %d, %s", cntNonCoverBigDarkHighest, resultMsgAll.size(),  resultMsgAll.get(0));
-		}
-					
-	}
 	
 	//find the changes in short-term moving averages
 	public static String getShortTermMovingAverageChanges(List<StockBean> stockList) {

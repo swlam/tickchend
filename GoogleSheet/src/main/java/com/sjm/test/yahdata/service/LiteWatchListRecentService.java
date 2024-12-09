@@ -361,7 +361,8 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("\tPrice Status\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
-		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態\t近日大陰/大量陰日子\t昨今日平均線有支持/阻力");
+		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態");
+		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t昨今日平均線有支持/阻力");
 				
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
 		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
@@ -526,7 +527,9 @@ public class LiteWatchListRecentService extends BaseApp{
 				msg.append("\t"+ elemt.getTriplePregnancyInPassFewDays());	//近日出收集三胞胎形態日期
 //				msg.append("\t"+ elemt.getUpDownBreakThreeWavePointToday());	//今天攻破小頂底
 //				msg.append("\t"+ elemt.getLargeVolumeWithinTheMonth());	//
-				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVol());	//近日大陰/大量陰日子
+				msg.append("\t"+ elemt.getBigWhiteBodyWithMoreVol());	//近日下破大陽/大陽量日子
+				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVol());	//近日上破大陰/大陰量日子
+
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
 				
@@ -618,12 +621,12 @@ public class LiteWatchListRecentService extends BaseApp{
 				message = msg.toString();
 				String[] datalines = message.split("\t");
 				values.add(Arrays.asList(datalines));
-
+				System.out.println(msg);
 				msg.setLength(0);
 			}catch(Exception e) {
 				log.error("Error on "+elemt.getCurrentStockBean(), e);
 			}
-			System.out.println("\n"+msg);
+//			System.out.println("\n"+msg);
 		}
 		System.out.println("\n"+msg);
         try {
