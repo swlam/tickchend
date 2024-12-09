@@ -13,7 +13,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,16 @@ public class GoogleSheetsCreateAndUploadExample {
     private static final String SPREADSHEET_ID = "1tRHVd0bGURbiLOVvUqDn1nA2kv7j0W0OIvo6bxn5c54";
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
+        File tokensDir = new File(TOKENS_DIRECTORY_PATH);
+        if (tokensDir.exists()) {
+            File[] files = tokensDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+        }
+
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
@@ -77,12 +87,21 @@ public class GoogleSheetsCreateAndUploadExample {
         System.out.println("Sheet '" + sheetName + "' created successfully.");
     }
 
+    private static void clearSheetData(Sheets service, String spreadsheetId, String sheetName) throws IOException {
+        String range = sheetName + "!A1:Z1000"; // 你可以根据需要调整范围
+        ClearValuesRequest requestBody = new ClearValuesRequest();
+        ClearValuesResponse response = service.spreadsheets().values().clear(spreadsheetId, range, requestBody).execute();
+        System.out.println("Cleared data from sheet '" + sheetName + "'.");
+    }
 
     public static void upload(String sheetName, List<List<Object>> values) throws Exception{
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+
+
+
 
         // Check if the sheet exists
         boolean sheetExists = checkSheetExists(service, SPREADSHEET_ID, sheetName);
@@ -91,6 +110,9 @@ public class GoogleSheetsCreateAndUploadExample {
             // Create the new sheet
             createSheet(service, SPREADSHEET_ID, sheetName);
         }
+
+        // Clear existing data in the sheet
+        clearSheetData(service, SPREADSHEET_ID, sheetName);
 
         String range = sheetName + "!A1";
         ValueRange body = new ValueRange().setValues(values);
