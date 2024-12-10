@@ -12,6 +12,7 @@ public class LargeCandleStickAnalyzer {
     public static String findLargeCandlestickAndHigherClose(List<StockBean> stockData, int recentDaysCount) {
         if(stockData.size()< recentDaysCount)
             return Const.EMPTY;
+        StockBean last = stockData.getLast();
         // e.g. 获取最近10天的股票数据
 //        int recentDaysCount = 10;
         List<StockBean> recentStockData = stockData.subList(stockData.size() - recentDaysCount, stockData.size());
@@ -55,7 +56,7 @@ public class LargeCandleStickAnalyzer {
                 int startIndex = stockData.indexOf(highestClosePriceStock) + 1;
                 for (int i = startIndex; i < stockData.size(); i++) {
                     StockBean currentStock = stockData.get(i);
-                    if (currentStock.getC() > highestClosePriceStock.getBodyTop()) {
+                    if (currentStock.getC() > highestClosePriceStock.getBodyTop() && last.getC()>=highestClosePriceStock.getBodyTop()) {
 //                        System.out.println("找到收盘价高于该日最高价的交易日期: " + currentStock.getTxnDate());
                         returnData =  currentStock.getTxnDate();
                         break;
@@ -73,6 +74,7 @@ public class LargeCandleStickAnalyzer {
     public static String findLargeCandlestickAndLowerClose(List<StockBean> stockData, int recentDaysCount) {
         if(stockData.size()< recentDaysCount)
             return Const.EMPTY;
+        StockBean last = stockData.getLast();
         // e.g. 获取最近10天的股票数据
 //        int recentDaysCount = 10;
         List<StockBean> recentStockData = stockData.subList(stockData.size() - recentDaysCount, stockData.size());
@@ -115,7 +117,7 @@ public class LargeCandleStickAnalyzer {
                 int startIndex = stockData.indexOf(lowestClosePriceStock) + 1;
                 for (int i = startIndex; i < stockData.size(); i++) {
                     StockBean currentStock = stockData.get(i);
-                    if (currentStock.getC() < lowestClosePriceStock.getBodyBottom()) {
+                    if (currentStock.getC() < lowestClosePriceStock.getBodyBottom() && last.getC()<=lowestClosePriceStock.getBodyBottom()) {
 //                        System.out.println("找到收盘价高于该日最高价的交易日期: " + currentStock.getTxnDate());
                         returnData =  currentStock.getTxnDate();
                         break;

@@ -591,16 +591,16 @@ public class KHelper {
 		
 		if(lastGap.isUP()==true) {
 			if(minLBean.getL() <=lastGap.getGapBottom())
-				return String.format("%s\t%s\t%s\t%s", "向上裂口(填)", gapPct, GeneralHelper.toPct(lastGap.getVolumeChgPct()), lastGap.getDate()); //return "向上裂口("+gapPct+") - 填\t"+lastGap.getDate();				
+				return String.format("%s\t%s\t%s", "向上裂口(填)", gapPct, lastGap.getDate()); //return "向上裂口("+gapPct+") - 填\t"+lastGap.getDate();
 			else
-				return String.format("%s\t%s\t%s\t%s", "向上裂口", gapPct, GeneralHelper.toPct(lastGap.getVolumeChgPct()), lastGap.getDate());//"向上裂口("+gapPct+")\t"+lastGap.getDate();
+				return String.format("%s\t%s\t%s", "向上裂口", gapPct, lastGap.getDate());//"向上裂口("+gapPct+")\t"+lastGap.getDate();
 		}
 		
 		if(lastGap.isUP()==false) {
 			if(maxHBean.getH() >= lastGap.getGapTop())				
-				return String.format("%s\t%s\t%s\t%s", "向下裂口(填)", gapPct, GeneralHelper.toPct(lastGap.getVolumeChgPct()), lastGap.getDate());//"向下裂口("+gapPct+") - 填\t"+lastGap.getDate();
+				return String.format("%s\t%s\t%s", "向下裂口(填)", gapPct, lastGap.getDate());//"向下裂口("+gapPct+") - 填\t"+lastGap.getDate();
 			else
-				return String.format("%s\t%s\t%s\t%s", "向下裂口", gapPct, GeneralHelper.toPct(lastGap.getVolumeChgPct()), lastGap.getDate());//"向下裂口("+gapPct+")\t"+lastGap.getDate();				
+				return String.format("%s\t%s\t%s", "向下裂口", gapPct, lastGap.getDate());//"向下裂口("+gapPct+")\t"+lastGap.getDate();
 		}
 		return defaultRtnString;
 	}

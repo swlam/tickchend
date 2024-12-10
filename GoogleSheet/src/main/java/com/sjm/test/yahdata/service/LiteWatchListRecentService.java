@@ -66,7 +66,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-//			CODE_POOL =   USStockListConfig.MAIN;
+			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
 //			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
@@ -353,7 +353,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\t小浪型\t小浪型state");
 		msg.append("\t強弱(-1D)\t今天強弱");
-		msg.append("\tK线Status(D-1)\tK线(Status)\tK线(Desc)");
+		msg.append("\tK线Status(D-1)\tK线(Status)");
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
@@ -367,7 +367,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
 		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
-		msg.append("\t近期GAP Type\t裂口大小%\t裂口Vol Pct\tGAP Type日期");
+		msg.append("\t近期GAP Type\t裂口大小%\tGAP Type日期");
 		msg.append("\t近期島型\t島型日期\t島型日數");
 		msg.append("\t倍量數\t倍量日子[MA數]");
 		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
@@ -496,7 +496,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 				msg.append("\t"+ elemt.getPrev1DayCandleStatus());//K线Status(D-1)
 				msg.append("\t"+ elemt.getDailyCandleStatus()); 			//K线(Status)
-				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
+//				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
 
 
 //				msg.append("\t"+ elemt.getPrev1DayVolDescription());	//Volume(-1D)
