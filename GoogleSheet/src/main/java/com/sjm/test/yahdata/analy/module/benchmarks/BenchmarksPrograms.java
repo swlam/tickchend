@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 
 import com.maas.util.DateHelper;
 import com.maas.util.GeneralHelper;
+import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAnalyzer;
 import com.sjm.test.yahdata.analy.bean.PvrStockBean;
 import com.sjm.test.yahdata.analy.bean.StrongWeakTypeBean;
 import com.sjm.test.yahdata.analy.bean.VolumePriceBean;
@@ -696,9 +697,9 @@ public class BenchmarksPrograms {
 		rtn.setMovingAvgLongArrangementWithinTheMonth(maLongArrangeWithinTheMonth);
 		rtn.setTriplePregnancyInPassFewDays(this.findTriplePregnancyInPassFewDays(stockList, 10));
 		
-		String bigDarkBodyWithMoreVol = KHelper.getBigDarkBodyWithinTheDays(stockList, 10);
-		rtn.setBigDarkBodyWithMoreVol(bigDarkBodyWithMoreVol);
-		
+
+		rtn.setBigDarkBodyWithMoreVol(LargeCandleStickAnalyzer.findLargeCandlestickAndHigherClose(stockList, 10));
+		rtn.setBigWhiteBodyWithMoreVol(LargeCandleStickAnalyzer.findLargeCandlestickAndLowerClose(stockList, 10));
 		
 //		String upDownBreakThreeWavePointToday = this.getUpDownBreak3WavePoint(stockList, waveShape, days);
 //		rtn.setUpDownBreakThreeWavePointToday(upDownBreakThreeWavePointToday);

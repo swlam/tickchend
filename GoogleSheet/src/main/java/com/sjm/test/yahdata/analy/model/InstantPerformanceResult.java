@@ -199,7 +199,7 @@ public class InstantPerformanceResult {
 	private String movingAverageLongSideSupport;
 	private String bbUpBreakForATime;
 	private String bigDarkBodyWithMoreVol;
-	
+	private String bigWhiteBodyWithMoreVol;
 	private String concentratedVolumePriceRange;
 	private String closestVolumePriceRange;
 	
