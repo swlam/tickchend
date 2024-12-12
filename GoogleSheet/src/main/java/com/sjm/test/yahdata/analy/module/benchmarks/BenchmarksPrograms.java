@@ -695,6 +695,8 @@ public class BenchmarksPrograms {
 
 		String maLongArrangeWithinTheMonth = this.getMovingAvgLongArrangementWithinTheMonth(stockList, days);					
 		rtn.setMovingAvgLongArrangementWithinTheMonth(maLongArrangeWithinTheMonth);
+
+		rtn.setPercentageDifferenceFromHighestPrice(this.getPercentageDifferenceFromHighestPrice(stockList, 50));
 		rtn.setTriplePregnancyInPassFewDays(this.findTriplePregnancyInPassFewDays(stockList, 10));
 		
 
@@ -1056,7 +1058,39 @@ public class BenchmarksPrograms {
 			return null;
 		}
 	}
-	
+
+	public String getPercentageDifferenceFromHighestPrice(List<StockBean> srcstockList, int days) {
+		if(srcstockList.size() < days) {
+			return Const.EMPTY;
+		}
+
+
+		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		StockBean maxStock = null;
+//		StockBean minStock = null;
+
+		maxStock = stockList.stream().max(Comparator.comparingDouble(StockBean::getH)).orElse(null);
+//		minStock = stockList.stream().min(Comparator.comparingDouble(StockBean::getL)).orElse(null);
+
+
+		if(maxStock.getTxnDateInt() == srcstockList.getLast().getTxnDateInt() ){
+			return "TODAY";
+		}
+
+		// 获取最后一天的 C 值
+		double lastDayCValue = srcstockList.get(srcstockList.size() - 1).getC();
+
+		// 计算与最高价和最低价的百分比差异
+//		double maxPercentageDifference = ((lastDayHValue - maxStock.getH()) / maxStock.getH()) * 100;
+//		double minPercentageDifference = ((lastDayHValue - minStock.getH()) / minStock.getH()) * 100;
+
+		double maxDifference = ((lastDayCValue - maxStock.getH()) / maxStock.getH());
+		//Percentage difference from highest price
+//		System.out.println("与最高价的百分比差异: " + maxPercentageDifference + "%");
+//		System.out.println("与最低价的百分比差异: " + minPercentageDifference + "%");
+
+		return GeneralHelper.toPct(maxDifference);
+	}
 
 	//New high reached within the month, newHighReachedWithinTheMonth
 		public String getMovingAvgLongArrangementWithinTheMonth(List<StockBean> srcstockList, int days) {

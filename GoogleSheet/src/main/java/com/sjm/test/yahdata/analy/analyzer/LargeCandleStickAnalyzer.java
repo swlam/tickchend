@@ -1,5 +1,6 @@
 package com.sjm.test.yahdata.analy.analyzer;
 
+import com.maas.util.DateHelper;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.conts.Const;
 
@@ -58,7 +59,8 @@ public class LargeCandleStickAnalyzer {
                     StockBean currentStock = stockData.get(i);
                     if (currentStock.getC() > highestClosePriceStock.getBodyTop() && last.getC()>=highestClosePriceStock.getBodyTop()) {
 //                        System.out.println("找到收盘价高于该日最高价的交易日期: " + currentStock.getTxnDate());
-                        returnData =  currentStock.getTxnDate();
+                        int days = DateHelper.dayBetween(highestClosePriceStock.getTxnDate(), currentStock.getTxnDate());
+                        returnData =  currentStock.getTxnDate() + "("+days+")";;
                         break;
                     }
                 }
@@ -119,7 +121,8 @@ public class LargeCandleStickAnalyzer {
                     StockBean currentStock = stockData.get(i);
                     if (currentStock.getC() < lowestClosePriceStock.getBodyBottom() && last.getC()<=lowestClosePriceStock.getBodyBottom()) {
 //                        System.out.println("找到收盘价高于该日最高价的交易日期: " + currentStock.getTxnDate());
-                        returnData =  currentStock.getTxnDate();
+                        int days = DateHelper.dayBetween(lowestClosePriceStock.getTxnDate(), currentStock.getTxnDate());
+                        returnData =  currentStock.getTxnDate() + "("+days+")";
                         break;
                     }
                 }

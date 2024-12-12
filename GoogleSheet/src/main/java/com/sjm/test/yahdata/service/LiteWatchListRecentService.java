@@ -66,7 +66,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-			CODE_POOL =   USStockListConfig.MAIN;
+//			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
 //			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
@@ -361,7 +361,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("\tPrice Status\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
-		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態");
+		msg.append("\t近日上破BB\t月內變多頭排列\t與50D最高價的差異\t近日出收集三胞胎形態");
 		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t昨今日平均線有支持/阻力");
 		msg.append("\t近日Last穿頭破腳/破腳穿頭");
 
@@ -524,7 +524,8 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 //				msg.append("\t"+ elemt.getYearHighAchievedThisMonth());	//月內曾創新高
 				msg.append("\t"+ elemt.getBbUpBreakForATime());	//近日上破BB日期
-				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內曾變多頭排列日期
+				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內變多頭排列
+				msg.append("\t"+ elemt.getPercentageDifferenceFromHighestPrice());	//與50D最高價的差異
 				msg.append("\t"+ elemt.getTriplePregnancyInPassFewDays());	//近日出收集三胞胎形態日期
 //				msg.append("\t"+ elemt.getUpDownBreakThreeWavePointToday());	//今天攻破小頂底
 //				msg.append("\t"+ elemt.getLargeVolumeWithinTheMonth());	//
