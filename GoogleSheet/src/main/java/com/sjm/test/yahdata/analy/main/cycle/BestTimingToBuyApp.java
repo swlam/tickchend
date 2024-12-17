@@ -40,14 +40,14 @@ public class BestTimingToBuyApp extends BaseApp{
 	public static int RESULT_LIMIT_SIZE = 20;
 	public static int YEARS = 20;
 	private static final String END2END_PATTERN = Const.END2END_O2C;
-	private static final double REQUIRE_MIN_RATIO = 0.75;
+	private static final double REQUIRE_MIN_RATIO = 0.8;
 	private static final int REQUIRE_MIN_DAY_DURATION = 5;
 	private static final double REQUIRE_MKT_CAP = 50;
 	
 	private static final double REQUIRE_C2H_PCT = 0.01;	// 5%
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
-	public static String START_MMDD= "11-29";
+	public static String START_MMDD= "12-13";
 	public static String END_MMDD= "12-31";
 	public static final int REQUIRED_YRS = 5; 
 	
@@ -57,7 +57,7 @@ public class BestTimingToBuyApp extends BaseApp{
 //			CNStockListConfig.SZSE_ChiNext_ETF, CNStockListConfig.CSI_300_ETF).flatMap(Collection::stream).distinct().collect(Collectors.toList());
 
 //	public static  List<String> ADDITIONAL_TICKER = Arrays.asList("AMD","TSLA","AAPL","AMZN","GOOG","MSFT","META","LULU","DIS","NKE","BTC-USD");
-	public static  List<String> ADDITIONAL_TICKER = Arrays.asList("TSLA","AMD","MSFT","NVDA","META","GOOG","AAPL","AMZN","SPY","QQQ","SOXX","BTC-USD");
+//	public static  List<String> ADDITIONAL_TICKER = Arrays.asList("TSLA","AMD","MSFT","NVDA","META","GOOG","AAPL","AMZN","SPY","QQQ","SOXX","BTC-USD");
 //	public static  List<String> TICKER_POOL = Arrays.asList("2318.HK");
 //	private static  List<String> TICKER_POOL =  Stream.of( HKStockListConfig.STOCK_INDEX)
 //		    .flatMap(Collection::stream).distinct().collect(Collectors.toList());
@@ -65,19 +65,22 @@ public class BestTimingToBuyApp extends BaseApp{
 //		    .flatMap(Collection::stream).distinct().collect(Collectors.toList());
 	
 	public static  List<String> TICKER_POOL = Stream.of( 
-			ADDITIONAL_TICKER
+//			ADDITIONAL_TICKER
 //			USStockListConfig.INDEX, HKStockListConfig.ETF, HKStockListConfig.STOCK_INDEX, USStockListConfig.MAIN
 //			, USStockListConfig.CRYPTO, USStockListConfig.ETF, USStockListConfig.SPX_COMPONENTS, USStockListConfig.QQQ_COMPONENTS, USStockListConfig.DOW_COMPONENTS
 //			,USStockListConfig.CHINA_CONCEPT
 //			,USStockListConfig.SPX_COMPONENTS
-			,USStockListConfig.MAIN
+//			,USStockListConfig.MAIN
 //			,USStockListConfig.DOW_COMPONENTS
 //			,USStockListConfig.QQQ_COMPONENTS
 //			,USStockListConfig.ETF
 //			,HKStockListConfig.ETF
-//			,USStockListConfig.MAIN
+			USStockListConfig.MAIN
 //			CNStockListConfig.ALL_AVAILABLE
-//			,HKStockListConfig.MAIN
+//			HKStockListConfig.HSI_ELEMENT,
+//			HKStockListConfig.HSCEI_ELEMENT,
+//			HKStockListConfig.STOCK_INDEX,
+//			HKStockListConfig.ETF
 			)
 		    .flatMap(Collection::stream).distinct().collect(Collectors.toList());
 

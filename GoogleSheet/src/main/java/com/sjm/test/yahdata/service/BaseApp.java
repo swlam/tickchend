@@ -47,7 +47,7 @@ public class BaseApp {
 				
 			}
 
-			List<StockBean> sortedStocks  = list.stream().sorted((s1, s2) -> s1.getTxnDateInt()- s2.getTxnDateInt()).toList();
+			List<StockBean> sortedStocks  = list.stream().sorted((s1, s2) -> s1.getTxnDateInt()- s2.getTxnDateInt()).collect(Collectors.toList());
 
 			fullTrunkList.addAll(sortedStocks);
 		}

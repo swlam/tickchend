@@ -70,6 +70,12 @@ public class StockBean extends BaseStockBean{
 
 	@Field("rsi14")
 	private double rsi14;
+
+	@Field("bodyTop")
+	private double bodyTop;
+
+	@Field("bodyBottom")
+	private double bodyBottom;
 	
 //	private double ma2;
 //	private double ma5;
@@ -91,13 +97,26 @@ public class StockBean extends BaseStockBean{
 		super(stockCode);
 	}
 
-	public double getBodyTop() {
-		return (this.getO() > this.getC()) ? this.getO() : this.getC();
+	public StockBean(String stockCode, String txnDate, double o, double h, double l, double c) {
+		super(stockCode);
+		setTxnDate(txnDate);
+		this.setO(o);
+		this.setH(h);
+		this.setL(l);
+		this.setC(c);
+		this.setBodyTop(Math.max(o, c));
+		this.setBodyBottom(Math.min(o, c));
 	}
 
-	public double getBodyBottom() {
-		return (this.getO() < this.getC()) ? this.getO() : this.getC();
-	}
+//	public double getBodyTop() {
+////		return (this.getO() > this.getC()) ? this.getO() : this.getC();
+//		return Math.max(o, c);
+//	}
+//
+//	public double getBodyBottom() {
+////		return (this.getO() < this.getC()) ? this.getO() : this.getC();
+//		return Math.min(o, c);
+//	}
 	
 	
 	

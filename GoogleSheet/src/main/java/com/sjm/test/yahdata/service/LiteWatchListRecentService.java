@@ -36,8 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LiteWatchListRecentService extends BaseApp{
 	
-	public static final String START_DATE = "2010-01-01";
-	public static String END_DATE = "2028-12-03";
+	public static final String START_DATE = "1990-01-01";
+	public static String END_DATE = "2028-11-06";
 	
 	private static boolean isRunSummaryStat = false;
 	
@@ -66,10 +66,10 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-			CODE_POOL =   USStockListConfig.MAIN;
+//			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("RDDT","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -134,8 +134,8 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 				
 				instantPerformanceResultList = bchkProgram.doBenchmarks(CODE_POOL, stockPeriodList, DEFAULT_INTERVAL, endDateInt);
-				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
-				statisticsResultList.add(statResult);
+//				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
+//				statisticsResultList.add(statResult);
 			}
 		}else {
 			spyStockList.clear();
@@ -165,7 +165,7 @@ public class LiteWatchListRecentService extends BaseApp{
 	}
 	
 
-	
+	@Deprecated
 	public static StatisticsResult doStatisticsResultProcess(List<InstantPerformanceResult> performanceResultList) {
 		List<InstantPerformanceResult> targetResultList = performanceResultList.stream()
 			.filter(x-> x.getEstTradeAmount() >1.0 && x.getSector() !=null	&& !(x.getSector().contains("ETF")|| x.getSector().contains("指數") || x.getSector().contains("貨幣") || x.getSector().contains("Crypto") || x.getSector().contains("債券"))
@@ -353,22 +353,24 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\t小浪型\t小浪型state");
 		msg.append("\t強弱(-1D)\t今天強弱");
-		msg.append("\tK线Status(D-1)\tK线(Status)\tK线(Desc)");
+		msg.append("\tK线Status(D-1)\tK线(Status)");
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
-		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tPrice Status\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
-		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態\t近日大陰/大量陰日子\t昨今日平均線有支持/阻力");
-				
+		msg.append("\t近日上破BB\t月內變多頭排列\t與50D最高價的差異\t近日出收集三胞胎形態");
+		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t昨今日平均線有支持/阻力");
+		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
 		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
-		msg.append("\t近期GAP Type\t裂口大小%\t裂口Vol Pct\tGAP Type日期");
+		msg.append("\t近期GAP Type\t裂口大小%\tGAP Type日期");
 		msg.append("\t近期島型\t島型日期\t島型日數");
 		msg.append("\t倍量數\t倍量日子[MA數]");
-		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
+//		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
 		msg.append("\t大於5D\t大於10D\t大於20D\t大於50D\t大於100D\t大於200D");		
 		msg.append("\tMA-CrossUP");
 		
@@ -494,13 +496,13 @@ public class LiteWatchListRecentService extends BaseApp{
 
 				msg.append("\t"+ elemt.getPrev1DayCandleStatus());//K线Status(D-1)
 				msg.append("\t"+ elemt.getDailyCandleStatus()); 			//K线(Status)
-				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
+//				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
 
 
 //				msg.append("\t"+ elemt.getPrev1DayVolDescription());	//Volume(-1D)
 //				msg.append("\t"+ elemt.getDailyVolDescription());	//Volume
 				msg.append("\t"+ elemt.getRecentMonthDaysVolumeStatus());
-				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());
+
 				
 				//方向(小浪)  e.g. result : 升破前頂-堅-Day(1)
 //				String pnt = elemt.getWaveTopBottomStatus().getStockTrendStatus()==null?"":elemt.getWaveTopBottomStatus().getStockTrendStatus()+"-"+elemt.getWaveTopBottomStatus().getBreakDegree()+"-"+elemt.getWaveTopBottomStatus().getStockTrendRemark();
@@ -522,14 +524,18 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 //				msg.append("\t"+ elemt.getYearHighAchievedThisMonth());	//月內曾創新高
 				msg.append("\t"+ elemt.getBbUpBreakForATime());	//近日上破BB日期
-				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內曾變多頭排列日期
+				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內變多頭排列
+				msg.append("\t"+ elemt.getPercentageDifferenceFromHighestPrice());	//與50D最高價的差異
 				msg.append("\t"+ elemt.getTriplePregnancyInPassFewDays());	//近日出收集三胞胎形態日期
 //				msg.append("\t"+ elemt.getUpDownBreakThreeWavePointToday());	//今天攻破小頂底
 //				msg.append("\t"+ elemt.getLargeVolumeWithinTheMonth());	//
-				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVol());	//近日大陰/大量陰日子
+				msg.append("\t"+ elemt.getBigWhiteBodyWithMoreVol());	//近日下破大陽/大陽量日子
+				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVol());	//近日上破大陰/大陰量日子
+
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
-				
+				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日Last穿頭破腳/破腳穿頭
+
 				msg.append("\t"+ GeneralHelper.to100(elemt.getRsi9()));	//RSI
 				msg.append("\t"+ (elemt.getRsiDiverence().getDivergenceType()==null?"":elemt.getRsiDiverence().getDivergenceType()));	//RSI DIVERENCE
 				
@@ -550,10 +556,10 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getNumOfDoubleVolumeDate()));
 				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getDoubleVolumeDateMsg()));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
-				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
+//				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv5D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv10D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv20D()));
@@ -618,17 +624,17 @@ public class LiteWatchListRecentService extends BaseApp{
 				message = msg.toString();
 				String[] datalines = message.split("\t");
 				values.add(Arrays.asList(datalines));
-
+				System.out.println(msg);
 				msg.setLength(0);
 			}catch(Exception e) {
 				log.error("Error on "+elemt.getCurrentStockBean(), e);
 			}
-			System.out.println("\n"+msg);
+//			System.out.println("\n"+msg);
 		}
 		System.out.println("\n"+msg);
         try {
-			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market:"AUTO_"+market;
-            GoogleSheetsCreateAndUploadExample.upload("AUTO_"+market, values);
+			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market+interval:"AUTO_"+market+interval;
+            GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
