@@ -14,7 +14,7 @@ public class LiteWatchListRecentApp extends BaseApp{
 	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
 
 	public static String targetMonth = "-12-";
-	public static String END_DATE = "2028-10-14";
+	public static String END_DATE = "2028-12-10";
 
 
 	public static String COUNTRY_MARKET = "US";//defaul.t

@@ -13,7 +13,9 @@ import java.util.stream.IntStream;
 
 import com.maas.util.DateHelper;
 import com.maas.util.GeneralHelper;
+import com.sjm.test.yahdata.analy.analyzer.CandlePatternDetector;
 import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAnalyzer;
+import com.sjm.test.yahdata.analy.analyzer.MACDCalculator;
 import com.sjm.test.yahdata.analy.bean.PvrStockBean;
 import com.sjm.test.yahdata.analy.bean.StrongWeakTypeBean;
 import com.sjm.test.yahdata.analy.bean.VolumePriceBean;
@@ -116,6 +118,13 @@ public class BenchmarksPrograms {
 			try {
 
 				List<StockBean> stockList = StreamTransformHelper.extractByStockCode(fullTrunkList, code);
+
+
+//				List<MACDCalculator.MACDResult> macdResults = MACDCalculator.calculateMACD(stockList);
+//				for (MACDCalculator.MACDResult result : macdResults) {
+//					System.out.println(result);
+//				}
+
 				if (stockList == null || stockList.size() < 10) {					
 					log.warn("SKIP " + code + " due to Hist data size = "+stockList.size()+". The " + cntSk + " stock has currently been processed.");
 					continue;
@@ -1190,102 +1199,16 @@ public class BenchmarksPrograms {
 		if (srcstockList.size() < days) {
 			return Const.SPACE;
 		}
-		int pregnancyDays = 3;
 
-		String returnDate = "";
-		List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		return CandlePatternDetector.findTriplePregnancyInPassFewDays(srcstockList, days);
 
-		for (int i = 0; i < stockBeans.size() - (pregnancyDays ); i++) {
-			StockBean a = stockBeans.get(i);
-			List<StockBean> subsequentBeans = IntStream.range(i + 1, i + pregnancyDays+1)
-					.mapToObj(stockBeans::get)
-					.collect(Collectors.toList());
-
-			if (subsequentBeans.stream().allMatch(b -> isCovering(a, b))) {
-				returnDate = subsequentBeans.get(subsequentBeans.size() - 1).getTxnDate();
-			}
-		}
-
-		return returnDate;
+//		List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+//      return CandlePatternDetector.findNpletsResult(stockBeans);
 	}
 
-	private boolean isCovering(StockBean a, StockBean b) {
-		// 实现 isCovering 方法的逻辑
-		// 示例：假设 a 的最高价大于等于 b 的最高价且 a 的最低价小于等于 b 的最低价
-		return a.getBodyTop() >= b.getBodyTop() && a.getBodyBottom() <= b.getBodyBottom();
-	}
-		
-//		public String findTriplePregnancyInPassFewDays(List<StockBean> srcstockList, int days) {
-//			if(srcstockList.size() < days) {
-//				return Const.SPACE;
-//			}
-//
-//			String returnDate = "";
-//			List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
-//			for (int i = 0; i < stockBeans.size() - 3; i++) {
-//				StockBean a = stockBeans.get(i);
-//				StockBean b = stockBeans.get(i + 1);
-//				StockBean c = stockBeans.get(i + 2);
-//				StockBean d = stockBeans.get(i + 3);
-//				if (isCovering(a, b) && isCovering(a, c) && isCovering(a, d)) {
-//					returnDate = d.getTxnDate();
-//				}
-//			}
-//
-//
-//			return returnDate;
-//
-//		}
-//
-//		private static boolean isCovering(StockBean a, StockBean b) {
-//			return a.o <= b.o && a.o <= b.c && a.c >= b.o && a.c >= b.c;
-//		}
 
-//		public String getUpDownBreak3WavePoint(List<StockBean> srcstockList, WaveShape wavePointResult, int days) {
-//
-//			if(wavePointResult.getSortedTopList().isEmpty()|| wavePointResult.getSortedTopList().size() <3)
-//				return Const.SPACE;
-//
-//			StockBean last1 = srcstockList.get(srcstockList.size()-1);
-//			StockBean last2 = srcstockList.get(srcstockList.size()-2);
-//
-//			WavePoint lastTop1 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-1);
-//			WavePoint lastTop2 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-2);
-//			WavePoint lastTop3 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-3);
-//
-//			boolean bUpBCheck1 = (last1.getBodyBottom() <= lastTop1.getH() && last1.getBodyBottom() <= lastTop2.getH() && last1.getBodyBottom() <= lastTop3.getH());
-//			boolean bUpBCheck2 = (last1.getC() >= lastTop1.getH()) && (last1.getC() >= lastTop2.getH()) && (last1.getC() >= lastTop3.getH());
-//			boolean bNoUpBreakYesterday = last2.getBodyTop() < lastTop1.getH();
-//			boolean bUpBCheck3 =  (Const.IS_INTRADAY==true)?true:last1.getDayVolumeChgPct() >1.2;
-//			boolean bUpBreakOne = (last1.getC() >= lastTop1.getH()) && (last1.getC() < lastTop2.getH()) && (last1.getC() < lastTop3.getH()) ;
-//
-//
-//			if(wavePointResult.getSortedBotList().isEmpty() || wavePointResult.getSortedBotList().size() <3)
-//				return Const.SPACE;
-//
-//			WavePoint lastBot1 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-1);
-//			WavePoint lastBot2 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-2);
-//			WavePoint lastBot3 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-3);
-//
-//			boolean bDownBreakCheck1 = (last1.getBodyTop() >= lastBot1.getL() && last1.getBodyTop() >= lastBot2.getL() && last1.getBodyTop() >= lastBot3.getL());
-//			boolean bDownBreakCheckt2 = (last1.getC() < lastBot1.getL()) && (last1.getC() < lastBot2.getL()) && (last1.getC() < lastBot3.getL());
-//			boolean bNoDownBreakYesterday = (last1.getBodyBottom() > lastBot1.getL());
-//			boolean bDownBreakOne = (last1.getC() < lastBot1.getL()) && (last1.getC() > lastBot2.getL()) && (last1.getC() > lastBot3.getL()) ;
-//
-//
-//
-//			Set<String> result = new HashSet<String>();
-//			if(bUpBCheck1 && bUpBCheck2 && bUpBCheck3 && bNoUpBreakYesterday)
-//				result.add("UP破小3頂(D0)");
-//			if(bUpBCheck1 && bUpBCheck3 && bUpBreakOne && bNoUpBreakYesterday)
-//				result.add("UP破小1頂(D0)");
-//			if(bDownBreakCheck1 && bDownBreakCheckt2 && bNoDownBreakYesterday)
-//				result.add("DOWN破小3底(D0)");
-//			if(bDownBreakCheck1 && bDownBreakOne && bNoDownBreakYesterday)
-//				result.add("DOWN破小1底(D0)");
-//
-//			return result.isEmpty()?"":result.toString();
-//		}
+
+
 		
 		public String getLargeVolumeWithinTheMonth(List<StockBean> srcstockList, int days) {
 			if(srcstockList.size() < days)

@@ -36,8 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LiteWatchListRecentService extends BaseApp{
 	
-	public static final String START_DATE = "2010-01-01";
-	public static String END_DATE = "2028-12-03";
+	public static final String START_DATE = "1990-01-01";
+	public static String END_DATE = "2028-11-06";
 	
 	private static boolean isRunSummaryStat = false;
 	
@@ -69,7 +69,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("RDDT","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -134,8 +134,8 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 				
 				instantPerformanceResultList = bchkProgram.doBenchmarks(CODE_POOL, stockPeriodList, DEFAULT_INTERVAL, endDateInt);
-				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
-				statisticsResultList.add(statResult);
+//				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
+//				statisticsResultList.add(statResult);
 			}
 		}else {
 			spyStockList.clear();
@@ -165,7 +165,7 @@ public class LiteWatchListRecentService extends BaseApp{
 	}
 	
 
-	
+	@Deprecated
 	public static StatisticsResult doStatisticsResultProcess(List<InstantPerformanceResult> performanceResultList) {
 		List<InstantPerformanceResult> targetResultList = performanceResultList.stream()
 			.filter(x-> x.getEstTradeAmount() >1.0 && x.getSector() !=null	&& !(x.getSector().contains("ETF")|| x.getSector().contains("指數") || x.getSector().contains("貨幣") || x.getSector().contains("Crypto") || x.getSector().contains("債券"))
@@ -370,7 +370,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("\t近期GAP Type\t裂口大小%\tGAP Type日期");
 		msg.append("\t近期島型\t島型日期\t島型日數");
 		msg.append("\t倍量數\t倍量日子[MA數]");
-		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
+//		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
 		msg.append("\t大於5D\t大於10D\t大於20D\t大於50D\t大於100D\t大於200D");		
 		msg.append("\tMA-CrossUP");
 		
@@ -556,10 +556,10 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getNumOfDoubleVolumeDate()));
 				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getDoubleVolumeDateMsg()));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
-				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
+//				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv5D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv10D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv20D()));
