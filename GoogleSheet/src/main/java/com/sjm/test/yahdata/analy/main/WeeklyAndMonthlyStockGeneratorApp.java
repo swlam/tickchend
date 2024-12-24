@@ -23,8 +23,8 @@ public class WeeklyAndMonthlyStockGeneratorApp extends BaseApp{
 	public static void main(String[] args) {
         
 
-		CODE_POOL = USStockListConfig.ALL;
-//		CODE_POOL = HKStockListConfig.ALL;
+//		CODE_POOL = USStockListConfig.ALL;
+		CODE_POOL = HKStockListConfig.ALL;
 //		CODE_POOL = CNStockListConfig.ALL_AVAILABLE;
 
         WeeklyAndMonthlyStockGeneratorApp app = new WeeklyAndMonthlyStockGeneratorApp();

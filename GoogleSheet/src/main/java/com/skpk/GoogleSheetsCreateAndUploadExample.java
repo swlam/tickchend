@@ -60,6 +60,9 @@ public class GoogleSheetsCreateAndUploadExample {
             createSheet(service, SPREADSHEET_ID, SHEET_NAME);
         }
 
+        // Move the sheet to the first position
+        moveSheetToFirstPosition(service, SPREADSHEET_ID, SHEET_NAME);
+
         // Upload data to the sheet
         uploadDataToSheet_demo(service, SPREADSHEET_ID, SHEET_NAME);
     }
@@ -114,6 +117,9 @@ public class GoogleSheetsCreateAndUploadExample {
         // Clear existing data in the sheet
         clearSheetData(service, SPREADSHEET_ID, sheetName);
 
+        // Move the sheet to the first position
+        moveSheetToFirstPosition(service, SPREADSHEET_ID, sheetName);
+
         String range = sheetName + "!A1";
         ValueRange body = new ValueRange().setValues(values);
 
@@ -155,6 +161,37 @@ public class GoogleSheetsCreateAndUploadExample {
                 .setValueInputOption("RAW")
                 .execute();
         System.out.println("Data uploaded to sheet '" + sheetName + "' successfully.");
+    }
+
+    private static void moveSheetToFirstPosition(Sheets service, String spreadsheetId, String sheetName) throws IOException {
+        // 获取工作表 ID
+        Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).execute();
+        List<Sheet> sheets = spreadsheet.getSheets();
+        Integer sheetId = null;
+        for (Sheet sheet : sheets) {
+            if (sheet.getProperties().getTitle().equals(sheetName)) {
+                sheetId = sheet.getProperties().getSheetId();
+                break;
+            }
+        }
+
+        if (sheetId == null) {
+            System.out.println("Sheet '" + sheetName + "' not found.");
+            return;
+        }
+
+        // 创建 UpdateSheetPropertiesRequest
+        UpdateSheetPropertiesRequest updateRequest = new UpdateSheetPropertiesRequest()
+                .setProperties(new SheetProperties().setSheetId(sheetId).setIndex(0))
+                .setFields("index");
+
+        // 创建 BatchUpdateSpreadsheetRequest
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(Collections.singletonList(new Request().setUpdateSheetProperties(updateRequest)));
+
+        // 发送请求
+        service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
+        System.out.println("Sheet '" + sheetName + "' moved to the first position.");
     }
 
     private static void uploadDataToSheet_demo(Sheets service, String spreadsheetId, String sheetName) throws IOException {
