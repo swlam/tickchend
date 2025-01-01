@@ -354,27 +354,27 @@ public class DailySummaryReport {
 				                )
 				                .toList();
 					 
-					 List<String> top10O2HFor3DaysList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-									 && !"Index".equalsIgnoreCase(x.getSector())
-									 && x.getThreeDaysChangeO2HPct()>sectorOrSymbolBean.getDailyChangePct())
-				                .sorted((doc1, doc2) -> Double.compare(doc2.getThreeDaysChangeO2HPct(), doc1.getThreeDaysChangeO2HPct()))
-				                .limit(LIMIT_RESULTS)
-				                .map(
-				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getThreeDaysChangeO2HPct())
-				                )
-				                .toList();
+//					 List<String> top10O2HFor3DaysList = tmpList.stream()
+//							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
+//									 && !"Index".equalsIgnoreCase(x.getSector())
+//									 && x.getThreeDaysChangeO2HPct()>sectorOrSymbolBean.getDailyChangePct())
+//				                .sorted((doc1, doc2) -> Double.compare(doc2.getThreeDaysChangeO2HPct(), doc1.getThreeDaysChangeO2HPct()))
+//				                .limit(LIMIT_RESULTS)
+//				                .map(
+//				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getThreeDaysChangeO2HPct())
+//				                )
+//				                .toList();
 					
-					 List<String> top10O2LFor3DaysList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-									 && !"Index".equalsIgnoreCase(x.getSector())
-									 && x.getThreeDaysChangeO2LPct()<sectorOrSymbolBean.getDailyChangePct())
-				                .sorted((doc1, doc2) -> Double.compare(doc1.getThreeDaysChangeO2LPct(), doc2.getThreeDaysChangeO2LPct()))
-				                .limit(LIMIT_RESULTS)
-				                .map(
-				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getThreeDaysChangeO2LPct())
-				                )
-				                .toList();
+//					 List<String> top10O2LFor3DaysList = tmpList.stream()
+//							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
+//									 && !"Index".equalsIgnoreCase(x.getSector())
+//									 && x.getThreeDaysChangeO2LPct()<sectorOrSymbolBean.getDailyChangePct())
+//				                .sorted((doc1, doc2) -> Double.compare(doc1.getThreeDaysChangeO2LPct(), doc2.getThreeDaysChangeO2LPct()))
+//				                .limit(LIMIT_RESULTS)
+//				                .map(
+//				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getThreeDaysChangeO2LPct())
+//				                )
+//				                .toList();
 					 
 					 List<String> top10DownList = tmpList.stream()
 							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
@@ -393,7 +393,7 @@ public class DailySummaryReport {
 					 List<String> top10WithGoodMAList = tmpList.stream()
 							 	.filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
 										&& !"Index".equalsIgnoreCase(x.getSector())
-										&& x.getCurrentStockBean().getDayChgPct()>=0.01
+										&& x.getCurrentStockBean().getDayChgPct()>0.0
 							 			&& x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20()
 							 			&& x.getCurrentStockBean().getPriceSma().getMa10() > x.getCurrentStockBean().getPriceSma().getMa50()
 							 			&& x.getCurrentStockBean().getPriceSma().getMa50() > x.getCurrentStockBean().getPriceSma().getMa200()
@@ -456,11 +456,13 @@ public class DailySummaryReport {
 					//elemt.getRecentMonthDaysVolumeStatus() //小浪型狀
 					long cntUpBreakSign = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null && x.getWaveShape().getShapeResult().contains(Const.UP)
-									&& !x.getWaveShape().getShapeResult().contains(Const.D0) && !x.getWaveShape().getShapeResult().contains(Const.WAIT)
+//									&& !x.getWaveShape().getShapeResult().contains(Const.D0)
+									&& !x.getWaveShape().getShapeResult().contains(Const.WAIT)
 									&& !"Index".equalsIgnoreCase(x.getSector())).count();
 					long cntDwBreakSign = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null && x.getWaveShape().getShapeResult().contains(Const.DOWN)
-									&& !x.getWaveShape().getShapeResult().contains(Const.D0) && !x.getWaveShape().getShapeResult().contains(Const.WAIT)
+//									&& !x.getWaveShape().getShapeResult().contains(Const.D0)
+									&& !x.getWaveShape().getShapeResult().contains(Const.WAIT)
 									&& !"Index".equalsIgnoreCase(x.getSector())).count();
 
 
@@ -476,7 +478,7 @@ public class DailySummaryReport {
 
 					List<String> upBreakD0SignList = tmpList.stream()
 							.filter(x -> x.getWaveShape() != null
-									&& x.getWaveShape().getShapeResult().contains(Const.UP + Const.D0)
+									&& (x.getWaveShape().getShapeResult().contains(Const.UP + Const.D0) || x.getWaveShape().getShapeResult().contains(Const.UP + Const.D1))
 									&& !"Index".equalsIgnoreCase(x.getSector()))
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
@@ -485,7 +487,7 @@ public class DailySummaryReport {
 							.map(stock -> stock.getCurrentStockBean().getStockCode()
 									+ " :" + GeneralHelper.toPct(stock.getDailyChangePct())
 									+ " V:" + GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct()))
-							.collect(Collectors.toList());
+							.toList();
 
 					List<String> upBreakReadyList = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null
@@ -514,7 +516,7 @@ public class DailySummaryReport {
 							.toList();
 					List<String>  downBreakD0SignList = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null
-									&& x.getWaveShape().getShapeResult().contains(Const.DOWN+Const.D0)
+									&& ( x.getWaveShape().getShapeResult().contains(Const.DOWN+Const.D0) || x.getWaveShape().getShapeResult().contains(Const.DOWN+Const.D1) )
 									&& !"Index".equalsIgnoreCase(x.getSector()))
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
@@ -536,10 +538,10 @@ public class DailySummaryReport {
 							, "小多頭比例(>20,10>50,50>250)"
 							, "Top"+top10List.size()+"_(強於 "+sectorOrSymbol+")"
 							, "Top"+top10VolumnList.size()+"_(Vol)"
-							, "Top"+top10O2HFor3DaysList.size()+"_(強於 "+sectorOrSymbol+")_3天O2H"
+//							, "Top"+top10O2HFor3DaysList.size()+"_(強於 "+sectorOrSymbol+")_3天O2H"
 							, "Top"+top10WithGoodMAList.size()+"_(UP) 小多頭"
 							, "Top"+top10DownList.size()+"_(弱於 "+sectorOrSymbol+")"
-							, "Top"+top10O2LFor3DaysList.size()+"_(弱於 "+sectorOrSymbol+")_3天O2L"
+//							, "Top"+top10O2LFor3DaysList.size()+"_(弱於 "+sectorOrSymbol+")_3天O2L"
 							, "Top"+top10TodayStrongList.size()+"_(轉"+PatternTrendHelper.STRONG+")"
 							, "Top"+top10TodayWeakList.size()+"_(轉"+PatternTrendHelper.WEAK+")"
 							, "強/弱/總數 "
@@ -576,19 +578,19 @@ public class DailySummaryReport {
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[5] +"\t" + GeneralHelper.toPct(ratioUp20DAbv50D));
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[6] +"\t" + String.join(", ", top10List));
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[7] +"\t" + String.join(", ", top10VolumnList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10O2HFor3DaysList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[9] +"\t" + String.join(", ", top10WithGoodMAList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[10] +"\t" + String.join(", ", top10DownList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[11] +"\t" + String.join(", ", top10O2LFor3DaysList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[12] +"\t" + String.join(", ", top10TodayStrongList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[13] +"\t" + String.join(", ", top10TodayWeakList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[14] +"\t" + cnt2Strong + " / "+ cnt2Weak + " / "+ cnt);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[15] +"\t" + "UpBreak % : "+GeneralHelper.toPct(cntUpBreakSignRatio) + "\t DwBreak %"+ GeneralHelper.toPct(cntDwBreakSignRatio) + "\t Up/Dw/總 : "+cntUpBreakSign + " / "+ cntDwBreakSign + " / "+ cnt);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[16] +"\t" + upBreakD0SignList.size() + ": "+ upBreakD0SignList);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[17] +"\t" + downBreakD0SignList.size() + ": "+ downBreakD0SignList);
+//					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10O2HFor3DaysList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10WithGoodMAList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[9] +"\t" + String.join(", ", top10DownList));
+//					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[11] +"\t" + String.join(", ", top10O2LFor3DaysList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[10] +"\t" + String.join(", ", top10TodayStrongList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[11] +"\t" + String.join(", ", top10TodayWeakList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[12] +"\t" + cnt2Strong + " / "+ cnt2Weak + " / "+ cnt);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[13] +"\t" + "UpBreak % : "+GeneralHelper.toPct(cntUpBreakSignRatio) + "\t DwBreak %"+ GeneralHelper.toPct(cntDwBreakSignRatio) + "\t Up/Dw/總 : "+cntUpBreakSign + " / "+ cntDwBreakSign + " / "+ cnt);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[14] +"\t" + upBreakD0SignList.size() + ": "+ upBreakD0SignList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[15] +"\t" + downBreakD0SignList.size() + ": "+ downBreakD0SignList);
 
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[18] +"  " + upBreakReadyList.size() + ":\t "+ upBreakReadyList);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[19] +"  " + downBreakReadyList.size() + ":\t "+ downBreakReadyList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[16] +"  " + upBreakReadyList.size() + ":\t "+ upBreakReadyList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[17] +"  " + downBreakReadyList.size() + ":\t "+ downBreakReadyList);
 
 
 				if(hasDisplayData)

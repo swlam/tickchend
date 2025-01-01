@@ -27,7 +27,7 @@ public class TrendGettingWeakerF extends BaseTrendGettingDirection{
 //		String targetMonth = "-01-";
 		
 		BenchmarkBeanResult benchmarkResult = CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, BaseTrendGettingDirection.DEFAULT_YEARS_OF_DATA);
-		if(benchmarkResult == null)
+		if(benchmarkResult == null || benchmarkResult.getC2plStat()==null || benchmarkResult.getC2phStat()==null)
 			return false;
 		
 //		double avgC2hScore = benchmarkResult.getC2hStat().getAvg() - elemt.getMtdChangeO2PeriodHPct();

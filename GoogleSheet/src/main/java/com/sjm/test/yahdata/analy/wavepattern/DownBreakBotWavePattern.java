@@ -29,10 +29,11 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 		if(sortedTopBotList.size()<4 )
 			return msg;
 
-		StockBean last1 = stockList.get(stockList.size()-1);
+		StockBean last1 = stockList.getLast();
 		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
 
-		WavePoint wpLast1 = sortedTopBotList.get(sortedTopBotList.size() - 1);
+		WavePoint wpLast1 = sortedTopBotList.getLast();
 		WavePoint wpLast2 = sortedTopBotList.get(sortedTopBotList.size() - 2);
 		WavePoint wpLast3 = sortedTopBotList.get(sortedTopBotList.size() - 3);
 		WavePoint wpLast4 = sortedTopBotList.get(sortedTopBotList.size() - 4);
@@ -100,19 +101,32 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 
 		boolean  bWave = bWaveDwnDw?(bWaveDwnDw && bAnother): true;
 
+		boolean bbD0 = last2.getL()> wpBotLast1.getL() && last1.getL() < wpBotLast1.getL() && last1.getBodyBottom() < wpBotLast1.getL() && last1.isRiseToday()==false;
+		boolean bbD1 = last3.getL()> wpBotLast1.getL() && last2.getL() < wpBotLast1.getL() && last2.getBodyBottom() < wpBotLast1.getL() && last2.isRiseToday()==false
+						&& last1.getC() < wpBotLast1.getStockBean().getBodyBottom();
 
-		boolean bbD0 = last2.getL()> wpBotLast1.getL() && last1.getC() <= wpBotLast1.getL() && last1.isRiseToday()==false;
+
 		boolean bb = last2.getL()<= wpBotLast1.getL() && last1.getC() <= wpBotLast1.getL();
 
-		boolean isVolEngouht = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() > 0.8);
+		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() > 0.8);
 
 
-		boolean isDwBreakD0 = bWave && bbD0 && isVolEngouht; //==> D0
+		boolean isDwBreakD0 = bWave && bbD0 && isVolEnough; //==> D0
+		boolean isDwBreakD1 = bWave && bbD1 && isVolEnough; //==> D1
+
 		boolean isDwBreak = bWave  && bb  && !isBadSign; //==> Up前BOT
 		boolean isDwBreakWithAlert = bWave  && bb && isBadSign; //==> Up前BOT(小心)
 
-
-		if(isDwBreakD0) {
+		if(isDwBreakD1) {
+			String txt = Const.DOWN+Const.D1+ "前BOT";
+			if(last1.getC() <= wpBotLast2.getL() && last2.getL() > wpBotLast2.getL()){
+				txt = Const.DOWN+Const.D1+"前BOT-2";
+				if(wpBotLast2.getL() < wpBotLast1.getL()){
+					txt = Const.DOWN+Const.D1+"前BOT-2低高";
+				}
+			}
+			msg.add(txt);
+		}else if(isDwBreakD0) {
 			String txt = Const.DOWN+Const.D0+ "前BOT";
 			if(last1.getC() <= wpBotLast2.getL() && last2.getL() > wpBotLast2.getL()){
 				txt = Const.DOWN+Const.D0+"前BOT-2";
@@ -121,8 +135,11 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 				}
 			}
 			msg.add(txt);
-		}if(isDwBreak)
+		}
+
+		if(isDwBreak)
 			msg.add(Const.DOWN+"前BOT");
+
 		if(isDwBreakWithAlert)
 			msg.add(Const.DOWN+"前BOT(小心反轉)");
 

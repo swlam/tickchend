@@ -554,7 +554,7 @@ public class KHelper {
 	public static String getGapTypeDisplayMessage(List<StockBean> stockList) {
 		StockBean last = stockList.get(stockList.size()-1);
 		int days = RuleConst.DAYS_10;
-		String defaultRtnString = Const.SPACE+"\t"+Const.SPACE+"\t"+Const.SPACE+"\t"+Const.SPACE;
+		String defaultRtnString = Const.EMPTY+"\t"+Const.EMPTY+"\t"+Const.EMPTY;
 		
 		if(stockList.size() <= days)
 			return defaultRtnString;

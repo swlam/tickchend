@@ -48,7 +48,7 @@ public class BestTimingToBuyApp extends BaseApp{
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
 	public static String START_MMDD= "01-01";
-	public static String END_MMDD= "03-01";
+	public static String END_MMDD= "04-01";
 	public static final int REQUIRED_YRS = 5; 
 	
 	public static final boolean IS_EXPORT_FILE = true;
@@ -75,7 +75,7 @@ public class BestTimingToBuyApp extends BaseApp{
 //			,USStockListConfig.QQQ_COMPONENTS
 //			,USStockListConfig.ETF
 //			,HKStockListConfig.ETF
-//			USStockListConfig.ALL
+			USStockListConfig.ALL,
 			CNStockListConfig.ALL_AVAILABLE,
 			HKStockListConfig.HSI_ELEMENT,
 			HKStockListConfig.HSCEI_ELEMENT,

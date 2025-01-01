@@ -969,7 +969,8 @@ public class WavePatternAnalyticalResultHelper {
 				boolean b3 = last1.getDayChgPct()>0 && last1.getC() > last1Bot.getStockBean().getBodyTop() && last1.getC() > last3Bot.getStockBean().getBodyTop();
 
 
-				boolean bActualBreak = last1.getBodyTop() >= last2Top.getStockBean().getH();				
+				boolean bActualBreak = last1.getBodyTop() >= last2Top.getStockBean().getBodyTop() && last1.getH() > last2Top.getH();
+
 				boolean bReadyBreak = last1.getH() <= last2Top.getStockBean().getH() && last1.getC() > last2Top.getL();
 							
 				
@@ -1065,7 +1066,9 @@ public class WavePatternAnalyticalResultHelper {
 				boolean b3 = last1.getDayChgPct()<0 && last1.getC() < last1Top.getStockBean().getBodyBottom() && last1.getC() <last3Top.getStockBean().getBodyBottom();
 				boolean isSameTop = (last1Top.getStockBean().getH() >= last3Top.getStockBean().getBodyBottom() && last1Top.getStockBean().getH() < last3Top.getStockBean().getH() ) || (last3Top.getStockBean().getH() >=last1Top.getStockBean().getBodyBottom() && last3Top.getStockBean().getH() < last1Top.getStockBean().getH() );
 				
-				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();				
+				/*boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();*/
+
+				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getBodyBottom() && last1.getL() < last2Bot.getL();
 				boolean bReadyBreak = last1.getL() >= last2Bot.getStockBean().getL();
 
 				

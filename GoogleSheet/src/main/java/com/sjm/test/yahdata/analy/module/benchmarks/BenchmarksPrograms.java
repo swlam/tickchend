@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.maas.util.DateHelper;
 import com.maas.util.GeneralHelper;
 import com.sjm.test.yahdata.analy.analyzer.CandlePatternDetector;
 import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAnalyzer;
-import com.sjm.test.yahdata.analy.analyzer.MACDCalculator;
 import com.sjm.test.yahdata.analy.bean.PvrStockBean;
 import com.sjm.test.yahdata.analy.bean.StrongWeakTypeBean;
 import com.sjm.test.yahdata.analy.bean.VolumePriceBean;
@@ -709,9 +707,11 @@ public class BenchmarksPrograms {
 		rtn.setTriplePregnancyInPassFewDays(this.findTriplePregnancyInPassFewDays(stockList, 10));
 		
 
-		rtn.setBigDarkBodyWithMoreVol(LargeCandleStickAnalyzer.findLargeCandlestickAndHigherClose(stockList, 10));
-		rtn.setBigWhiteBodyWithMoreVol(LargeCandleStickAnalyzer.findLargeCandlestickAndLowerClose(stockList, 10));
-		
+		rtn.setBigDarkBodyWithMoreVolAndBreakUp(LargeCandleStickAnalyzer.findRecentLargeDarkCandleWithHighVolumeAndBreakUp(stockList, 10));
+		rtn.setBigWhiteBodyWithMoreVolAndBreakDown(LargeCandleStickAnalyzer.findRecentLargeWhiteCandleWithHighVolumeAndBreakdown(stockList, 10));
+		rtn.setHighVolumeAndBreakUp(LargeCandleStickAnalyzer.findRecentHighVolume(stockList, 20));
+		rtn.setHighVolumeAndBreakDown(LargeCandleStickAnalyzer.findRecentHighVolumeGoDown(stockList, 20));
+
 //		String upDownBreakThreeWavePointToday = this.getUpDownBreak3WavePoint(stockList, waveShape, days);
 //		rtn.setUpDownBreakThreeWavePointToday(upDownBreakThreeWavePointToday);
 		
