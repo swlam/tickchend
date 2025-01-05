@@ -39,7 +39,9 @@ public class LiteWatchListRecentService extends BaseApp{
 	public static String END_DATE = "2028-11-06";
 	
 	private static boolean isRunSummaryStat = false;
-	
+
+/*	private static boolean IS_UPLOAD_TO_GOOGLE_SHEETS = true;*/
+
 	private static int NO_OF_DAYS_PROCESS = 1;
 
 	public static String ICONIC_CODE = "";
@@ -77,7 +79,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
 			CODE_POOL =   HKStockListConfig.ALL;
 //			CODE_POOL =   HKStockListConfig.ETF;
-//			CODE_POOL = Arrays.asList("2013.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("2319.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "2800.HK";  
 			BASE_STOCK_B = "2822.HK";
@@ -637,12 +639,15 @@ public class LiteWatchListRecentService extends BaseApp{
 //			System.out.println("\n"+msg);
 		}
 		System.out.println("\n"+msg);
-        try {
-			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market+interval:"AUTO_"+market+interval;
-            GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+		if(GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS) {
+			try {
+				String sheetName = Const.IS_INTRADAY ? "ONDAY_" + market + interval : "AUTO_" + market + interval;
+				GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
     }
 	
 

@@ -47,8 +47,8 @@ public class BestTimingToBuyApp extends BaseApp{
 	private static final double REQUIRE_C2H_PCT = 0.01;	// 5%
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
-	public static String START_MMDD= "01-01";
-	public static String END_MMDD= "04-01";
+	public static String START_MMDD= "01-02";
+	public static String END_MMDD= "02-08";
 	public static final int REQUIRED_YRS = 5; 
 	
 	public static final boolean IS_EXPORT_FILE = true;

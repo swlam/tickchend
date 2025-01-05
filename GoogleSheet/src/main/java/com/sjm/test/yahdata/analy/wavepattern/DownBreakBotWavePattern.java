@@ -70,14 +70,14 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 
 
 		//require true
-		boolean b1 = last1.getBodyTop() < wpBotLast1.getH() && last1.getL() > wpBotLast1.getL() &&
-		!last1.isRiseToday();
+		boolean bReady1 = last1.getBodyTop() < wpBotLast1.getH() && last1.getL() >= wpBotLast1.getL()
+				&& last2.getL() > wpBotLast1.getL() && !last1.isRiseToday();
 //		boolean b2 = last2.getC() < wpBotLast1.getStockBean().getBodyTop() && last2.getC() > wpBotLast1.getL();
 
 		boolean isBreakBotLowOnce = this.isHitLowestPriceButRebounded(stockList, wpBotLast1);
 		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 
-		if( b1)
+		if( bReady1)
 		{
 			String readyTxt = this.getDownReadyMessage(stockList);
 
@@ -112,7 +112,7 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 
 
 		boolean isDwBreakD0 = bWave && bbD0 && isVolEnough; //==> D0
-		boolean isDwBreakD1 = bWave && bbD1 && isVolEnough; //==> D1
+		boolean isDwBreakD1 = bWave && bbD1; //==> D1
 
 		boolean isDwBreak = bWave  && bb  && !isBadSign; //==> Up前BOT
 		boolean isDwBreakWithAlert = bWave  && bb && isBadSign; //==> Up前BOT(小心)

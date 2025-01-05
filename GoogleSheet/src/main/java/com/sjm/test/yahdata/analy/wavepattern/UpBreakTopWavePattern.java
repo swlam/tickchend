@@ -64,22 +64,16 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 //		boolean b = WaveType.BOT.equals(wpTopLast1.getType());
 //		if(b) return msg;
 
-
-
-
-//		boolean bMa = last1.getC() > last1.getPriceSma().getMa20() && last1.getPriceSma().getMa20() > last1.getPriceSma().getMa50()
-//				&& last1.getC() > last1.getPriceSma().getMa50()
-//				&& last2.getPriceSma().getMa20() >= last2.getPriceSma().getMa50();
 		boolean bMa = true;
 		//require true
-		boolean b1 = last1.getBodyBottom() > wpTopLast1.getL() && last1.getH() < wpTopLast1.getH()
+		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() && last1.getH() <= wpTopLast1.getH()
 				&& last2.getH() < wpTopLast1.getH() && last1.isRiseToday();
 
 		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 		
 		boolean isBreakTopHighOnce = this.isHitHighestPriceButPulledBack(stockList, wpTopLast1);
 
-		if(b1){
+		if(bReady1){
 			String readyTxt = this.getUpReadyMessage(stockList);
 			String txt = Const.WAIT+Const.UP+"前TOP"+readyTxt;
 			if( isBreakTopHighOnce ){
@@ -112,7 +106,7 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() >= 1);
 
 		boolean isUpBreakD0 = bWave && bMa && bbD0 && isVolEnough; //==> D0
-		boolean isUpBreakD1 = bWave && bMa && bbD1 && isVolEnough; //==> D1
+		boolean isUpBreakD1 = bWave && bMa && bbD1; //==> D1
 
 		boolean isUpBreak = bWave && bMa && bb  && !isBadSign; //==> Up前TOP
 		boolean isUpBreakWithAlert = bWave && bMa && bb && isBadSign; //==> Up前TOP(小心)

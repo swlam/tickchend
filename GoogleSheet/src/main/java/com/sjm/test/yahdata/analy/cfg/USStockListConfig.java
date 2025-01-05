@@ -2261,7 +2261,9 @@ public class USStockListConfig {
 	"MPNGY",
 	"AAGIY",
 	"EM",
-	"DOYU"
+	"DOYU",
+	"ATAT",
+	"EH"
 	);
 	
 	

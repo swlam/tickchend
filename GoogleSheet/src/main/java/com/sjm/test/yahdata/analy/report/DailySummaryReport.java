@@ -287,14 +287,16 @@ public class DailySummaryReport {
 	
 	
 	private static void doAnaly(String mkt, String type, List<InstantPerformanceResult> perfromanceResultList, String sectorOrSymbol) {
-		
 				double REQUIRED_TRADE_AMOUNT = (Const.IS_INTRADAY)?30.0:100.0;
 				int LIMIT_RESULTS = 10;
+
+
+
+
 				StringBuilder sb = new StringBuilder();
 
-
 				boolean hasDisplayData = false;
-				String txnDate = perfromanceResultList.get(0).getCurrentStockBean().getTxnDate();
+				String txnDate = perfromanceResultList.getFirst().getCurrentStockBean().getTxnDate();
 
 					
 					Optional<InstantPerformanceResult> optional = perfromanceResultList.stream()
@@ -309,18 +311,21 @@ public class DailySummaryReport {
                     }
 
 
-                    List<InstantPerformanceResult> tmpList = extract(type, sectorOrSymbol, txnDate, perfromanceResultList);
+                    List<InstantPerformanceResult> orgtmpList = extract(type, sectorOrSymbol, txnDate, perfromanceResultList);
+
+					List<InstantPerformanceResult> tmpList =	orgtmpList.stream()
+					.filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
+							&& sectorOrSymbolBean!=null && !"Index".equalsIgnoreCase(x.getSector())
+					).toList();
+
 					if(tmpList.isEmpty())
 						return ;
-					
-					
+
 					hasDisplayData = true;
 
-
-
 					long cnt = tmpList.size();
-					long strongerThanIndexCnt = tmpList.stream().filter( x-> sectorOrSymbolBean!=null && x.getCurrentStockBean().getDayChgPct()>sectorOrSymbolBean.getDailyChangePct() ).count();
-					long positiveDayChgPctCnt = tmpList.stream().filter( x-> sectorOrSymbolBean!=null && x.getCurrentStockBean().getDayChgPct() > 0.0 ).count();
+					long strongerThanIndexCnt = tmpList.stream().filter(x-> x.getCurrentStockBean().getDayChgPct()>sectorOrSymbolBean.getDailyChangePct()).count();
+					long positiveDayChgPctCnt = tmpList.stream().filter(x-> x.getCurrentStockBean().getDayChgPct() > 0.0).count();
 
 					long up20DCnt = tmpList.stream().filter( x-> x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20() ).count();
 					long up50DCnt = tmpList.stream().filter( x-> x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa50() ).count();
@@ -336,11 +341,29 @@ public class DailySummaryReport {
 					double ratioAbv20D = (double)up20DCnt / (double)cnt;
 					double ratioAbv50D = (double)up50DCnt / (double)cnt;
 					double ratioUp20DAbv50D = (double)up20DAbv50DCnt / (double)cnt;
-					
+
+
+					List<InstantPerformanceResult> up20DList = tmpList.stream().filter( x-> x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20() )
+							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
+							.toList();
+
+		List<String>  up20DAbv50DList = tmpList.stream()
+				.filter( x-> x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20()
+						&& x.getCurrentStockBean().getPriceSma().getMa10() > x.getCurrentStockBean().getPriceSma().getMa50()
+						&& x.getCurrentStockBean().getPriceSma().getMa50() > x.getCurrentStockBean().getPriceSma().getMa200()
+				)
+				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
+				.limit(LIMIT_RESULTS)
+				.map(
+						stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getDailyChangePct())
+								+" V:"+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
+								+" "+ (stock.getSysPickLongCategory()+","+stock.getSysPickStagnantCategory()+","+stock.getSysPickShortCategory()).replaceAll("\\[|\\]", "").replaceAll(",,", ",")+" "
+								+ stock.getWaveShape().getShapeResult().replaceAll("NA", "")
+				)
+				.toList();
+
 					 List<String> top10List = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT && sectorOrSymbolBean!=null
-									 && !"Index".equalsIgnoreCase(x.getSector())
-									 && x.getCurrentStockBean().getDayChgPct()>sectorOrSymbolBean.getDailyChangePct())
+							 .filter(x-> x.getCurrentStockBean().getDayChgPct()>sectorOrSymbolBean.getDailyChangePct())
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							 .limit(LIMIT_RESULTS*3)
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct).reversed())
@@ -377,9 +400,7 @@ public class DailySummaryReport {
 //				                .toList();
 					 
 					 List<String> top10DownList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-									 && !"Index".equalsIgnoreCase(x.getSector())
-									 && x.getCurrentStockBean().getDayChgPct()< sectorOrSymbolBean.getDailyChangePct())
+							 .filter(x-> x.getCurrentStockBean().getDayChgPct()< sectorOrSymbolBean.getDailyChangePct())
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							 .limit(LIMIT_RESULTS*3)
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct))
@@ -391,9 +412,7 @@ public class DailySummaryReport {
 					 
 					 
 					 List<String> top10WithGoodMAList = tmpList.stream()
-							 	.filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-										&& !"Index".equalsIgnoreCase(x.getSector())
-										&& x.getCurrentStockBean().getDayChgPct()>0.0
+							 	.filter(x-> x.getCurrentStockBean().getDayChgPct()>0.0
 							 			&& x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20()
 							 			&& x.getCurrentStockBean().getPriceSma().getMa10() > x.getCurrentStockBean().getPriceSma().getMa50()
 							 			&& x.getCurrentStockBean().getPriceSma().getMa50() > x.getCurrentStockBean().getPriceSma().getMa200()
@@ -409,7 +428,6 @@ public class DailySummaryReport {
 					 
 					 
 					 List<String> top10VolumnList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT && !"Index".equalsIgnoreCase(x.getSector()))
 				                .sorted((doc1, doc2) -> Double.compare(doc2.getCurrentStockBean().getDayVolumeChgPct(), doc1.getCurrentStockBean().getDayVolumeChgPct()))
 				                .limit(LIMIT_RESULTS)
 				                .map(
@@ -422,9 +440,7 @@ public class DailySummaryReport {
 
 					 
 					 List<String> top10TodayStrongList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-									 && x.getStrongWeakTypeToday().getType().contains(PatternTrendHelper.STRONG)
-									 && !"Index".equalsIgnoreCase(x.getSector()))
+							 .filter(x-> x.getStrongWeakTypeToday().getType().contains(PatternTrendHelper.STRONG))
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							 .limit(LIMIT_RESULTS*3)
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct).reversed())
@@ -435,9 +451,7 @@ public class DailySummaryReport {
 				                )
 				                .toList();
 					 List<String> top10TodayWeakList = tmpList.stream()
-							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
-									 && x.getStrongWeakTypeToday().getType().contains(PatternTrendHelper.WEAK)
-									 && !"Index".equalsIgnoreCase(x.getSector()))
+							 .filter(x-> x.getStrongWeakTypeToday().getType().contains(PatternTrendHelper.WEAK))
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							 .limit(LIMIT_RESULTS*3)
 							 .sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct))
@@ -458,28 +472,20 @@ public class DailySummaryReport {
 							.filter( x-> x.getWaveShape()!=null && x.getWaveShape().getShapeResult().contains(Const.UP)
 //									&& !x.getWaveShape().getShapeResult().contains(Const.D0)
 									&& !x.getWaveShape().getShapeResult().contains(Const.WAIT)
-									&& !"Index".equalsIgnoreCase(x.getSector())).count();
+									)
+							.count();
 					long cntDwBreakSign = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null && x.getWaveShape().getShapeResult().contains(Const.DOWN)
 //									&& !x.getWaveShape().getShapeResult().contains(Const.D0)
 									&& !x.getWaveShape().getShapeResult().contains(Const.WAIT)
-									&& !"Index".equalsIgnoreCase(x.getSector())).count();
+									)
+							.count();
 
-
-//					List<String> upBreakD0SignList = tmpList.stream()
-//							.filter( x-> x.getWaveShape()!=null
-//									&& x.getWaveShape().getShapeResult().contains(Const.UP+Const.D0)
-//									&& !"Index".equalsIgnoreCase(x.getSector()))
-//							.sorted((doc1, doc2) -> Double.compare(doc2.getDailyChangePct(), doc1.getDailyChangePct()))
-//							.map( stock -> stock.getCurrentStockBean().getStockCode()
-//									+ " :" + GeneralHelper.toPct(stock.getDailyChangePct())
-//									+" V:"+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct()))
-//							.toList();
 
 					List<String> upBreakD0SignList = tmpList.stream()
 							.filter(x -> x.getWaveShape() != null
 									&& (x.getWaveShape().getShapeResult().contains(Const.UP + Const.D0) || x.getWaveShape().getShapeResult().contains(Const.UP + Const.D1))
-									&& !"Index".equalsIgnoreCase(x.getSector()))
+									)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct).reversed())
@@ -492,7 +498,7 @@ public class DailySummaryReport {
 					List<String> upBreakReadyList = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null
 									&& x.getWaveShape().getShapeResult().contains(Const.WAIT+Const.UP)
-									&& !"Index".equalsIgnoreCase(x.getSector()))
+									)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct).reversed())
@@ -505,7 +511,7 @@ public class DailySummaryReport {
 					List<String>  downBreakReadyList = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null
 									&& x.getWaveShape().getShapeResult().contains(Const.WAIT+Const.DOWN)
-									&& !"Index".equalsIgnoreCase(x.getSector()))
+									)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct))
@@ -517,7 +523,7 @@ public class DailySummaryReport {
 					List<String>  downBreakD0SignList = tmpList.stream()
 							.filter( x-> x.getWaveShape()!=null
 									&& ( x.getWaveShape().getShapeResult().contains(Const.DOWN+Const.D0) || x.getWaveShape().getShapeResult().contains(Const.DOWN+Const.D1) )
-									&& !"Index".equalsIgnoreCase(x.getSector()))
+									)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
 							.limit(LIMIT_RESULTS*3)
 							.sorted(Comparator.comparingDouble(InstantPerformanceResult::getDailyChangePct))
@@ -551,7 +557,6 @@ public class DailySummaryReport {
 							, "Up_Break_(待)"
 							, "Down_Break_(待)"
 							};
-
 					sb.append("\t--------\t--------\t--------\n");
 					sb.append(sectorOrSymbol +"\t"+titles[0].toUpperCase() +"  "+ txnDate+"  " + sectorOrSymbol +"  "+LocalDateTime.now());
 
@@ -575,7 +580,7 @@ public class DailySummaryReport {
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[2] +"\t" + GeneralHelper.toPct(ratioStrongerThanIndexCnt)+ " ("+ strongerThanIndexCnt + " / " +cnt+")");
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[3] +"\t" + GeneralHelper.toPct(ratioAbv20D));
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[4] +"\t" + GeneralHelper.toPct(ratioAbv50D));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[5] +"\t" + GeneralHelper.toPct(ratioUp20DAbv50D));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[5] +"\t" + GeneralHelper.toPct(ratioUp20DAbv50D) +"\t"+up20DAbv50DList);
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[6] +"\t" + String.join(", ", top10List));
 					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[7] +"\t" + String.join(", ", top10VolumnList));
 //					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10O2HFor3DaysList));
