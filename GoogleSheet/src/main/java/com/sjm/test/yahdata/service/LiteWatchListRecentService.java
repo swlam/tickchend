@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sjm.test.yahdata.analy.report.DailySummaryReportDeepSeek;
 import com.skpk.GoogleSheetsCreateAndUploadExample;
 import org.springframework.stereotype.Service;
 
@@ -159,7 +160,7 @@ public class LiteWatchListRecentService extends BaseApp{
 			if(!statisticsResultList.isEmpty())
 				DailySummaryReport.exportStat(statisticsResultList);
 
-		DailySummaryReport.printSimpleStatisticsResult(results, COUNTRY_MARKET, ICONIC_CODE);
+		DailySummaryReportDeepSeek.printSimpleStatisticsResult(results, COUNTRY_MARKET, ICONIC_CODE);
 		//export the stock pick result 
 //		exportStockPickResult(instantPerformanceResultList);
 		System.out.println();
