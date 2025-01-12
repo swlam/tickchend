@@ -47,8 +47,8 @@ public class BestTimingToBuyApp extends BaseApp{
 	private static final double REQUIRE_C2H_PCT = 0.01;	// 5%
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
-	public static String START_MMDD= "01-02";
-	public static String END_MMDD= "02-08";
+	public static String START_MMDD= "01-04";
+	public static String END_MMDD= "02-10";
 	public static final int REQUIRED_YRS = 5; 
 	
 	public static final boolean IS_EXPORT_FILE = true;
@@ -73,14 +73,14 @@ public class BestTimingToBuyApp extends BaseApp{
 //			,USStockListConfig.MAIN
 //			,USStockListConfig.DOW_COMPONENTS
 //			,USStockListConfig.QQQ_COMPONENTS
-//			,USStockListConfig.ETF
+			USStockListConfig.ETF
 //			,HKStockListConfig.ETF
-			USStockListConfig.ALL,
-			CNStockListConfig.ALL_AVAILABLE,
-			HKStockListConfig.HSI_ELEMENT,
-			HKStockListConfig.HSCEI_ELEMENT,
-			HKStockListConfig.STOCK_INDEX,
-			HKStockListConfig.ETF
+//			USStockListConfig.ALL,
+//			CNStockListConfig.ALL_AVAILABLE,
+//			HKStockListConfig.HSI_ELEMENT,
+//			HKStockListConfig.HSCEI_ELEMENT,
+//			HKStockListConfig.STOCK_INDEX,
+//			HKStockListConfig.ETF
 			)
 		    .flatMap(Collection::stream).distinct().collect(Collectors.toList());
 

@@ -179,6 +179,7 @@ public static List<String> TICKERS = Arrays.asList(
 "2700.HK",
 "1120.HK",
 "6812.HK",
+"0325.HK",
 "0399.HK",
 "1900.HK",
 "0918.HK",

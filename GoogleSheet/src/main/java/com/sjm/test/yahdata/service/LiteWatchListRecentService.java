@@ -71,7 +71,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("AAPL","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("SPY","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -80,7 +80,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
 			CODE_POOL =   HKStockListConfig.ALL;
 //			CODE_POOL =   HKStockListConfig.ETF;
-//			CODE_POOL = Arrays.asList("2319.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("2208.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "2800.HK";  
 			BASE_STOCK_B = "2822.HK";
@@ -646,6 +646,7 @@ public class LiteWatchListRecentService extends BaseApp{
 				String sheetName = Const.IS_INTRADAY ? "ONDAY_" + market + interval : "AUTO_" + market + interval;
 				GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
 			} catch (Exception e) {
+				log.error("Error on upload to google sheets", e);
 				throw new RuntimeException(e);
 			}
 		}
