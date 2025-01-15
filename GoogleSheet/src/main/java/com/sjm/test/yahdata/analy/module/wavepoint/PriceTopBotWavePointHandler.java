@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.maas.util.DateHelper;
+import com.maas.util.GeneralHelper;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.conts.Const;
 import com.sjm.test.yahdata.analy.conts.ta.StockTrendStatus;
@@ -109,7 +110,7 @@ public class PriceTopBotWavePointHandler {
 		ws.setSortedBotList(sortedBotList);
 
 		String waveShape = wavePointResultHelper.findShape(stockList, sortedTopBotList, sortedTopList, sortedBotList);
-		String waveSituation = this.findSituation(stockList, sortedTopList, sortedBotList);
+		String waveSituation = this.findSituation(stockList, sortedTopBotList, sortedTopList, sortedBotList);
 		waveShape = (waveShape==null)?"":waveShape;
 		ws.setShapeResult(waveShape);
 		ws.setWaveSituation(waveSituation);
@@ -118,7 +119,74 @@ public class PriceTopBotWavePointHandler {
 		return ws;
 	}
 
-	public String findSituation(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
+
+	public String findSituation(List<StockBean> stockList, List<WavePoint> sortedTopBotList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
+		if(sortedTopBotList.isEmpty() || sortedTopBotList.isEmpty()){
+			return "BOT/TOP EMPTY";
+		}
+		StockBean last1StockBean = stockList.get(stockList.size()-1);
+		StockBean last2StockBean = stockList.get(stockList.size()-2);
+
+		WavePoint last1TopBot = sortedTopBotList.getLast();
+		String rtnMessage = "";
+		if(WaveType.TOP.equals(last1TopBot.getType())){
+			if(last1StockBean.getH() > last1TopBot.getH() &&
+					last1StockBean.getBodyTop() > last1TopBot.getStockBean().getBodyTop() &&
+					last1StockBean.getL() >= last1TopBot.getStockBean().getBodyBottom() ){
+				double dif = (last1StockBean.getC() - last1TopBot.getH()) / last1TopBot.getH();
+				rtnMessage = "在前頂上 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+			}
+					;
+		}else if(WaveType.BOT.equals(last1TopBot.getType())){
+			if(last1StockBean.getL() < last1TopBot.getL() &&
+					last1StockBean.getBodyBottom() < last1TopBot.getStockBean().getBodyBottom() &&
+					last1StockBean.getH() <= last1TopBot.getStockBean().getBodyTop() ){
+				double dif = (last1StockBean.getC() - last1TopBot.getL()) / last1TopBot.getL();
+				rtnMessage = "在前底下 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+			}
+		}
+
+		WavePoint lastTop = sortedTopList.getLast();
+		WavePoint lastBot = sortedBotList.getLast();
+
+		boolean isSameTopBotLevel = (lastTop.getStockBean().getBodyBottom() <lastBot.getH() || lastBot.getStockBean().getBodyTop() >lastTop.getL());
+
+		boolean isRebounding = (last1StockBean.getC() > last1StockBean.getO() && last1StockBean.getDayChgPct() > 0)
+				&& last1StockBean.getC() > lastBot.getStockBean().getBodyTop()
+				&& last1StockBean.getH() < lastTop.getStockBean().getBodyTop()
+				&& last1StockBean.getBodyTop() > last2StockBean.getBodyTop()
+				;
+
+		boolean isAdjusting = (last1StockBean.getC() < last1StockBean.getO() && last1StockBean.getDayChgPct() < 0)
+				&& last1StockBean.getC() < lastTop.getStockBean().getBodyBottom()
+				&& last1StockBean.getL() > lastBot.getStockBean().getBodyBottom()
+				&& last1StockBean.getBodyBottom() < last2StockBean.getBodyBottom();
+
+		if(isRebounding && isAdjusting) {
+			return "";
+		}
+
+		if(isSameTopBotLevel){
+			if(isAdjusting){
+				return "區間"+Const.WAIT+Const.DOWN;
+			}
+			if(isRebounding ){
+				return "區間"+Const.WAIT+Const.UP;
+			}
+		}else{
+			if(isAdjusting ){
+				return "浪調整中";
+			}
+			if(isRebounding ){
+				return "浪反彈中";
+			}
+		}
+
+		return "";
+	}
+
+	@Deprecated
+	public String findSituation_org(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
 		if(sortedTopList.isEmpty() || sortedBotList.isEmpty()){
 			return "BOT/TOP EMPTY";
 		}
@@ -136,8 +204,12 @@ public class PriceTopBotWavePointHandler {
 				)
 				.count();
 		int totalTop = sortedTopList.size();
-		if(countStandTop > 0){
-			return "在浪頂上 ("+countStandTop+"/"+totalTop+"個)";//"在"+countStandTop+"個浪頂上";
+
+
+
+
+		if(last1StockBean.getC() >= last1Top.getH()){
+			return "在浪頂上 ("+last1Top+"/"+totalTop+"個)";//"在"+countStandTop+"個浪頂上";
 		}
 
 //		int dayBetweenFromFirstBot = DateHelper.dayBetween(sortedBotList.get(0).getDate(), last1StockBean.getTxnDate());
