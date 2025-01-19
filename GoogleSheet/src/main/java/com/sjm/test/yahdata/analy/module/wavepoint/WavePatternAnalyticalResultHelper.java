@@ -26,8 +26,8 @@ public class WavePatternAnalyticalResultHelper {
 	private UpBreakTriangleWavePattern upBreakTriangleWavePattern;
 	private DownBreakTriangleWavePattern downBreakTriangleWavePattern;
 
-	private TopReversalWavePattern topReversalWavePattern;
-	private BottomReversalWavePattern bottomReversalWavePattern;
+	private TopReversalDownwardPattern topReversalDownwardPattern;
+	private BottomReversalUpwardPattern bottomReversalUpwardPattern;
 
 	private FlatBottomWaitingBreakWavePattern flatBottomWaitingBreakWavePattern;
 	private FlatTopWaitingBreakWavePattern flatTopWaitingBreakWavePattern;
@@ -42,8 +42,8 @@ public class WavePatternAnalyticalResultHelper {
 		upBreakTriangleWavePattern = new UpBreakTriangleWavePattern();
 		downBreakTriangleWavePattern = new DownBreakTriangleWavePattern();
 
-		topReversalWavePattern = new TopReversalWavePattern();
-		bottomReversalWavePattern = new BottomReversalWavePattern();
+		topReversalDownwardPattern = new TopReversalDownwardPattern();
+		bottomReversalUpwardPattern = new BottomReversalUpwardPattern();
 
 		flatTopWaitingBreakWavePattern = new FlatTopWaitingBreakWavePattern();
 		flatBottomWaitingBreakWavePattern = new FlatBottomWaitingBreakWavePattern();
@@ -498,8 +498,8 @@ public class WavePatternAnalyticalResultHelper {
 //		result.addAll( findFlatBottomByBotQty(			stockList, sortedTopBotList, botQty));
 		
 		
-		result.addAll( topReversalWavePattern.find(			stockList, sortedTopList, sortedBotList));
-		result.addAll( bottomReversalWavePattern.find(		stockList, sortedTopList, sortedBotList));
+		result.addAll( topReversalDownwardPattern.find(stockList, sortedTopList, sortedBotList));
+		result.addAll( bottomReversalUpwardPattern.find(stockList, sortedTopList, sortedBotList));
 //		result.addAll( findWaveHigherHigh(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHigherHighWithUpBegin(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHeadAndShoulder(		stockList, sortedTopBotList));

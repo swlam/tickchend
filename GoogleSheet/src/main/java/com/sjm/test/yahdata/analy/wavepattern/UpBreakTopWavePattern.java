@@ -96,9 +96,12 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		
 		boolean  bWave = bWaveUpnUp?(bWaveUpnUp && bAnother): true;
 		
-		boolean bbD0 = last2.getH()< wpTopLast1.getH() && last1.getH() > wpTopLast1.getH() && last1.getC() > wpTopLast1.getStockBean().getBodyTop() && last1.isRiseToday();
-		boolean bbD1 = last3.getH()< wpTopLast1.getH() && last2.getH() > wpTopLast1.getH() && last2.getC() > wpTopLast1.getStockBean().getBodyTop() && last2.isRiseToday()
-						&& last1.getC()> wpTopLast1.getStockBean().getBodyTop() ;
+		boolean bbD0 = last2.getH()< wpTopLast1.getH() && last1.getH() > wpTopLast1.getH() &&
+				last1.getC() > wpTopLast1.getStockBean().getBodyTop() && last1.isRiseToday();
+
+		boolean bbD1 = last3.getH()< wpTopLast1.getH() && last2.getH() > wpTopLast1.getH() &&
+				last2.getC() > wpTopLast1.getStockBean().getBodyTop() && last2.isRiseToday() &&
+				last1.getC()> wpTopLast1.getStockBean().getBodyTop() ;
 
 		boolean bb = last2.getH()>= wpTopLast1.getH() && last1.getC() >= wpTopLast1.getH() ;
 

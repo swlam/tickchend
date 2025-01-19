@@ -10,6 +10,7 @@ import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePoint;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class TopReversalWavePattern extends BaseWavePattern{
     private static final int WINDOW_SIZE = 2;
     @Override
@@ -89,17 +90,7 @@ public class TopReversalWavePattern extends BaseWavePattern{
 		}
 
 		return msg;
-		/*
-		 String confirmDate = "";
-		 subList(wpLast3.getDate(), current.getTxnDate())
 
-		 for loop {
-		  if (elem.getC() < wpLast3.getBodyBottom() ){
-		  	confirmDate = elem.getDate();
-		  }
-		 }
-		 */
-//		return Const.NA+"\t";
 	}
 
 

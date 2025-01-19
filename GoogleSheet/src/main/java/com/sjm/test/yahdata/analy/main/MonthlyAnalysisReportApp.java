@@ -26,8 +26,8 @@ public class MonthlyAnalysisReportApp {
 
 	public static  List<String> CODE_POOL = Stream.of(USStockListConfig.ALL, HKStockListConfig.ALL, CNStockListConfig.ALL_AVAILABLE).flatMap(Collection::stream) .collect(Collectors.toList());
 	
-	public static String COUNTRY_MARKET = "CN";
-	public static String targetMonth = "-01-";
+	public static String COUNTRY_MARKET = "HK";
+	public static String targetMonth = "-02-";
 	public static String BENCHMARK_BOUDARY = Const.END2END_O2C;
 	
 	public static int YEARS = 20;
@@ -45,11 +45,11 @@ public class MonthlyAnalysisReportApp {
     	log.info(COUNTRY_MARKET +" and " + targetMonth);
     	
     	if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
-			CODE_POOL =   USStockListConfig.MAIN;
+			CODE_POOL =   USStockListConfig.ALL;
 //			CODE_POOL =   USStockListConfig.MAIN_CORE;
 //			CODE_POOL = Arrays.asList("BTC-USD");
     	}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
-			CODE_POOL =   HKStockListConfig.MAIN;
+			CODE_POOL =   HKStockListConfig.ALL;
     	}else if(Const.MARKET_CN.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL = CNStockListConfig.ALL_AVAILABLE;
     	}
