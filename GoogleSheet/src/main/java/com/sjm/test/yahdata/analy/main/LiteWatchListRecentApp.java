@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 public class LiteWatchListRecentApp extends BaseApp{
 	
-	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
+	private static String DEFAULT_INTERVAL = Const.INTERVAL_W;
 
 	public static String targetMonth = "-01-";
 	public static String END_DATE = "2028-12-27";
@@ -26,9 +26,9 @@ public class LiteWatchListRecentApp extends BaseApp{
 //		GlobalConfig.setYearOfStockData(YEARS);
 
 		COUNTRY_MARKET = "US";
-		COUNTRY_MARKET = "CN";
-		COUNTRY_MARKET = "HK";
-//		Const.IS_INTRADAY = true;
+//		COUNTRY_MARKET = "CN";
+//		COUNTRY_MARKET = "HK";
+		Const.IS_INTRADAY = true;
 
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();

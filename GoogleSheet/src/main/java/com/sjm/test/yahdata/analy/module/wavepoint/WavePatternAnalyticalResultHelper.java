@@ -31,6 +31,7 @@ public class WavePatternAnalyticalResultHelper {
 
 	private FlatBottomWaitingBreakWavePattern flatBottomWaitingBreakWavePattern;
 	private FlatTopWaitingBreakWavePattern flatTopWaitingBreakWavePattern;
+	private AdjustThenTurnStrongPattern adjustThenTurnStrongPattern;
 
 
 	public WavePatternAnalyticalResultHelper() {
@@ -47,7 +48,7 @@ public class WavePatternAnalyticalResultHelper {
 
 		flatTopWaitingBreakWavePattern = new FlatTopWaitingBreakWavePattern();
 		flatBottomWaitingBreakWavePattern = new FlatBottomWaitingBreakWavePattern();
-
+		adjustThenTurnStrongPattern = new AdjustThenTurnStrongPattern();
 	}
 	
 	//for wp=TOP AND (c < wp.H)
@@ -503,6 +504,8 @@ public class WavePatternAnalyticalResultHelper {
 //		result.addAll( findWaveHigherHigh(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHigherHighWithUpBegin(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHeadAndShoulder(		stockList, sortedTopBotList));
+		result.addAll( adjustThenTurnStrongPattern.find(stockList, sortedTopBotList));
+
 		return result.isEmpty()?Const.SPACE: result.toString().replace("[", "").replace("]", "");
 	}
 	

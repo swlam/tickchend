@@ -11,23 +11,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AdjustThenTurnStrongPattern extends BaseWavePattern {
+public class AdjustThenTurnStrongPattern {
 
-	@Override
-	public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
 
-		
-		return findUpBreakTriangle(stockList, sortedTopList, sortedBotList);
-	}
-
-	
-	private Set<String> findUpBreakTriangle(List<StockBean> stockList, List<WavePoint> sortedTopBotList) {
+	public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopBotList) {
 		Set<String> msg = new LinkedHashSet<String>();
-		if(sortedTopBotList.size()<3 )
+		if(sortedTopBotList.size()<4 )
 			return msg;
 		
 		StockBean last1 = stockList.getLast();
 		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
 
 		WavePoint topBotLast1 = sortedTopBotList.getLast(); // BOT
 		WavePoint topBotLast2 = sortedTopBotList.get(sortedTopBotList.size()-2); // TOP
@@ -37,79 +31,22 @@ public class AdjustThenTurnStrongPattern extends BaseWavePattern {
 		boolean isBotTopValid = false;
 		if(WaveType.BOT == topBotLast1.getType() && WaveType.TOP == topBotLast2.getType() && WaveType.BOT == topBotLast3.getType() && WaveType.TOP == topBotLast4.getType()){
 			if(topBotLast2.getStockBean().getBodyBottom()>=topBotLast4.getStockBean().getBodyTop() &&
-				topBotLast1.getStockBean().getBodyBottom()>=topBotLast4.getStockBean().getBodyTop() &&
-				last1.getH()<topBotLast2.getH() && last2.getH()<topBotLast2.getH()
+				topBotLast1.getStockBean().getBodyBottom()>=topBotLast3.getStockBean().getBodyTop() &&
+				last1.getH()<topBotLast2.getH() && last2.getH()<topBotLast2.getH() && last3.getH()<topBotLast2.getH()
 			){
 				isBotTopValid = true;
 			}
-
-		}else{
-			isBotTopValid =false;
 		}
 
-		if(last1.getDayChgPct()>0 && last2.getDayChgPct()>0 ){
-			msg.add(Const.WAIT+Const.UP+"");
-		}
-
-		
-//		if(topLast3.getStockBean().getBodyTop()>=topLast2.getStockBean().getBodyTop() && topLast2.getStockBean().getBodyTop()>=topLast1.getStockBean().getBodyTop()) {
-//			ispass1 = true;
-//		}
-		List<StockBean>  topToEndList = StreamTransformHelper.subListWithEndElement(stockList, topLast1.getDate(), last1.getTxnDate());;
-		List<StockBean>  targetStockList1 = topToEndList.subList(1, topToEndList.size());
-		StockBean relativeHighSk = StreamTransformHelper.findMaxHighStock(targetStockList1);
-		if(relativeHighSk.getH() > topLast1.getH()){
-			ispass1 = false;
-		}
-
-		if(botLast3.getStockBean().getL()<=botLast2.getStockBean().getL() && botLast2.getStockBean().getL()<=botLast1.getStockBean().getL()) {
-			ispass2 = true;
-		}
-		
-//		if(botLast3.getStockBean().getBodyBottom()<=botLast2.getStockBean().getBodyBottom() && botLast2.getStockBean().getBodyBottom()<=botLast1.getStockBean().getBodyBottom()) {
-//			ispass2 = true;
-//		}
-
-		List<StockBean>  botToEndList = StreamTransformHelper.subListWithEndElement(stockList, botLast1.getDate(), last1.getTxnDate());;
-		List<StockBean>  targetStockList2 = botToEndList.subList(1, botToEndList.size());
-		StockBean relativeLowSk = StreamTransformHelper.findMinLowStock(targetStockList2);
-		if(relativeLowSk.getL()< botLast1.getL()){
-			ispass2 = false;
-		}
-
-		if( topLast1.getL() > botLast3.getL()){
-			ispass3 = true;
-		}
-
-		if(!(ispass1 && ispass2 && ispass3))
-			return msg;
-		
-		double thresholdMinRequired = topLast1.getStockBean().getH() * 0.95;
-		double thresholdMaxRequired = topLast1.getStockBean().getH() * 1.01;
-
-		if(last1.getC()>=thresholdMinRequired
-				&& last1.getC()<=thresholdMaxRequired
-				&& KHelper.isBullishCandle(last1)
-				&& last2.getBodyTop() < topLast1.getH()
-				&& last1.getC() >= topLast1.getH()
+		if(isBotTopValid &&
+			last1.getDayChgPct()>0 && last2.getDayChgPct()>0 &&
+			last1.getL() > last3.getL()
 		){
-			msg.add(Const.UP+Const.D0+"破小三角");
-		}else if(last1.getC()>=thresholdMinRequired
-				&& last1.getC()<=thresholdMaxRequired
-				&& KHelper.isBullishCandle(last1)
-				&& last2.getH() < topLast1.getH()
-				&& last1.getC() <= topLast1.getStockBean().getBodyTop() && last1.getC() >= topLast1.getStockBean().getBodyBottom()
-				&& last1.getH() < topLast1.getH()
-			)
-		{
-			msg.add(Const.WAIT+Const.UP+"破小三角");
-			
-			boolean isAnotherTriangleShape = this.isUpTrendTriangle( sortedTopList, sortedBotList);
-			if(isAnotherTriangleShape)
-				msg.add(Const.WAIT+Const.UP+"破向上三角");
-		}else if(last1.getC() >= topLast1.getStockBean().getBodyTop() && last2.getBodyTop() > topLast1.getH()){
-			msg.add(Const.UP+"破小三角");
+			msg.add(Const.WAIT+Const.UP+"ZZ強");
 		}
+
+		
+
 		
 		return msg;
 	}
