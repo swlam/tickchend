@@ -32,7 +32,8 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 				
 		StockBean last1 = stockList.get(stockList.size()-1);
 		StockBean last2 = stockList.get(stockList.size()-2);
-		
+		StockBean last3 = stockList.get(stockList.size()-3);
+
 		WavePoint wpLast1 = sortedTopBotList.get(sortedTopBotList.size() - 1);
 		WavePoint wpLast2 = sortedTopBotList.get(sortedTopBotList.size() - 2);
 		WavePoint wpLast3 = sortedTopBotList.get(sortedTopBotList.size() - 3);
@@ -63,22 +64,16 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 //		boolean b = WaveType.BOT.equals(wpTopLast1.getType());
 //		if(b) return msg;
 
-
-
-
-//		boolean bMa = last1.getC() > last1.getPriceSma().getMa20() && last1.getPriceSma().getMa20() > last1.getPriceSma().getMa50()
-//				&& last1.getC() > last1.getPriceSma().getMa50()
-//				&& last2.getPriceSma().getMa20() >= last2.getPriceSma().getMa50();
 		boolean bMa = true;
 		//require true
-		boolean b1 = last1.getBodyBottom() > wpTopLast1.getL() && last1.getH() < wpTopLast1.getH()
+		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() && last1.getH() <= wpTopLast1.getH()
 				&& last2.getH() < wpTopLast1.getH() && last1.isRiseToday();
 
 		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 		
 		boolean isBreakTopHighOnce = this.isHitHighestPriceButPulledBack(stockList, wpTopLast1);
 
-		if(b1){
+		if(bReady1){
 			String readyTxt = this.getUpReadyMessage(stockList);
 			String txt = Const.WAIT+Const.UP+"前TOP"+readyTxt;
 			if( isBreakTopHighOnce ){
@@ -101,16 +96,35 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		
 		boolean  bWave = bWaveUpnUp?(bWaveUpnUp && bAnother): true;
 		
-		boolean bbD0 = last2.getH()< wpTopLast1.getH() && last1.getC() >= wpTopLast1.getH() && last1.isRiseToday();
+		boolean bbD0 = last2.getH()< wpTopLast1.getH() && last1.getH() > wpTopLast1.getH() &&
+				last1.getC() > wpTopLast1.getStockBean().getBodyTop() && last1.isRiseToday();
+
+		boolean bbD1 = last3.getH()< wpTopLast1.getH() && last2.getH() > wpTopLast1.getH() &&
+				last2.getC() > wpTopLast1.getStockBean().getBodyTop() && last2.isRiseToday() &&
+				last1.getC()> wpTopLast1.getStockBean().getBodyTop() ;
+
 		boolean bb = last2.getH()>= wpTopLast1.getH() && last1.getC() >= wpTopLast1.getH() ;
 
 
 		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() >= 1);
+
 		boolean isUpBreakD0 = bWave && bMa && bbD0 && isVolEnough; //==> D0
+		boolean isUpBreakD1 = bWave && bMa && bbD1; //==> D1
+
 		boolean isUpBreak = bWave && bMa && bb  && !isBadSign; //==> Up前TOP
 		boolean isUpBreakWithAlert = bWave && bMa && bb && isBadSign; //==> Up前TOP(小心)
-		
-		if(isUpBreakD0){
+
+
+		if(isUpBreakD1){
+			String txt = Const.UP+Const.D1+"前TOP";
+			if(last1.getC() >= wpTopLast2.getH() && last2.getH() < wpTopLast2.getH()){
+				txt = Const.UP+Const.D1+"前TOP-2";
+				if(wpTopLast2.getH() > wpTopLast1.getH()){
+					txt = Const.UP+Const.D1+"前TOP-2高低";
+				}
+			}
+			msg.add(txt);
+		}else if(isUpBreakD0){
 			String txt = Const.UP+Const.D0+"前TOP";
 			if(last1.getC() >= wpTopLast2.getH() && last2.getH() < wpTopLast2.getH()){
 				txt = Const.UP+Const.D0+"前TOP-2";
@@ -120,8 +134,11 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 			}
 			msg.add(txt);
 		}
+
+
 		if(isUpBreak)
 			msg.add(Const.UP+"前TOP");
+
 		if(isUpBreakWithAlert)
 			msg.add(Const.UP+"前TOP(小心反轉)");
 		

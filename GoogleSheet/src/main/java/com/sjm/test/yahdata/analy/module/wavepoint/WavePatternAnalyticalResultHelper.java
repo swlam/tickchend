@@ -26,11 +26,12 @@ public class WavePatternAnalyticalResultHelper {
 	private UpBreakTriangleWavePattern upBreakTriangleWavePattern;
 	private DownBreakTriangleWavePattern downBreakTriangleWavePattern;
 
-	private TopReversalWavePattern topReversalWavePattern;
-	private BottomReversalWavePattern bottomReversalWavePattern;
+	private TopReversalDownwardPattern topReversalDownwardPattern;
+	private BottomReversalUpwardPattern bottomReversalUpwardPattern;
 
 	private FlatBottomWaitingBreakWavePattern flatBottomWaitingBreakWavePattern;
 	private FlatTopWaitingBreakWavePattern flatTopWaitingBreakWavePattern;
+	private AdjustThenTurnStrongPattern adjustThenTurnStrongPattern;
 
 
 	public WavePatternAnalyticalResultHelper() {
@@ -42,12 +43,12 @@ public class WavePatternAnalyticalResultHelper {
 		upBreakTriangleWavePattern = new UpBreakTriangleWavePattern();
 		downBreakTriangleWavePattern = new DownBreakTriangleWavePattern();
 
-		topReversalWavePattern = new TopReversalWavePattern();
-		bottomReversalWavePattern = new BottomReversalWavePattern();
+		topReversalDownwardPattern = new TopReversalDownwardPattern();
+		bottomReversalUpwardPattern = new BottomReversalUpwardPattern();
 
 		flatTopWaitingBreakWavePattern = new FlatTopWaitingBreakWavePattern();
 		flatBottomWaitingBreakWavePattern = new FlatBottomWaitingBreakWavePattern();
-
+		adjustThenTurnStrongPattern = new AdjustThenTurnStrongPattern();
 	}
 	
 	//for wp=TOP AND (c < wp.H)
@@ -498,11 +499,13 @@ public class WavePatternAnalyticalResultHelper {
 //		result.addAll( findFlatBottomByBotQty(			stockList, sortedTopBotList, botQty));
 		
 		
-		result.addAll( topReversalWavePattern.find(			stockList, sortedTopList, sortedBotList));
-		result.addAll( bottomReversalWavePattern.find(		stockList, sortedTopList, sortedBotList));
+		result.addAll( topReversalDownwardPattern.find(stockList, sortedTopList, sortedBotList));
+		result.addAll( bottomReversalUpwardPattern.find(stockList, sortedTopList, sortedBotList));
 //		result.addAll( findWaveHigherHigh(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHigherHighWithUpBegin(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHeadAndShoulder(		stockList, sortedTopBotList));
+		result.addAll( adjustThenTurnStrongPattern.find(stockList, sortedTopBotList));
+
 		return result.isEmpty()?Const.SPACE: result.toString().replace("[", "").replace("]", "");
 	}
 	
@@ -969,7 +972,8 @@ public class WavePatternAnalyticalResultHelper {
 				boolean b3 = last1.getDayChgPct()>0 && last1.getC() > last1Bot.getStockBean().getBodyTop() && last1.getC() > last3Bot.getStockBean().getBodyTop();
 
 
-				boolean bActualBreak = last1.getBodyTop() >= last2Top.getStockBean().getH();				
+				boolean bActualBreak = last1.getBodyTop() >= last2Top.getStockBean().getBodyTop() && last1.getH() > last2Top.getH();
+
 				boolean bReadyBreak = last1.getH() <= last2Top.getStockBean().getH() && last1.getC() > last2Top.getL();
 							
 				
@@ -1065,7 +1069,9 @@ public class WavePatternAnalyticalResultHelper {
 				boolean b3 = last1.getDayChgPct()<0 && last1.getC() < last1Top.getStockBean().getBodyBottom() && last1.getC() <last3Top.getStockBean().getBodyBottom();
 				boolean isSameTop = (last1Top.getStockBean().getH() >= last3Top.getStockBean().getBodyBottom() && last1Top.getStockBean().getH() < last3Top.getStockBean().getH() ) || (last3Top.getStockBean().getH() >=last1Top.getStockBean().getBodyBottom() && last3Top.getStockBean().getH() < last1Top.getStockBean().getH() );
 				
-				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();				
+				/*boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();*/
+
+				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getBodyBottom() && last1.getL() < last2Bot.getL();
 				boolean bReadyBreak = last1.getL() >= last2Bot.getStockBean().getL();
 
 				

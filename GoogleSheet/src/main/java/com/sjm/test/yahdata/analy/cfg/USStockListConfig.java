@@ -21,7 +21,8 @@ public class USStockListConfig {
 			 "VNAM","VNM",
 			 "WEAT","CORN","GLD","SLV","UNG",
 			 "COPX","CPER",
-			 "IGPT","PNQI","IXN","MDY"
+			 "IGPT","PNQI","IXN","MDY",
+			 "UGE"
 			 
 	);
 	
@@ -2152,6 +2153,7 @@ public class USStockListConfig {
 	"LI",
 	"XPEV",
 	"ZTO",
+	"ZK",
 	"BGNE",
 	"YUMC",
 	"BEKE",
@@ -2259,7 +2261,9 @@ public class USStockListConfig {
 	"MPNGY",
 	"AAGIY",
 	"EM",
-	"DOYU"
+	"DOYU",
+	"ATAT",
+	"EH"
 	);
 	
 	

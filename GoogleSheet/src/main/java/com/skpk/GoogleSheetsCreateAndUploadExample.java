@@ -13,7 +13,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,16 @@ public class GoogleSheetsCreateAndUploadExample {
     private static final String SPREADSHEET_ID = "1tRHVd0bGURbiLOVvUqDn1nA2kv7j0W0OIvo6bxn5c54";
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
+        File tokensDir = new File(TOKENS_DIRECTORY_PATH);
+        if (tokensDir.exists()) {
+            File[] files = tokensDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+        }
+
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
@@ -49,6 +59,9 @@ public class GoogleSheetsCreateAndUploadExample {
             // Create the new sheet
             createSheet(service, SPREADSHEET_ID, SHEET_NAME);
         }
+
+        // Move the sheet to the first position
+        moveSheetToFirstPosition(service, SPREADSHEET_ID, SHEET_NAME);
 
         // Upload data to the sheet
         uploadDataToSheet_demo(service, SPREADSHEET_ID, SHEET_NAME);
@@ -77,12 +90,21 @@ public class GoogleSheetsCreateAndUploadExample {
         System.out.println("Sheet '" + sheetName + "' created successfully.");
     }
 
+    private static void clearSheetData(Sheets service, String spreadsheetId, String sheetName) throws IOException {
+        String range = sheetName + "!A1:Z1000"; // 你可以根据需要调整范围
+        ClearValuesRequest requestBody = new ClearValuesRequest();
+        ClearValuesResponse response = service.spreadsheets().values().clear(spreadsheetId, range, requestBody).execute();
+        System.out.println("Cleared data from sheet '" + sheetName + "'.");
+    }
 
     public static void upload(String sheetName, List<List<Object>> values) throws Exception{
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+
+
+
 
         // Check if the sheet exists
         boolean sheetExists = checkSheetExists(service, SPREADSHEET_ID, sheetName);
@@ -91,6 +113,12 @@ public class GoogleSheetsCreateAndUploadExample {
             // Create the new sheet
             createSheet(service, SPREADSHEET_ID, sheetName);
         }
+
+        // Clear existing data in the sheet
+        clearSheetData(service, SPREADSHEET_ID, sheetName);
+
+        // Move the sheet to the first position
+        moveSheetToFirstPosition(service, SPREADSHEET_ID, sheetName);
 
         String range = sheetName + "!A1";
         ValueRange body = new ValueRange().setValues(values);
@@ -133,6 +161,37 @@ public class GoogleSheetsCreateAndUploadExample {
                 .setValueInputOption("RAW")
                 .execute();
         System.out.println("Data uploaded to sheet '" + sheetName + "' successfully.");
+    }
+
+    private static void moveSheetToFirstPosition(Sheets service, String spreadsheetId, String sheetName) throws IOException {
+        // 获取工作表 ID
+        Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).execute();
+        List<Sheet> sheets = spreadsheet.getSheets();
+        Integer sheetId = null;
+        for (Sheet sheet : sheets) {
+            if (sheet.getProperties().getTitle().equals(sheetName)) {
+                sheetId = sheet.getProperties().getSheetId();
+                break;
+            }
+        }
+
+        if (sheetId == null) {
+            System.out.println("Sheet '" + sheetName + "' not found.");
+            return;
+        }
+
+        // 创建 UpdateSheetPropertiesRequest
+        UpdateSheetPropertiesRequest updateRequest = new UpdateSheetPropertiesRequest()
+                .setProperties(new SheetProperties().setSheetId(sheetId).setIndex(0))
+                .setFields("index");
+
+        // 创建 BatchUpdateSpreadsheetRequest
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(Collections.singletonList(new Request().setUpdateSheetProperties(updateRequest)));
+
+        // 发送请求
+        service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
+        System.out.println("Sheet '" + sheetName + "' moved to the first position.");
     }
 
     private static void uploadDataToSheet_demo(Sheets service, String spreadsheetId, String sheetName) throws IOException {
@@ -225,4 +284,6 @@ public class GoogleSheetsCreateAndUploadExample {
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
+
+
 }

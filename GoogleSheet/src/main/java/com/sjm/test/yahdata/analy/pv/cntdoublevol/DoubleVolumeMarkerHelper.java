@@ -33,31 +33,32 @@ public class DoubleVolumeMarkerHelper {
 	}
 	
 	public List<DoubleVolMarker> findDoubleVolDateList(List<StockBean> stockList) {
-		List<DoubleVolMarker> dvmkrList = new ArrayList<DoubleVolMarker>();		
+		List<DoubleVolMarker> dvmkrList = new ArrayList<DoubleVolMarker>();
+		int numOfDays = 20;
+
 		int size = stockList.size();		
-		if(size<10)
+		if(size<numOfDays)
 			return dvmkrList;
 		
 		DoubleVolMarker last = null;
-		int startIdx = size>NUM_OF_TXN_DATA?size -NUM_OF_TXN_DATA:10;
+		int startIdx = size>NUM_OF_TXN_DATA?size -NUM_OF_TXN_DATA:numOfDays;
 		
 //		List<StockBean> subList = stockList.subList(startIdx, size);
 		int stockListSize = stockList.size();
 		for(int i=startIdx; i<stockListSize; i++) {
-			StockBean prev = stockList.get(i-1);
+			StockBean prev = stockList.get(i - 1);
 			StockBean now = stockList.get(i);
-			
+
 			StockBean next = null;
-			if(i < stockListSize-1)
-				next = stockList.get(i+1);
-			else
-				next =null;
-			
+		 	if (i < stockListSize - 1){
+				next = stockList.get(i + 1);
+			}
+
 			DoubleVolMarker dvm = this.markDoubleVol(prev, now, next, i);
 			if(dvm ==null)
 				continue;
 						
-			int subListStartIdx = i-10;
+			int subListStartIdx = i - numOfDays;
 			if(subListStartIdx<0)
 				subListStartIdx = 0;
 			
@@ -66,19 +67,17 @@ public class DoubleVolumeMarkerHelper {
 //			double avgVol = subList.stream().mapToDouble(StockBean::getVolume).average().orElse(Double.NaN);
 
 			
-			double avgDaysVol = getVolumeMA(subList, 10);
+			double avgDaysVol = getVolumeMA(subList, numOfDays );
 			double ratioOfAvg = (double)dvm.getNow().getVolume() / avgDaysVol;
-			boolean doubleAvg = ratioOfAvg > 1.3;
+			boolean doubleAvg = ratioOfAvg > 1.8;
 			
-			if(dvmkrList.size()>0 && doubleAvg){
+			if(!dvmkrList.isEmpty() && doubleAvg){
 //				last = dvmkrList.stream().reduce((one, two) -> two).get();
-				last = dvmkrList.isEmpty()?null:dvmkrList.stream().reduce((one, two) -> two).get();
-				if(last ==null)
-					continue;
+				last = dvmkrList.stream().reduce((one, two) -> two).get();
+
+                int dayDiff = dvm.getListIndex() - last.getListIndex();
 				
-				int dayDiff = dvm.getListIndex() - last.getListIndex();
-				
-				if(dayDiff >= MIN_DAYDIFF && doubleAvg) {
+				if(dayDiff >= MIN_DAYDIFF) {
 					dvmkrList.add(dvm);
 				}
 			}else if(doubleAvg){
@@ -92,11 +91,11 @@ public class DoubleVolumeMarkerHelper {
 			return dvmkrList;
 		
 		// Sort the list in descending order based on DoubleVolMarker.now.orderNumber
-        
+
         List<DoubleVolMarker> descList = dvmkrList.parallelStream()
         .sorted((marker1, marker2) -> Integer.compare(marker2.getNow().getTxnDateInt(), marker1.getNow().getTxnDateInt()))
         .collect(Collectors.toList());
-        
+
         return descList;
 	}
 	

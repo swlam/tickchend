@@ -63,11 +63,44 @@ public BaseStockBean() {
 	public String toString() {
 		return this.getStockCode()+" "+this.getTxnDate()+" C:"+ this.getC();
 	}
-	
-//	public String toString() {
-////		return this.getStockCode()+" "+this.getTxnDate()+" O:"+ this.getO() +" C:"+ this.getC();
-//		return this.getStockCode() + " " + this.getTxnDate() + " O:" + this.getO() + " C:" + this.getC() + " H:"
-//				+ this.getH() + " L:" + this.getL()+ " riseToday:" + this.isRiseToday();
-//	}
+
+
+
+	/*
+	使用 stream().distinct().toList() 方法对 topCandidates 列表进行去重操作。
+	distinct() 方法内部会使用 equals 和 hashCode 方法来判断两个对象是否相等。
+	如果两个对象的 hashCode 值相同，才会调用 equals 方法进行进一步的比较。
+	如果 equals 方法返回 true，则认为这两个对象是相同的，其中一个会被去重。
+	*/
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+		BaseStockBean that = (BaseStockBean) obj;
+		return Double.compare(this.o, that.o) == 0 &&
+				Double.compare(this.h, that.h) == 0 &&
+				Double.compare(this.l, that.l) == 0 &&
+				Double.compare(this.c, that.c) == 0 &&
+				Double.compare(this.volume, that.volume) == 0 &&
+				txnDate.equals(that.txnDate);
+	}
+
+
+	/*
+	如果 stockCode 不为 null，则使用 stockCode 的 hashCode 方法生成哈希码。
+	如果 stockCode 为 null，则返回 0。
+	txnDate 的哈希码：
+	使用 31 作为乘数，这是一个常见的做法，可以减少哈希冲突。
+	如果 txnDate 不为 null，则使用 txnDate 的 hashCode 方法生成哈希码。
+	如果 txnDate 为 null，则返回 0。
+	组合哈希码：
+	将 stockCode 和 txnDate 的哈希码组合起来，生成最终的哈希码。
+	 */
+	@Override
+	public int hashCode() {
+		int result = stockCode != null ? stockCode.hashCode() : 0;
+		result = 31 * result + (txnDate != null ? txnDate.hashCode() : 0);
+		return result;
+	}
 
 }

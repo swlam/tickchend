@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.maas.util.DateHelper;
+import com.maas.util.GeneralHelper;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.conts.Const;
 import com.sjm.test.yahdata.analy.conts.ta.StockTrendStatus;
@@ -109,8 +110,8 @@ public class PriceTopBotWavePointHandler {
 		ws.setSortedBotList(sortedBotList);
 
 		String waveShape = wavePointResultHelper.findShape(stockList, sortedTopBotList, sortedTopList, sortedBotList);
-		String waveSituation = this.findSituation(stockList, sortedTopList, sortedBotList);
-		waveShape = (waveShape==null)?"":waveShape;
+		String waveSituation = this.findSituation(stockList, sortedTopBotList, sortedTopList, sortedBotList);
+		waveShape = (waveShape==null)?Const.EMPTY:waveShape;
 		ws.setShapeResult(waveShape);
 		ws.setWaveSituation(waveSituation);
 //		PriceVolResult volPriceDivergenceResult = this.calcPriceVolumeChanges(stockList, sortedTopBotList);
@@ -118,52 +119,43 @@ public class PriceTopBotWavePointHandler {
 		return ws;
 	}
 
-	public String findSituation(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
-		if(sortedTopList.isEmpty() || sortedBotList.isEmpty()){
+
+	public String findSituation(List<StockBean> stockList, List<WavePoint> sortedTopBotList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
+		if(sortedTopBotList.isEmpty() || sortedTopList.isEmpty() || sortedBotList.isEmpty()){
 			return "BOT/TOP EMPTY";
 		}
 		StockBean last1StockBean = stockList.get(stockList.size()-1);
 		StockBean last2StockBean = stockList.get(stockList.size()-2);
 
-		WavePoint last1Top = sortedTopList.get(sortedTopList.size()-1);
-		WavePoint last1Bot = sortedBotList.get(sortedBotList.size()-1);
+		WavePoint last1TopBot = sortedTopBotList.getLast();
 
-//		int dayBetweenFromFirstTop = DateHelper.dayBetween(sortedTopList.get(0).getDate(), last1StockBean.getTxnDate());
-		long countStandTop = sortedTopList.stream()
-				.filter(wp -> last1StockBean.getBodyTop() >=wp.getH()
-						&& last1StockBean.getC() > last1StockBean.getO()
-						&& last1StockBean.getBodyTop() > last1Top.getStockBean().getBodyTop()
-				)
-				.count();
-		int totalTop = sortedTopList.size();
-		if(countStandTop > 0){
-			return "在浪頂上 ("+countStandTop+"/"+totalTop+"個)";//"在"+countStandTop+"個浪頂上";
+		if(WaveType.TOP.equals(last1TopBot.getType())){
+			if(last1StockBean.getH() > last1TopBot.getH() &&
+					last1StockBean.getBodyTop() > last1TopBot.getStockBean().getBodyTop() &&
+					last1StockBean.getL() >= last1TopBot.getStockBean().getBodyBottom() ){
+				double dif = (last1StockBean.getC() - last1TopBot.getH()) / last1TopBot.getH();
+				return "在前頂上 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+			}
+					;
+		}else if(WaveType.BOT.equals(last1TopBot.getType())){
+			if(last1StockBean.getL() < last1TopBot.getL() &&
+					last1StockBean.getBodyBottom() < last1TopBot.getStockBean().getBodyBottom() &&
+					last1StockBean.getH() <= last1TopBot.getStockBean().getBodyTop() ){
+				double dif = (last1StockBean.getC() - last1TopBot.getL()) / last1TopBot.getL();
+				return "在前底下 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+			}
 		}
 
-//		int dayBetweenFromFirstBot = DateHelper.dayBetween(sortedBotList.get(0).getDate(), last1StockBean.getTxnDate());
-
-		int totalBot = sortedBotList.size();
-		long countUnderBottom = sortedBotList.stream()
-				.filter(wp -> last1StockBean.getBodyBottom() <= wp.getL()
-						&& last1StockBean.getC() < last1StockBean.getO()
-						&& last1StockBean.getBodyBottom() <= last1Bot.getStockBean().getBodyBottom()
-				)
-				.count();
-		if(countUnderBottom > 0){
-			return "在浪底下 ("+countUnderBottom+"/"+totalBot+"個)";//"在"+countUnderBottom+"個浪底下";
-		}
-
-
-		WavePoint lastTop = sortedTopList.get(sortedTopList.size()-1);
-		WavePoint lastBot = sortedBotList.get(sortedBotList.size()-1);
+		WavePoint lastTop = sortedTopList.getLast();
+		WavePoint lastBot = sortedBotList.getLast();
 
 		boolean isSameTopBotLevel = (lastTop.getStockBean().getBodyBottom() <lastBot.getH() || lastBot.getStockBean().getBodyTop() >lastTop.getL());
 
 		boolean isRebounding = (last1StockBean.getC() > last1StockBean.getO() && last1StockBean.getDayChgPct() > 0)
-								&& last1StockBean.getC() > lastBot.getStockBean().getBodyTop()
-								&& last1StockBean.getH() < lastTop.getStockBean().getBodyTop()
-								&& last1StockBean.getBodyTop() > last2StockBean.getBodyTop()
-								;
+				&& last1StockBean.getC() > lastBot.getStockBean().getBodyTop()
+				&& last1StockBean.getH() < lastTop.getStockBean().getBodyTop()
+				&& last1StockBean.getBodyTop() > last2StockBean.getBodyTop()
+				;
 
 		boolean isAdjusting = (last1StockBean.getC() < last1StockBean.getO() && last1StockBean.getDayChgPct() < 0)
 				&& last1StockBean.getC() < lastTop.getStockBean().getBodyBottom()
@@ -190,8 +182,9 @@ public class PriceTopBotWavePointHandler {
 			}
 		}
 
-		return "";
+		return Const.EMPTY;
 	}
+
 
 
 	public static List<WavePoint> filterAlternatingWavePoints(List<WavePoint> wavePoints) {

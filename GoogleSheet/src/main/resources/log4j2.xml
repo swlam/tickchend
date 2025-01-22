@@ -3,17 +3,24 @@
     <Appenders>
         <File name="LogToFile" fileName="logs/app.log">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
         </File>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </Console>
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="com.mkyong" level="debug" additivity="false">
+        <Logger name="com.sjm.test" level="debug" additivity="false">
             <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Root level="error">
             <AppenderRef ref="LogToFile"/>
+            <AppenderRef ref="Console"/>
         </Root>
     </Loggers>
 </Configuration>

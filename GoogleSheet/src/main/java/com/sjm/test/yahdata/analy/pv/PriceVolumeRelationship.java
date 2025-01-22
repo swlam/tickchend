@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.maas.util.GeneralHelper;
 import com.sjm.test.yahdata.analy.bean.PvrStockBean;
@@ -109,39 +110,42 @@ public class PriceVolumeRelationship {
 		}
 				
 		
-		//////////////////////////////find how many double volumne + is UP candle
+		//////////////////////////////find how many double volume + is UP candle
 		List<DoubleVolMarker> dvMkrListNonFinish = doubleVolHelper.findDoubleVolDateList(stockList);
 		
 		List<DoubleVolMarker> dvMkrList = this.filterInvalidHighVol(dvMkrListNonFinish, stockList);
-		
-		Set<String> maTagSet = new LinkedHashSet<String>();
-		StringBuffer doubleVolMsg = new StringBuffer();
-		for (DoubleVolMarker elem : dvMkrList) {
-			
-			maTagSet.clear();
-			if(elem.getNow().getPriceSma()==null) {
-				continue;
-			}
-			
-			doubleVolMsg.append(elem.getNow().getTxnDate());
-			
-			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa20())
-				maTagSet.add("20");
-			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa50())
-				maTagSet.add("50");
-			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa100())
-				maTagSet.add("100");
-			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa200() || elem.getNow().getC() >= elem.getNow().getPriceSma().getMa250()  )
-				maTagSet.add("200");
-			
-			if(maTagSet.isEmpty()==false) {
-				
-				doubleVolMsg.append(" ["+maTagSet.size()+"]");
-			}
-			doubleVolMsg.append(", ");
-		}
+		;
+//		Set<String> maTagSet = new LinkedHashSet<String>();
+//		StringBuffer doubleVolMsg = new StringBuffer();
+//		for (DoubleVolMarker elem : dvMkrList) {
+//
+//			maTagSet.clear();
+//			if(elem.getNow().getPriceSma()==null) {
+//				continue;
+//			}
+//
+//			doubleVolMsg.append(elem.getNow().getTxnDate());
+//
+//			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa20())
+//				maTagSet.add("20");
+//			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa50())
+//				maTagSet.add("50");
+//			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa100())
+//				maTagSet.add("100");
+//			if(elem.getNow().getC() >= elem.getNow().getPriceSma().getMa200() || elem.getNow().getC() >= elem.getNow().getPriceSma().getMa250()  )
+//				maTagSet.add("200");
+//
+//			if(maTagSet.isEmpty()==false) {
+//
+//				doubleVolMsg.append(" ["+maTagSet.size()+"]");
+//			}
+//			doubleVolMsg.append(", ");
+//		}
 		rtn.setNumOfDoubleVolumeDate(dvMkrList.size()+"");
-		rtn.setDoubleVolumeDateMsg(doubleVolMsg.toString());
+		rtn.setDoubleVolumeDateMsg(dvMkrList.stream()
+				.map(DoubleVolMarker::getNow)
+				.map(StockBean::getTxnDate)
+				.toList().toString());
 		
 		// find how much shrinkage volume 縮量
 		List<ShrinkageVolMarker> dvShrinkageMkrList = doubleVolHelper.findShrinkageVolDateList(stockList);

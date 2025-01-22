@@ -25,7 +25,7 @@ public class BollingerBandApi {
 			}
 		}
 		
-		if(isFoundUBbb==false)
+		if(!isFoundUBbb)
 			return "";
 		return sb.getTxnDate();
 	}
@@ -50,15 +50,15 @@ public class BollingerBandApi {
 		
 		//up break
 		double upBreakPct = (stock.getBodyTop() - bbUpper) / bbUpper;
-		if( upBreakPct > 0.001 && upBreakPct < 0.02 && KHelper.isBearishCandle(stock)) 
+		if( upBreakPct >= 0.0 && upBreakPct < 0.02 && KHelper.isBullishCandle(stock))
 		{
 			condition2 = true;
 		}
 		
 		double hUpBreakPct = (stock.getH() - bbUpper) / bbUpper;
-		if( hUpBreakPct > 0.003 
+		if( hUpBreakPct > 0.0
 			&& bbUpper >= stock.getBodyTop() && bbMiddle < stock.getBodyBottom()
-			&& KHelper.isBearishCandle(stock)) 
+			&& KHelper.isBullishCandle(stock))
 		{
 			condition3 = true;
 		}

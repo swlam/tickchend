@@ -194,12 +194,15 @@ public class InstantPerformanceResult {
 //	private String yearHighAchievedThisMonth;
 	private String movingAvgLongArrangementWithinTheMonth;
 	private String triplePregnancyInPassFewDays;
+	private String percentageDifferenceFromHighestPrice;
 //	private String upDownBreakThreeWavePointToday;
 	private String largeVolumeWithinTheMonth;
 	private String movingAverageLongSideSupport;
 	private String bbUpBreakForATime;
-	private String bigDarkBodyWithMoreVol;
-	
+	private String bigDarkBodyWithMoreVolAndBreakUp;
+	private String bigWhiteBodyWithMoreVolAndBreakDown;
+	private String highVolumeAndBreakUp;
+	private String highVolumeAndBreakDown;
 	private String concentratedVolumePriceRange;
 	private String closestVolumePriceRange;
 	

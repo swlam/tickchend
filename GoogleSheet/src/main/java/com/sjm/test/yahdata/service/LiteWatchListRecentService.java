@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sjm.test.yahdata.analy.report.DailySummaryReportDeepSeek;
 import com.skpk.GoogleSheetsCreateAndUploadExample;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,6 @@ import com.sjm.test.yahdata.analy.cfg.USStockListConfig;
 import com.sjm.test.yahdata.analy.conts.Const;
 import com.sjm.test.yahdata.analy.helper.CFGHelper;
 import com.sjm.test.yahdata.analy.helper.StreamTransformHelper;
-import com.sjm.test.yahdata.analy.instantresult.StockPickTagger;
 import com.sjm.test.yahdata.analy.model.InstantPerformanceResult;
 import com.sjm.test.yahdata.analy.model.StatisticsResult;
 import com.sjm.test.yahdata.analy.module.benchmarks.BenchmarksPrograms;
@@ -36,11 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LiteWatchListRecentService extends BaseApp{
 	
-	public static final String START_DATE = "2010-01-01";
-	public static String END_DATE = "2028-12-03";
+	public static final String START_DATE = "1990-01-01";
+	public static String END_DATE = "2028-11-06";
 	
 	private static boolean isRunSummaryStat = false;
-	
+
+/*	private static boolean IS_UPLOAD_TO_GOOGLE_SHEETS = true;*/
+
 	private static int NO_OF_DAYS_PROCESS = 1;
 
 	public static String ICONIC_CODE = "";
@@ -66,10 +68,10 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 		if(Const.MARKET_US.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL =   USStockListConfig.ALL;
-			CODE_POOL =   USStockListConfig.MAIN;
+//			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("DIS","BAC","F","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("VLO","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -78,7 +80,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
 			CODE_POOL =   HKStockListConfig.ALL;
 //			CODE_POOL =   HKStockListConfig.ETF;
-//			CODE_POOL = Arrays.asList("9988.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("2015.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "2800.HK";  
 			BASE_STOCK_B = "2822.HK";
@@ -87,7 +89,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_CN.equalsIgnoreCase(COUNTRY_MARKET)){
 			CODE_POOL = CNStockListConfig.ALL_AVAILABLE;
 			
-//			CODE_POOL = Arrays.asList("300750.SZ","000001.SS","000300.SS","399001.SZ", "399006.SZ");
+			/*CODE_POOL = Arrays.asList("000001.SZ","000001.SS","000300.SS","399001.SZ", "399006.SZ");*/
 			ICONIC_CODE = "000001.SS";  
 			BASE_STOCK_B = "399001.SZ";
 			BASE_STOCK_C = "000300.SS";
@@ -134,8 +136,8 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 				
 				instantPerformanceResultList = bchkProgram.doBenchmarks(CODE_POOL, stockPeriodList, DEFAULT_INTERVAL, endDateInt);
-				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
-				statisticsResultList.add(statResult);
+//				StatisticsResult statResult = this.doStatisticsResultProcess(instantPerformanceResultList);
+//				statisticsResultList.add(statResult);
 			}
 		}else {
 			spyStockList.clear();
@@ -158,14 +160,14 @@ public class LiteWatchListRecentService extends BaseApp{
 			if(!statisticsResultList.isEmpty())
 				DailySummaryReport.exportStat(statisticsResultList);
 
-		DailySummaryReport.printSimpleStatisticsResult(results, COUNTRY_MARKET, ICONIC_CODE);
+		DailySummaryReportDeepSeek.printSimpleStatisticsResult(results, COUNTRY_MARKET, ICONIC_CODE);
 		//export the stock pick result 
 //		exportStockPickResult(instantPerformanceResultList);
 		System.out.println();
 	}
 	
 
-	
+	@Deprecated
 	public static StatisticsResult doStatisticsResultProcess(List<InstantPerformanceResult> performanceResultList) {
 		List<InstantPerformanceResult> targetResultList = performanceResultList.stream()
 			.filter(x-> x.getEstTradeAmount() >1.0 && x.getSector() !=null	&& !(x.getSector().contains("ETF")|| x.getSector().contains("指數") || x.getSector().contains("貨幣") || x.getSector().contains("Crypto") || x.getSector().contains("債券"))
@@ -353,22 +355,24 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\t小浪型\t小浪型state");
 		msg.append("\t強弱(-1D)\t今天強弱");
-		msg.append("\tK线Status(D-1)\tK线(Status)\tK线(Desc)");
+		msg.append("\tK线Status(D-1)\tK线(Status)");
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
-		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tPrice Status\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
-		msg.append("\t近日上破BB\t月內變多頭排列\t近日出收集三胞胎形態\t近日大陰/大量陰日子\t昨今日平均線有支持/阻力");
-				
+		msg.append("\t近日上破BB\t月內變多頭排列\t與50D最高價的差異\t近日出收集三胞胎形態");
+		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t月內上破大量的日子\t月內下破大量的日子\t昨今日平均線有支持/阻力");
+		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
-		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
-		msg.append("\t近期GAP Type\t裂口大小%\t裂口Vol Pct\tGAP Type日期");
+
+		msg.append("\t近期GAP Type\t裂口大小%\tGAP Type日期");
 		msg.append("\t近期島型\t島型日期\t島型日數");
-		msg.append("\t倍量數\t倍量日子[MA數]");
-		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
+		msg.append("\t倍量數\t倍量日");
+//		msg.append("\t1D-Vol\t5D-Vol\t50D-Vol\t5X50D-Vol(UP)");
 		msg.append("\t大於5D\t大於10D\t大於20D\t大於50D\t大於100D\t大於200D");		
 		msg.append("\tMA-CrossUP");
 		
@@ -385,6 +389,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("\tIndustry");
 		msg.append("\t業績公佈日");
 //		msg.append("\t最近看好pattern\t最近看淡pattern");
+		msg.append("\tMTD(O2C)%\tMTD(O2PH)%\tMTD(O2PL)%\tMTD 波幅");
 		msg.append("\tYTD %\tQ1 %\tQ2 %\tQ3 %\tQ4 %");
 		msg.append("\tMktCap.(B)\tPE\t所屬ETF");
 		
@@ -494,13 +499,13 @@ public class LiteWatchListRecentService extends BaseApp{
 
 				msg.append("\t"+ elemt.getPrev1DayCandleStatus());//K线Status(D-1)
 				msg.append("\t"+ elemt.getDailyCandleStatus()); 			//K线(Status)
-				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
+//				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
 
 
 //				msg.append("\t"+ elemt.getPrev1DayVolDescription());	//Volume(-1D)
 //				msg.append("\t"+ elemt.getDailyVolDescription());	//Volume
 				msg.append("\t"+ elemt.getRecentMonthDaysVolumeStatus());
-				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());
+
 				
 				//方向(小浪)  e.g. result : 升破前頂-堅-Day(1)
 //				String pnt = elemt.getWaveTopBottomStatus().getStockTrendStatus()==null?"":elemt.getWaveTopBottomStatus().getStockTrendStatus()+"-"+elemt.getWaveTopBottomStatus().getBreakDegree()+"-"+elemt.getWaveTopBottomStatus().getStockTrendRemark();
@@ -522,14 +527,20 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 //				msg.append("\t"+ elemt.getYearHighAchievedThisMonth());	//月內曾創新高
 				msg.append("\t"+ elemt.getBbUpBreakForATime());	//近日上破BB日期
-				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內曾變多頭排列日期
+				msg.append("\t"+ elemt.getMovingAvgLongArrangementWithinTheMonth());	//月內變多頭排列
+				msg.append("\t"+ elemt.getPercentageDifferenceFromHighestPrice());	//與50D最高價的差異
 				msg.append("\t"+ elemt.getTriplePregnancyInPassFewDays());	//近日出收集三胞胎形態日期
 //				msg.append("\t"+ elemt.getUpDownBreakThreeWavePointToday());	//今天攻破小頂底
 //				msg.append("\t"+ elemt.getLargeVolumeWithinTheMonth());	//
-				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVol());	//近日大陰/大量陰日子
+				msg.append("\t"+ elemt.getBigWhiteBodyWithMoreVolAndBreakDown());	//近日下破大陽/大陽量日子
+				msg.append("\t"+ elemt.getBigDarkBodyWithMoreVolAndBreakUp());	//近日上破大陰/大陰量日子
+				msg.append("\t"+ elemt.getHighVolumeAndBreakUp());	//月內上破大量的日子
+				msg.append("\t"+ elemt.getHighVolumeAndBreakDown());	//月內下破大量的日子
+
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
-				
+				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日Last穿頭破腳/破腳穿頭
+
 				msg.append("\t"+ GeneralHelper.to100(elemt.getRsi9()));	//RSI
 				msg.append("\t"+ (elemt.getRsiDiverence().getDivergenceType()==null?"":elemt.getRsiDiverence().getDivergenceType()));	//RSI DIVERENCE
 				
@@ -537,10 +548,7 @@ public class LiteWatchListRecentService extends BaseApp{
 				msg.append("\t"+ ((lastDate==null || lastDate.isEmpty())?Const.SPACE:elemt.getRsiDiverence().getDates()));//RSI DIVERGENCE DATES
 				msg.append("\t"+ elemt.getRsiDiverence().getRemark());	//RSI DIVERGENCE加劇
 				
-				msg.append("\t"+ (elemt.getMtdChangeO2CPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2CPct())));
-				msg.append("\t"+ (elemt.getMtdChangeO2PHPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2PHPct())));
-				msg.append("\t"+ (elemt.getMtdChangeO2PLPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2PLPct())));
-				msg.append("\t"+ (elemt.getMtdPctRange()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdPctRange())));
+
 				
 				msg.append("\t"+ elemt.getGapType());	//近期GAP Type\t裂口大小%\tGAP Type日期
 				
@@ -548,12 +556,13 @@ public class LiteWatchListRecentService extends BaseApp{
 				msg.append("\t"+ elemt.getIsland().getIslandDate());	//島型日期
 				msg.append("\t"+ elemt.getIsland().getNumOfTxnDates());	//島型日數
 				
-				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getNumOfDoubleVolumeDate()));
-				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getDoubleVolumeDateMsg()));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
-				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
-				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
+				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getNumOfDoubleVolumeDate())); //倍量數
+				msg.append("\t"+ (elemt.getPriceVolStockBean()==null?Const.SPACE:elemt.getPriceVolStockBean().getDoubleVolumeDateMsg())); //倍量日
+
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolume()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa5()/10000.0));
+//				msg.append("\t"+ GeneralHelper.to2DecimalPlaces((double)elemt.getCurrentStockBean().getVolumeSma().getMa50()/10000.0));
+//				msg.append("\t"+ (elemt.getVolumeMASituation().getMa5x50CrossUpDate()==null?"":elemt.getVolumeMASituation().getMa5x50CrossUpDate().getCrossDate()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv5D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv10D()));
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getAbv20D()));
@@ -565,31 +574,31 @@ public class LiteWatchListRecentService extends BaseApp{
 				BenchmarkBeanResult benchmarkResult10Y = CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, YEARS_DATA_10);
 				msg.append("\t" + ((benchmarkResult10Y==null)?"":benchmarkResult10Y.getNumOfYears()));
 				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getRisesRatioC2C()))); //月上升機率
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getPercentageRangeStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getPercentageRangeStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getPercentageRangeStat().getAvg())));
 	
 				//Avg (C2H) , Avg (C2L)
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getAvg())));
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getMedian())));
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getMin2nd())));//9成(C2-Period-H)
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getAvg())));
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getMedian())));
-				msg.append("\t" + ((benchmarkResult10Y==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getMin2nd())));//9成(C2-Period-L)
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getMedian())));
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2phStat().getMin2nd())));//9成(C2-Period-H)
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getMedian())));
+				msg.append("\t" + ((benchmarkResult10Y==null||benchmarkResult10Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult10Y.getC2plStat().getMin2nd())));//9成(C2-Period-L)
 				//"月低位日期\t月低位日數\t月低位日Prob.\t月高位日期\t月高位日數\t月高位日Prob"
-				msg.append("\t" + ((benchmarkResult10Y==null)?LowHighDateSimplifyResult.getEmptyData():CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, YEARS_DATA_10).getLowHighDateSimplifyResult().toPrintResult())); 
+				msg.append("\t" + ((benchmarkResult10Y==null)?LowHighDateSimplifyResult.getEmptyData():CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, YEARS_DATA_10).getLowHighDateSimplifyResult().toPrintResult()));
 				
 				
 				BenchmarkBeanResult benchmarkResult20Y = CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, YEARS_DATA_20);
 				msg.append("\t" + ((benchmarkResult20Y==null)?"":benchmarkResult20Y.getNumOfYears()));
 				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getRisesRatioC2C()))); //月上升機率
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getPercentageRangeStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getPercentageRangeStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getPercentageRangeStat().getAvg())));
 	
 				//Avg (C2H) , Avg (C2L)
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getAvg())));
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getMedian())));
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getMin2nd())));//9成(C2-Period-H)
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getAvg())));
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getMedian())));
-				msg.append("\t" + ((benchmarkResult20Y==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getMin2nd())));//9成(C2-Period-H)
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getMedian())));
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2phStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2phStat().getMin2nd())));//9成(C2-Period-H)
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getAvg())));
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getMedian())));
+				msg.append("\t" + ((benchmarkResult20Y==null||benchmarkResult20Y.getC2plStat()==null)?"":GeneralHelper.toPct(benchmarkResult20Y.getC2plStat().getMin2nd())));//9成(C2-Period-H)
 				//"月低位日期\t月低位日數\t月低位日Prob.\t月高位日期\t月高位日數\t月高位日Prob"
 				msg.append("\t" + ((benchmarkResult20Y==null)?LowHighDateSimplifyResult.getEmptyData():CFGHelper.getMonthBenchmark(elemt.getCurrentStockBean().getStockCode(), targetMonth, YEARS_DATA_20).getLowHighDateSimplifyResult().toPrintResult())); 
 				
@@ -605,7 +614,12 @@ public class LiteWatchListRecentService extends BaseApp{
 				
 //				msg.append("\t"+ (elemt.getBullishPattern()==null?Const.SPACE:elemt.getBullishPattern().toString()));
 //				msg.append("\t"+ (elemt.getBearishPattern()==null?Const.SPACE:elemt.getBearishPattern().toString()));
-				
+
+				msg.append("\t"+ (elemt.getMtdChangeO2CPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2CPct())));
+				msg.append("\t"+ (elemt.getMtdChangeO2PHPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2PHPct())));
+				msg.append("\t"+ (elemt.getMtdChangeO2PLPct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdChangeO2PLPct())));
+				msg.append("\t"+ (elemt.getMtdPctRange()==null?Const.SPACE:GeneralHelper.toPct(elemt.getMtdPctRange())));
+
 				msg.append("\t"+ (elemt.getYtd()==null?Const.NA:GeneralHelper.toPct(elemt.getYtd())));
 				msg.append("\t"+ (elemt.getQ1()==null?Const.NA:GeneralHelper.toPct(elemt.getQ1())));
 				msg.append("\t"+ (elemt.getQ2()==null?Const.NA:GeneralHelper.toPct(elemt.getQ2())));
@@ -618,20 +632,24 @@ public class LiteWatchListRecentService extends BaseApp{
 				message = msg.toString();
 				String[] datalines = message.split("\t");
 				values.add(Arrays.asList(datalines));
-
+				System.out.println(msg);
 				msg.setLength(0);
 			}catch(Exception e) {
 				log.error("Error on "+elemt.getCurrentStockBean(), e);
 			}
-			System.out.println("\n"+msg);
+//			System.out.println("\n"+msg);
 		}
 		System.out.println("\n"+msg);
-        try {
-			String sheetName = Const.IS_INTRADAY?"ONDAY_"+market:"AUTO_"+market;
-            GoogleSheetsCreateAndUploadExample.upload("AUTO_"+market, values);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+		if(GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS) {
+			try {
+				String sheetName = Const.IS_INTRADAY ? "ONDAY_" + market + interval : "AUTO_" + market + interval;
+				GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
+			} catch (Exception e) {
+				log.error("Error on upload to google sheets", e);
+				throw new RuntimeException(e);
+			}
+		}
     }
 	
 

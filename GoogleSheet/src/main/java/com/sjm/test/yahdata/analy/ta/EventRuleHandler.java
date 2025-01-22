@@ -241,23 +241,7 @@ public class EventRuleHandler {
 //		ruleBaseSet.add(new LongBoomRule()); //too many
 	}
 	
-	/*
-	public Set<CandleTagEnum> fireRules(List<StockBean> prevList, StockBean curr) {
-		
-		Set<CandleTagEnum> signSet = new HashSet<CandleTagEnum>();
-				
-		for (VolRuleBase volRuleBase : ruleBaseSet) {
-			boolean b = volRuleBase.detect(prevList, curr);
-			
-			if(b) {
-				signSet.add(volRuleBase.getCandleTag());				
-			}
-		}
-		
-		return signSet;
-		
-	}
-	*/
+
 	private VolumePriceBean fireRules(List<StockBean> prevList, StockBean curr, int stockListIdx, List<CandleEventTagEnum> candlePatternArray) {
 		if(prevList.size() < 10)
 			return null;
@@ -268,8 +252,8 @@ public class EventRuleHandler {
 		for (VolRuleBase volRuleBase : ruleBaseSet) {
 			
 			if(candlePatternArray!=null &&
-					(candlePatternArray.contains(volRuleBase.getBenchmarkCandleTag())==false
-					&& candlePatternArray.contains(volRuleBase.getOccurCandleTag())==false )
+					(!candlePatternArray.contains(volRuleBase.getBenchmarkCandleTag())
+					&& !candlePatternArray.contains(volRuleBase.getOccurCandleTag()))
 					) {
 				continue;
 			}
@@ -292,6 +276,7 @@ public class EventRuleHandler {
 			return null;
 		
 		VolumePriceBean tmp = new VolumePriceBean(curr.getStockCode());
+		tmp.setTxnDate(curr.getTxnDate());
 		tmp.setSignSet(signSet);
 		tmp.setChainIdx(stockListIdx);
 		tmp.setBenchmarkEvent(isBenchmarkEvent);

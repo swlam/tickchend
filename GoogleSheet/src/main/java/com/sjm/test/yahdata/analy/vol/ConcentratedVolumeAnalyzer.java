@@ -144,7 +144,7 @@ public class ConcentratedVolumeAnalyzer {
     
     
     public List<String> findTop3ConcentratedVolumePriceRanges(List<StockBean> stockDataList, int numDays) {
-        // 以价格区间为键，累计交易量为值，构建一个价格区间到交易量的映射
+
         Map<String, Double> volumeByPriceRange = new HashMap<>();
      // 根据指定的天数计算开始日期
         int startIndex = Math.max(stockDataList.size() - numDays, 0);
