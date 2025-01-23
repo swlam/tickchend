@@ -24,8 +24,8 @@ public class WeeklyAndMonthlyStockGeneratorApp extends BaseApp{
         
 
 		CODE_POOL = USStockListConfig.ALL;
-		CODE_POOL = HKStockListConfig.ALL;
-		CODE_POOL = CNStockListConfig.ALL_AVAILABLE;
+//		CODE_POOL = HKStockListConfig.ALL;
+//		CODE_POOL = CNStockListConfig.ALL_AVAILABLE;
 
         WeeklyAndMonthlyStockGeneratorApp app = new WeeklyAndMonthlyStockGeneratorApp();
         List<StockBean> fullTrunkList = loadStockData(CODE_POOL, Const.INTERVAL_D);

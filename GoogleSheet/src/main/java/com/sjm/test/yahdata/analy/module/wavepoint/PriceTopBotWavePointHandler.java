@@ -18,15 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PriceTopBotWavePointHandler {
 	public static int NO_OF_DAYS = 60;
-	
-//	public static int WAVE_CHECK_START_POSITION = 5;
-//	public static int WAVE_CHECK_END_POSITION = 10;	
-	public static int WAVE_CHECK_PERIOD_DAYS = 10;
-	
-//	public static int WAVE_CHECK_START_POSITION = 3;
-//	public static int WAVE_CHECK_END_POSITION = 7;	
-//	public static int WAVE_CHECK_DAYS_PERIOD = 10;
-	
+
 	private WavePatternAnalyticalResultHelper wavePointResultHelper = null;
 	
 	public PriceTopBotWavePointHandler() {
@@ -36,7 +28,7 @@ public class PriceTopBotWavePointHandler {
 	//Default to get 100 records to analysis
 	public WaveShape doTopBot(List<StockBean> stockList) {
 			
-		return this.doTopBot( WAVE_CHECK_PERIOD_DAYS, stockList);
+		return this.doTopBot( Const.WAVE_CHECK_PERIOD_DAYS, stockList);
 	}
 	
 	public WaveShape doTopBot(int periodDays, List<StockBean> stockList) {

@@ -80,7 +80,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
 			CODE_POOL =   HKStockListConfig.ALL;
 //			CODE_POOL =   HKStockListConfig.ETF;
-			CODE_POOL = Arrays.asList("2015.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("2015.HK","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "2800.HK";  
 			BASE_STOCK_B = "2822.HK";
