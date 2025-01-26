@@ -66,8 +66,9 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 
 		boolean bMa = true;
 		//require true
-		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() && last1.getH() <= wpTopLast1.getH()
-				&& last2.getH() < wpTopLast1.getH() && last1.isRiseToday();
+		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() &&
+				last1.getC() < wpTopLast1.getStockBean().getBodyTop() &&
+				last2.getH() < wpTopLast1.getH() && last1.isRiseToday();
 
 		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 		
