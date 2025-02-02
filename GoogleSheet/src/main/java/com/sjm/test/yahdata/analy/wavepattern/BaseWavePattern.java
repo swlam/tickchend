@@ -112,5 +112,23 @@ public abstract class BaseWavePattern {
 	}
 
 
+	public int findMaxPosition(List<WavePoint> numbers) {
+		if (numbers == null || numbers.isEmpty()) {
+			throw new IllegalArgumentException("列表不能为空");
+		}
+
+		int maxIndex = 0;
+		WavePoint maxValue = numbers.get(0);
+
+		for (int i = 1; i < numbers.size(); i++) {
+			if (numbers.get(i).getH() > maxValue.getH()) {
+				maxValue = numbers.get(i);
+				maxIndex = i;
+			}
+		}
+
+		return maxIndex;
+	}
+
 
 }

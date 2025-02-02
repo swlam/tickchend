@@ -71,7 +71,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("AVGO","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("MDB","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -353,14 +353,14 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("CODE ("+interval+")\t數據時間\tName\tSector\t所屬ETF\tDATE\t現價\tD%\t3D(o2c)%\t5D(o2c)%\tVol(-1D)%\tVol%\tEst.金額(B)");
 		msg.append("\tB-type\tS-type\tFLAT-type");
 
-		msg.append("\t小浪型\t小浪型state");
+		msg.append("\t小浪型\t小浪型state\tPrice Status");
 		msg.append("\t強弱(-1D)\t今天強弱");
 		msg.append("\tK线Status(D-1)\tK线(Status)");
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
 
-		msg.append("\tPrice Status\tVolume Status");
+		msg.append("\tVolume Status");
 		//msg.append("\t價量狀態\t價量狀態開始日期");
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
 		msg.append("\t近日上破BB\t月內變多頭排列\t與50D最高價的差異\t近日出收集三胞胎形態");
@@ -493,7 +493,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 				msg.append("\t"+ (elemt.getWaveShape()==null?"":elemt.getWaveShape().getShapeResult()));//小浪型
 				msg.append("\t"+ (elemt.getWaveShape()==null?"":elemt.getWaveShape().getWaveSituation()));//小浪型state
-
+				msg.append("\t"+ elemt.getPriceStatus());					//Price Status
 				msg.append("\t"+ elemt.getStrongWeakTypePrevDay().getType());	//昨天強弱
 				msg.append("\t"+ elemt.getStrongWeakTypeToday().getType());	//今天強弱
 
@@ -515,7 +515,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		
 //				msg.append("\t"+ (elemt.getWaveTopBottomStatus()==null?" \t \t \t":elemt.getWaveTopBottomStatus().getColumnData()));
 				
-				msg.append("\t"+ elemt.getPriceStatus());					//Price Status
+
 				msg.append("\t"+ elemt.getVolumeStatus());	//Volume Status
 	//			msg.append("\t"+ (elemt.getWaveTopBottomStatus()==null?"":elemt.getWaveTopBottomStatus().getShape()));)
 //				msg.append("\t"+ (elemt.getPvDiverence()==null?Const.SPACE:(elemt.getPvDiverence().getDivergenceType())));	//價量狀態

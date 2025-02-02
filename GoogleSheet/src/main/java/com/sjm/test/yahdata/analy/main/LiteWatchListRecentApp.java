@@ -14,7 +14,7 @@ public class LiteWatchListRecentApp extends BaseApp{
 	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
 
 	public static String targetMonth = "-01-";
-	public static String END_DATE = "2028-12-27";
+	public static String END_DATE = "2028-01-27";
 
 
 	public static String COUNTRY_MARKET = "US";//defaul.t
@@ -26,8 +26,8 @@ public class LiteWatchListRecentApp extends BaseApp{
 //		GlobalConfig.setYearOfStockData(YEARS);
 
 		COUNTRY_MARKET = "US";
-		COUNTRY_MARKET = "CN";
-		COUNTRY_MARKET = "HK";
+//		COUNTRY_MARKET = "CN";
+//		COUNTRY_MARKET = "HK";
 //		Const.IS_INTRADAY = true;
 
 

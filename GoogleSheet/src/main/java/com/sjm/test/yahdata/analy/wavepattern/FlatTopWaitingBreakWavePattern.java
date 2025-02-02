@@ -72,7 +72,7 @@ public class FlatTopWaitingBreakWavePattern extends BaseWavePattern{
 
         if (b2 && bEnterLastTopKBody) {
             if (b1) {
-                addPatternAttribute(attributes, isPattern3BottomValid, isPatternMValid, Const.UP + Const.WAIT);
+                addPatternAttribute(attributes, isPattern3BottomValid, isPatternMValid,  Const.WAIT+Const.UP);
             } else if (bbD0) {
                 addPatternAttribute(attributes, isPattern3BottomValid, isPatternMValid, Const.UP + Const.D0);
             }

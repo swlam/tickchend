@@ -14,18 +14,23 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 	@Override
 	public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
 
-		List<WavePoint> topbotList = new ArrayList<WavePoint>();
-		topbotList.addAll(sortedTopList);
-		topbotList.addAll(sortedBotList);
+//		List<WavePoint> topbotList = new ArrayList<WavePoint>();
+//		topbotList.addAll(sortedTopList);
+//		topbotList.addAll(sortedBotList);
 		
-		List<WavePoint> sortedTopBotList = topbotList.stream().sorted(Comparator.comparing(e -> e.getDateInt())).collect(Collectors.toList());
+//		List<WavePoint> sortedTopBotList = topbotList.stream().sorted(Comparator.comparing(e -> e.getDateInt())).collect(Collectors.toList());
 //		sortedTopBotList = this.distinctSortedTopBotList(sortedTopBotList);
-		return findUpBreakTop(stockList, sortedTopBotList);
+		return findUpBreakTop(stockList, sortedTopList, sortedBotList);
 	}
 
 	
 	
-	public Set<String> findUpBreakTop(List<StockBean> stockList, List<WavePoint> sortedTopBotList){
+	public Set<String> findUpBreakTop(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList){
+		List<WavePoint> topbotList = new ArrayList<WavePoint>();
+		topbotList.addAll(sortedTopList);
+		topbotList.addAll(sortedBotList);
+		List<WavePoint> sortedTopBotList = topbotList.stream().sorted(Comparator.comparing(e -> e.getDateInt())).collect(Collectors.toList());
+
 		Set<String> msg = new LinkedHashSet<String>();
 		if(sortedTopBotList.size()<4 )
 			return msg;
@@ -68,7 +73,10 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		//require true
 		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() &&
 				last1.getC() < wpTopLast1.getStockBean().getBodyTop() &&
-				last2.getH() < wpTopLast1.getH() && last1.isRiseToday();
+				last1.getH() > wpTopLast1.getStockBean().getBodyTop() &&
+				last2.getH() < wpTopLast1.getH() &&
+				last2.getL() < wpTopLast1.getL() &&
+				last1.isRiseToday();
 
 		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 		
@@ -137,14 +145,43 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		}
 
 
-		if(isUpBreak)
-			msg.add(Const.UP+"前TOP");
-
+		if(isUpBreak) {
+			msg.add(Const.UP + "前TOP");
+			msg.add(findUpBreakDatePosition(sortedTopList, last1.getC()));
+		}
 		if(isUpBreakWithAlert)
 			msg.add(Const.UP+"前TOP(小心反轉)");
 		
 		
 
 		return msg;
+	}
+
+
+
+	private String findUpBreakDatePosition(List<WavePoint> wavePoints, double inputPrice) {
+		int size = wavePoints.size();
+		boolean found = false;
+		WavePoint currentNumber = null;
+		for (int i = size - 1; i >= 0; i--) {
+			currentNumber = wavePoints.get(i);
+
+			if (inputPrice < currentNumber.getH()) {
+//				System.out.println("小于第" + (i + 1) + "个元素 (" + currentNumber + ")");
+				found = true;
+				break;
+			}
+		}
+
+		String rtnMsg = "";
+		if (!found) {
+			int maxIdz = findMaxPosition(wavePoints);
+			WavePoint maxWp = wavePoints.get(maxIdz);
+			rtnMsg = Const.UP+"前頂("+maxWp.getDate()+")";
+			//System.out.println("已经是最大的数字，上一个最大的数字位置在第" + size + "个元素 (" + stockList.get(maxIdz) + ")");
+		}else{
+			rtnMsg = "小於頂("+currentNumber.getStockBean().getTxnDate()+")";
+		}
+		return rtnMsg;
 	}
 }

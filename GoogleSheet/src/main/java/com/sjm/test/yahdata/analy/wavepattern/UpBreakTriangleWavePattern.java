@@ -40,7 +40,8 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 		boolean ispass1 = false;
 		boolean ispass2 = false;
 		boolean ispass3 = false;
-		if(topLast3.getStockBean().getH()>=topLast2.getStockBean().getH() && topLast2.getStockBean().getH()>=topLast1.getStockBean().getH()) {
+		if(topLast3.getStockBean().getH()>topLast2.getStockBean().getH()
+				&& topLast2.getStockBean().getH()>topLast1.getStockBean().getH()) {
 			ispass1 = true;
 		}
 		
@@ -54,7 +55,8 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 			ispass1 = false;
 		}
 
-		if(botLast3.getStockBean().getL()<=botLast2.getStockBean().getL() && botLast2.getStockBean().getL()<=botLast1.getStockBean().getL()) {
+		if(botLast3.getStockBean().getL()<botLast2.getStockBean().getL()
+				&& botLast2.getStockBean().getL()<botLast1.getStockBean().getL()) {
 			ispass2 = true;
 		}
 		
@@ -76,22 +78,21 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 		if(!(ispass1 && ispass2 && ispass3))
 			return msg;
 		
-		double thresholdMinRequired = topLast1.getStockBean().getH() * 0.95;
-		double thresholdMaxRequired = topLast1.getStockBean().getH() * 1.01;
+//		double thresholdMinRequired = topLast1.getStockBean().getH() * 0.95;
+//		double thresholdMaxRequired = topLast1.getStockBean().getH() * 1.01;
 
-		if(last1.getC()>=thresholdMinRequired
-				&& last1.getC()<=thresholdMaxRequired
+		if(last1.getC() >= topLast1.getStockBean().getBodyTop()
+				&& last1.getH() > topLast1.getH()
 				&& KHelper.isBullishCandle(last1)
 				&& last2.getBodyTop() < topLast1.getH()
-				&& last1.getC() >= topLast1.getH()
+
 		){
 			msg.add(Const.UP+Const.D0+"破小三角");
-		}else if(last1.getC()>=thresholdMinRequired
-				&& last1.getC()<=thresholdMaxRequired
+		}else if(last1.getC() <= topLast1.getStockBean().getBodyTop()
+				&& last1.getC() >= topLast1.getStockBean().getBodyBottom()
+				&& last1.getH() < topLast1.getH()
 				&& KHelper.isBullishCandle(last1)
 				&& last2.getH() < topLast1.getH()
-				&& last1.getC() <= topLast1.getStockBean().getBodyTop() && last1.getC() >= topLast1.getStockBean().getBodyBottom()
-				&& last1.getH() < topLast1.getH()
 			)
 		{
 			msg.add(Const.WAIT+Const.UP+"破小三角");
@@ -99,7 +100,11 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 			boolean isAnotherTriangleShape = this.isUpTrendTriangle( sortedTopList, sortedBotList);
 			if(isAnotherTriangleShape)
 				msg.add(Const.WAIT+Const.UP+"破向上三角");
-		}else if(last1.getC() >= topLast1.getStockBean().getBodyTop() && last2.getBodyTop() > topLast1.getH()){
+		}else if(last1.getC() >= topLast1.getStockBean().getBodyTop()
+				&& last2.getBodyTop() > topLast1.getH()
+				&& last1.getC()<topLast3.getH()
+				&& last1.getH()<topLast3.getH()
+		){
 			msg.add(Const.UP+"破小三角");
 		}
 		
