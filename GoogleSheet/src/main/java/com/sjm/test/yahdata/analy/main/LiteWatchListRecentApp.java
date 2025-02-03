@@ -28,7 +28,7 @@ public class LiteWatchListRecentApp extends BaseApp{
 		COUNTRY_MARKET = "US";
 //		COUNTRY_MARKET = "CN";
 //		COUNTRY_MARKET = "HK";
-//		Const.IS_INTRADAY = true;
+		Const.IS_INTRADAY = true;
 
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();

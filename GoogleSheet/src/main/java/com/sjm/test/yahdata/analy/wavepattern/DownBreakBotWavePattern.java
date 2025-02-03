@@ -26,7 +26,7 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 
 	public Set<String> findDownBreakBot(List<StockBean> stockList, List<WavePoint> sortedTopBotList){
 		Set<String> msg = new LinkedHashSet<String>();
-		if(sortedTopBotList.size()<4 )
+		if(sortedTopBotList.size()<6 )
 			return msg;
 
 		StockBean last1 = stockList.getLast();
@@ -37,19 +37,26 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 		WavePoint wpLast2 = sortedTopBotList.get(sortedTopBotList.size() - 2);
 		WavePoint wpLast3 = sortedTopBotList.get(sortedTopBotList.size() - 3);
 		WavePoint wpLast4 = sortedTopBotList.get(sortedTopBotList.size() - 4);
+		WavePoint wpLast5 = sortedTopBotList.get(sortedTopBotList.size() - 5);
+		WavePoint wpLast6 = sortedTopBotList.get(sortedTopBotList.size() - 6);
 
 		WavePoint wpTopLast1 = null;
 		WavePoint wpTopLast2 = null;
+//		WavePoint wpTopLast3 = null;
 
 		WavePoint wpBotLast1 = null;
 		WavePoint wpBotLast2 = null;
+//		WavePoint wpBotLast3 = null;
 
 		if(WaveType.BOT.equals(wpLast2.getType()) && WaveType.TOP.equals(wpLast1.getType())){
-			wpBotLast1 = wpLast2;
 			wpTopLast1 = wpLast1;
+			wpBotLast1 = wpLast2;
 
-			wpBotLast2 = wpLast4;
 			wpTopLast2 = wpLast3;
+			wpBotLast2 = wpLast4;
+
+//			wpTopLast3 = wpLast5;
+//			wpBotLast3 = wpLast6;
 
 		}else if(WaveType.TOP.equals(wpLast2.getType()) && WaveType.BOT.equals(wpLast1.getType())){
 			wpBotLast1 = wpLast1;
@@ -57,21 +64,20 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 
 			wpBotLast2 = wpLast3;
 			wpTopLast2 = wpLast4;
+
+//			wpBotLast3 = wpLast5;
+//			wpTopLast3 = wpLast6;
 		}else{
 			return msg;
 		}
 
-
-
-
-//		boolean bMa = last1.getBodyTop() < last1.getPriceSma().getMa20() && last1.getPriceSma().getMa20() < last1.getPriceSma().getMa50()
-//				&& last1.getBodyTop() < last1.getPriceSma().getMa50()
-//				&& last2.getPriceSma().getMa20() <= last2.getPriceSma().getMa50();
-
-
 		//require true
-		boolean bReady1 = last1.getBodyTop() < wpBotLast1.getH() && last1.getL() >= wpBotLast1.getL()
-				&& last2.getL() > wpBotLast1.getL() && !last1.isRiseToday();
+		boolean bReady1 = last1.getBodyTop() < wpBotLast1.getH() &&
+				last1.getC() >= wpBotLast1.getStockBean().getBodyBottom() &&
+				last1.getL() >= wpBotLast1.getL() &&
+				last2.getC() >= wpBotLast1.getStockBean().getBodyBottom() &&
+				last2.getL() >= wpBotLast1.getL() &&
+				!last1.isRiseToday();
 //		boolean b2 = last2.getC() < wpBotLast1.getStockBean().getBodyTop() && last2.getC() > wpBotLast1.getL();
 
 		boolean isBreakBotLowOnce = this.isHitLowestPriceButRebounded(stockList, wpBotLast1);
@@ -80,7 +86,6 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 		if( bReady1)
 		{
 			String readyTxt = this.getDownReadyMessage(stockList);
-
 			String txt = Const.WAIT+Const.DOWN+"前BOT" + readyTxt;
 			if( isBreakBotLowOnce ){
 				txt +="#";
@@ -91,49 +96,48 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 			msg.add(txt);
 		}
 
-
 		boolean isBadSign = this.isBadSignForDownBreak(last1, last2);	//last1.getH() > last2.getH() && last1.getBodyTop() > last2.getBodyTop() && last1.getC() > last1.getO();
 
-
 		//boolean about wave
-		boolean bWaveDwnDw = wpTopLast1.getL()>wpBotLast1.getL() && wpTopLast1.getH()>wpBotLast1.getH();
-		boolean bAnother = last1.getH()<wpTopLast1.getStockBean().getBodyBottom();
+//		boolean bWaveDwnDw = wpTopLast1.getL()>wpBotLast1.getL() && wpTopLast1.getH()>wpBotLast1.getH();
+//		boolean bWave = last1.getH()<wpTopLast1.getStockBean().getBodyBottom();
 
-		boolean  bWave = bWaveDwnDw?(bWaveDwnDw && bAnother): true;
+//		boolean  bWave = !bWaveDwnDw || bAnother;
+		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() > 0.8);
 
-		boolean bbD0 = last2.getL()> wpBotLast1.getL() && last1.getL() < wpBotLast1.getL() && last1.getBodyBottom() < wpBotLast1.getL() && last1.isRiseToday()==false;
-		boolean bbD1 = last3.getL()> wpBotLast1.getL() && last2.getL() < wpBotLast1.getL() && last2.getBodyBottom() < wpBotLast1.getL() && last2.isRiseToday()==false
-						&& last1.getC() < wpBotLast1.getStockBean().getBodyBottom();
+		boolean bbD0 = last3.getL()> wpBotLast1.getL() &&
+				last2.getL() > wpBotLast1.getL() &&
+				last1.getL() < wpBotLast1.getL() &&
+				last1.getBodyBottom() <= wpBotLast1.getL() &&
+                !last1.isRiseToday();
 
+		boolean isDwBreakD1 = last3.getL()>= wpBotLast1.getL() &&
+				last2.getL() < wpBotLast1.getL() &&
+				last2.getBodyBottom() < wpBotLast1.getStockBean().getBodyBottom() &&
+				last1.getC() < wpBotLast1.getStockBean().getBodyBottom() &&
+                !last2.isRiseToday();
+
+		boolean isDwBreakD0 = bbD0 && isVolEnough; //==> D0
 
 		boolean bb = last2.getL()<= wpBotLast1.getL() && last1.getC() <= wpBotLast1.getL();
 
-		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() > 0.8);
-
-
-		boolean isDwBreakD0 = bWave && bbD0 && isVolEnough; //==> D0
-		boolean isDwBreakD1 = bWave && bbD1; //==> D1
-
-		boolean isDwBreak = bWave  && bb  && !isBadSign; //==> Up前BOT
-		boolean isDwBreakWithAlert = bWave  && bb && isBadSign; //==> Up前BOT(小心)
+		boolean isDwBreak = bb  && !isBadSign; //==> Up前BOT
+		boolean isDwBreakWithAlert = bb && isBadSign; //==> Up前BOT(小心)
 
 		if(isDwBreakD1) {
 			String txt = Const.DOWN+Const.D1+ "前BOT";
-			if(last1.getC() <= wpBotLast2.getL() && last2.getL() > wpBotLast2.getL()){
+			if(wpBotLast2.getL() < wpBotLast1.getL() &&
+				(last1.getC() <= wpBotLast2.getL() || last2.getC() <= wpBotLast2.getL()) )
+			{
 				txt = Const.DOWN+Const.D1+"前BOT-2";
-				if(wpBotLast2.getL() < wpBotLast1.getL()){
-					txt = Const.DOWN+Const.D1+"前BOT-2低高";
-				}
 			}
 			msg.add(txt);
 		}else if(isDwBreakD0) {
 			String txt = Const.DOWN+Const.D0+ "前BOT";
-			if(last1.getC() <= wpBotLast2.getL() && last2.getL() > wpBotLast2.getL()){
+			if(wpBotLast2.getL() < wpBotLast1.getL()  && (last1.getC() <= wpBotLast2.getL() || last2.getC() <= wpBotLast2.getL()) ){
 				txt = Const.DOWN+Const.D0+"前BOT-2";
-				if(wpBotLast2.getL() < wpBotLast1.getL()){
-					txt = Const.DOWN+Const.D0+"前BOT-2低高";
-				}
 			}
+
 			msg.add(txt);
 		}
 

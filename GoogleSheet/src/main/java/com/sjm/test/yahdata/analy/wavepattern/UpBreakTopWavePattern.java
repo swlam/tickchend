@@ -51,11 +51,12 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		WavePoint wpBotLast2 = null;
 
 		if(WaveType.BOT.equals(wpLast2.getType()) && WaveType.TOP.equals(wpLast1.getType())){
-			wpBotLast1 = wpLast2;
 			wpTopLast1 = wpLast1;
+			wpBotLast1 = wpLast2;
 
-			wpBotLast2 = wpLast4;
 			wpTopLast2 = wpLast3;
+			wpBotLast2 = wpLast4;
+
 		}else if(WaveType.TOP.equals(wpLast2.getType()) && WaveType.BOT.equals(wpLast1.getType())){
 			wpBotLast1 = wpLast1;
 			wpTopLast1 = wpLast2;
@@ -69,18 +70,17 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 //		boolean b = WaveType.BOT.equals(wpTopLast1.getType());
 //		if(b) return msg;
 
-		boolean bMa = true;
+
 		//require true
 		boolean bReady1 = last1.getBodyBottom() > wpTopLast1.getL() &&
-				last1.getC() < wpTopLast1.getStockBean().getBodyTop() &&
-				last1.getH() > wpTopLast1.getStockBean().getBodyTop() &&
+				last1.getC() <= wpTopLast1.getStockBean().getBodyTop() &&
+				last1.getH() <= wpTopLast1.getH() &&
 				last2.getH() < wpTopLast1.getH() &&
 				last2.getL() < wpTopLast1.getL() &&
 				last1.isRiseToday();
 
-		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
-		
 		boolean isBreakTopHighOnce = this.isHitHighestPriceButPulledBack(stockList, wpTopLast1);
+		boolean isVolIncrease = last1.getDayVolumeChgPct()>1 && last2.getDayVolumeChgPct() > 1;
 
 		if(bReady1){
 			String readyTxt = this.getUpReadyMessage(stockList);
@@ -100,46 +100,54 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 
 		
 		//boolean about wave
-		boolean bWaveUpnUp = wpBotLast1.getH()<wpTopLast1.getH() && wpBotLast1.getL()<wpTopLast1.getL();
-		boolean bAnother = last1.getL() >wpBotLast1.getStockBean().getBodyTop();
+//		boolean bWaveUpnUp = wpBotLast1.getH()<wpTopLast1.getH() && wpBotLast1.getL()<wpTopLast1.getL();
+//		boolean bAnother = last1.getL() >wpBotLast1.getStockBean().getBodyTop();
+//
+//		boolean  bWave = bWaveUpnUp?(bWaveUpnUp && bAnother): true;
 		
-		boolean  bWave = bWaveUpnUp?(bWaveUpnUp && bAnother): true;
-		
-		boolean bbD0 = last2.getH()< wpTopLast1.getH() && last1.getH() > wpTopLast1.getH() &&
-				last1.getC() > wpTopLast1.getStockBean().getBodyTop() && last1.isRiseToday();
+		boolean bbD0 = last3.getH() < wpTopLast1.getH() &&
+				last2.getH() < wpTopLast1.getH() &&
+				last1.getH() > wpTopLast1.getH() &&
+				last1.getBodyTop() >= wpTopLast1.getH() &&
+				last1.isRiseToday();
 
-		boolean bbD1 = last3.getH()< wpTopLast1.getH() && last2.getH() > wpTopLast1.getH() &&
-				last2.getC() > wpTopLast1.getStockBean().getBodyTop() && last2.isRiseToday() &&
-				last1.getC()> wpTopLast1.getStockBean().getBodyTop() ;
+		boolean isUpBreakD1 = last3.getH()< wpTopLast1.getH() &&
+				last2.getH() > wpTopLast1.getH() &&
+				last2.getC() > wpTopLast1.getStockBean().getBodyTop() &&
+				last1.getC() > wpTopLast1.getStockBean().getBodyTop() &&
+				last2.isRiseToday();
 
 		boolean bb = last2.getH()>= wpTopLast1.getH() && last1.getC() >= wpTopLast1.getH() ;
 
 
 		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() >= 1);
 
-		boolean isUpBreakD0 = bWave && bMa && bbD0 && isVolEnough; //==> D0
-		boolean isUpBreakD1 = bWave && bMa && bbD1; //==> D1
+		boolean isUpBreakD0 = bbD0 && isVolEnough; //==> D0
+//		boolean isUpBreakD1 = bWave && bMa && bbD1; //==> D1
 
-		boolean isUpBreak = bWave && bMa && bb  && !isBadSign; //==> Up前TOP
-		boolean isUpBreakWithAlert = bWave && bMa && bb && isBadSign; //==> Up前TOP(小心)
+		boolean isUpBreak = bb  && !isBadSign; //==> Up前TOP
+		boolean isUpBreakWithAlert = bb && isBadSign; //==> Up前TOP(小心)
 
 
 		if(isUpBreakD1){
 			String txt = Const.UP+Const.D1+"前TOP";
-			if(last1.getC() >= wpTopLast2.getH() && last2.getH() < wpTopLast2.getH()){
+			if(wpTopLast2.getH() > wpTopLast1.getH() &&
+				(last1.getC() >= wpTopLast2.getH() || last2.getH() < wpTopLast2.getH()))
+			{
 				txt = Const.UP+Const.D1+"前TOP-2";
-				if(wpTopLast2.getH() > wpTopLast1.getH()){
-					txt = Const.UP+Const.D1+"前TOP-2高低";
-				}
+//				if(wpTopLast2.getH() > wpTopLast1.getH()){
+//					txt = Const.UP+Const.D1+"前TOP-2高低";
+//				}
 			}
 			msg.add(txt);
 		}else if(isUpBreakD0){
 			String txt = Const.UP+Const.D0+"前TOP";
-			if(last1.getC() >= wpTopLast2.getH() && last2.getH() < wpTopLast2.getH()){
+			if( (last1.getC() >= wpTopLast2.getH() || last2.getH() >= wpTopLast2.getH()) && wpTopLast2.getH() > wpTopLast1.getH())
+			{
 				txt = Const.UP+Const.D0+"前TOP-2";
-				if(wpTopLast2.getH() > wpTopLast1.getH()){
-					txt = Const.UP+Const.D0+"前TOP-2高低";
-				}
+//				if(wpTopLast2.getH() > wpTopLast1.getH()){
+//					txt = Const.UP+Const.D0+"前TOP-2高低";
+//				}
 			}
 			msg.add(txt);
 		}

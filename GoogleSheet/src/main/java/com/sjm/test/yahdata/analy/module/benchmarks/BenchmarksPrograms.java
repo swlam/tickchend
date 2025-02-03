@@ -707,8 +707,8 @@ public class BenchmarksPrograms {
 		rtn.setTriplePregnancyInPassFewDays(this.findTriplePregnancyInPassFewDays(stockList, 10));
 		
 
-		rtn.setBigDarkBodyWithMoreVolAndBreakUp(LargeCandleStickAnalyzer.findRecentLargeDarkCandleWithHighVolumeAndBreakUp(stockList, 10));
-		rtn.setBigWhiteBodyWithMoreVolAndBreakDown(LargeCandleStickAnalyzer.findRecentLargeWhiteCandleWithHighVolumeAndBreakdown(stockList, 10));
+		rtn.setBigDarkBodyWithMoreVolAndBreakUp(LargeCandleStickAnalyzer.findRecentLargeDarkCandleWithHighVolumeAndBreakUp(stockList, 15));
+		rtn.setBigWhiteBodyWithMoreVolAndBreakDown(LargeCandleStickAnalyzer.findRecentLargeWhiteCandleWithHighVolumeAndBreakdown(stockList, 15));
 		rtn.setHighVolumeAndBreakUp(LargeCandleStickAnalyzer.findRecentHighVolume(stockList, 20));
 		rtn.setHighVolumeAndBreakDown(LargeCandleStickAnalyzer.findRecentHighVolumeGoDown(stockList, 20));
 
