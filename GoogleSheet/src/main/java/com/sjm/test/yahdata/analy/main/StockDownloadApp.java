@@ -60,7 +60,6 @@ public class StockDownloadApp extends BaseApp{
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.DOW_COMPONENTS)
 //
 //
-//		;
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.SPX_COMPONENTS);
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.IWM_TOP_20_HOLDING);
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL_ETF);

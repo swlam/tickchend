@@ -7,28 +7,23 @@ import com.sjm.test.yahdata.service.LiteWatchListRecentService;
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
 import lombok.extern.slf4j.Slf4j;
-@Slf4j
 
+@Slf4j
 public class LiteWatchListRecentApp extends BaseApp{
 	
 	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
-
 	public static String targetMonth = "-01-";
-	public static String END_DATE = "2028-01-27";
-
-
+	public static String END_DATE = "2028-01-17";
 	public static String COUNTRY_MARKET = "US";//defaul.t
 
-
-
 	public static void main(String[] args) throws Exception{
-//		GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS = false;
+		GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS = false;
 //		GlobalConfig.setYearOfStockData(YEARS);
 
 		COUNTRY_MARKET = "US";
 //		COUNTRY_MARKET = "CN";
-//		COUNTRY_MARKET = "HK";
-		Const.IS_INTRADAY = true;
+		COUNTRY_MARKET = "HK";
+//		Const.IS_INTRADAY = true;
 
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();
@@ -37,13 +32,5 @@ public class LiteWatchListRecentApp extends BaseApp{
 
 	}
 	
-//	public static void preSet() {
-//		Logger converterLogger = Logger.getLogger("org.apache.commons.beanutils.converters.DoubleConverter");
 
-//        converterLogger.setLevel(Level.ERROR);
-
-
-
-
-//	}
 }

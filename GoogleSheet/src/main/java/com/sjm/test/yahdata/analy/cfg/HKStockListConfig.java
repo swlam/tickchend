@@ -3173,6 +3173,6 @@ Stream.of( TICKERS,HSI_ELEMENT,
 		SHENZHEN_LIST, SHANGHAI_LIST)
     .flatMap(Collection::stream).distinct().sorted().collect(Collectors.toList());
 
-public static List<String> ALL = Stream.of( TICKERS, MAIN, USStockListConfig.CRYPTO)
+public static List<String> ALL = Stream.of( TICKERS, MAIN)
     .flatMap(Collection::stream).distinct().sorted().collect(Collectors.toList());
 }

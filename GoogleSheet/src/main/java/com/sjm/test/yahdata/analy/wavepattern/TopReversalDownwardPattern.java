@@ -33,7 +33,9 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 		if(sortedTopBotList.size()<3 )
 			return msg;
 		StockBean last = stockList.getLast();
-		
+		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
+
 		WavePoint wpLast1 = sortedTopBotList.getLast();
 		WavePoint wpLast2 = sortedTopBotList.get(sortedTopBotList.size() - 2);
 		WavePoint wpLast3 = sortedTopBotList.get(sortedTopBotList.size() - 3);
@@ -49,6 +51,11 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 				wpLast1.getStockBean().getBodyBottom() > wpLast3.getH() &&
 				last.getC() < wpLast3.getStockBean().getBodyTop()
 				&& !isBigBullishBody;
+
+		boolean condition2 =
+				WaveType.BOT.equals(wpLast1.getType()) &&
+						(last.getC() < wpLast2.getStockBean().getBodyTop() || last2.getC() < wpLast2.getStockBean().getBodyTop()) &&
+						(last.getH() > wpLast2.getH() || last2.getH() > wpLast2.getH() || last3.getH() > wpLast2.getH());
 
 		String confirmDate = last.getTxnDate(); //init the date
 		
@@ -104,7 +111,12 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 				}
 			}
 		}
-		
+
+		if(condition2){
+			isHit = true;
+			extraMsg= "D(0-3)";
+		}
+
 		if(isHit) {	
 			msg.add(KPatternConst.KP_TOP_REVERSAL+extraMsg);
 		}

@@ -40,15 +40,15 @@ public class BestTimingToBuyApp extends BaseApp{
 	public static int RESULT_LIMIT_SIZE = 20;
 	public static int YEARS = 20;
 	private static final String END2END_PATTERN = Const.END2END_O2C;
-	private static final double REQUIRE_MIN_RATIO = 0.8;
+	private static final double REQUIRE_MIN_RATIO = 0.78;
 	private static final int REQUIRE_MIN_DAY_DURATION = 5;
-	private static final double REQUIRE_MKT_CAP = 50;
+//	private static final double REQUIRE_MKT_CAP = 50;
 	
-	private static final double REQUIRE_C2H_PCT = 0.01;	// 5%
+	private static final double REQUIRE_C2H_PCT = 0.02;	// 5%
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
-	public static String START_MMDD= "02-02";
-	public static String END_MMDD= "03-10";
+	public static String START_MMDD= "02-04";
+	public static String END_MMDD= "03-15";
 	public static final int REQUIRED_YRS = 7;
 	
 	public static final boolean IS_EXPORT_FILE = true;
@@ -75,12 +75,12 @@ public class BestTimingToBuyApp extends BaseApp{
 //			,USStockListConfig.QQQ_COMPONENTS
 //			USStockListConfig.ETF
 //			,HKStockListConfig.ETF
-//			USStockListConfig.ALL,
+			USStockListConfig.ALL
 //			CNStockListConfig.ALL_AVAILABLE,
 //			HKStockListConfig.HSI_ELEMENT,
 //			HKStockListConfig.HSCEI_ELEMENT,
 //			HKStockListConfig.STOCK_INDEX,
-			HKStockListConfig.MAIN
+//			HKStockListConfig.MAIN
 			)
 		    .flatMap(Collection::stream).distinct().collect(Collectors.toList());
 
@@ -272,10 +272,10 @@ public class BestTimingToBuyApp extends BaseApp{
 			if(result!=null ) {
 				StockProfileBean skProf = CFGHelper.getStockProfileMap().get(result.getStockCode());
 				result.setMarketCapByBillian(MarketValueDifferenceCalculator.convertToBillian(skProf.getMarketCap()));
-				if(result.getMarketCapByBillian() > REQUIRE_MKT_CAP) {
+//				if(result.getMarketCapByBillian() > REQUIRE_MKT_CAP) {
 					
 					stockPerformanceResultList.add(result);
-				}
+//				}
 			}
 		}
 		
