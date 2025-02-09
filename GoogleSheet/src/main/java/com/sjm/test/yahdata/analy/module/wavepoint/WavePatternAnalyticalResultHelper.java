@@ -32,6 +32,7 @@ public class WavePatternAnalyticalResultHelper {
 	private FlatBottomWaitingBreakWavePattern flatBottomWaitingBreakWavePattern;
 	private FlatTopWaitingBreakWavePattern flatTopWaitingBreakWavePattern;
 	private UpBreakWPattern upBreakWPattern;
+//	private UpBreakPattern upBreakPattern;
 
 	public WavePatternAnalyticalResultHelper() {
 		handler = new PriceVolDirectionHandler();
@@ -48,6 +49,7 @@ public class WavePatternAnalyticalResultHelper {
 		flatTopWaitingBreakWavePattern = new FlatTopWaitingBreakWavePattern();
 		flatBottomWaitingBreakWavePattern = new FlatBottomWaitingBreakWavePattern();
 		upBreakWPattern = new UpBreakWPattern();
+//		upBreakPattern = new UpBreakPattern();
 	}
 	
 	//for wp=TOP AND (c < wp.H)
@@ -479,8 +481,8 @@ public class WavePatternAnalyticalResultHelper {
 	
 	public String findShape(List<StockBean> stockList, List<WavePoint> sortedTopBotList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
 		
-		Set<String> result = new LinkedHashSet<String>(); 
-		
+		Set<String> result = new LinkedHashSet<String>();
+//		result.addAll( upBreakPattern.find(stockList, sortedTopList, sortedBotList));
 		result.addAll( upBreakTriangleWavePattern.find(		stockList, sortedTopList, sortedBotList ));
 		result.addAll( downBreakTriangleWavePattern.find(	stockList, sortedTopList, sortedBotList ));
 		result.addAll( upBreakWPattern.find(		stockList, sortedTopList, sortedBotList));

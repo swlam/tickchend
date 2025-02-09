@@ -13,7 +13,7 @@ public class LiteWatchListRecentApp extends BaseApp{
 	
 	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
 	public static String targetMonth = "-01-";
-	public static String END_DATE = "2028-01-17";
+	public static String END_DATE = "2028-01-15";
 	public static String COUNTRY_MARKET = "US";//defaul.t
 
 	public static void main(String[] args) throws Exception{
@@ -22,7 +22,7 @@ public class LiteWatchListRecentApp extends BaseApp{
 
 		COUNTRY_MARKET = "US";
 //		COUNTRY_MARKET = "CN";
-		COUNTRY_MARKET = "HK";
+//		COUNTRY_MARKET = "HK";
 //		Const.IS_INTRADAY = true;
 
 

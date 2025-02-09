@@ -130,5 +130,23 @@ public abstract class BaseWavePattern {
 		return maxIndex;
 	}
 
+	public int findMinPosition(List<WavePoint> numbers) {
+		if (numbers == null || numbers.isEmpty()) {
+			throw new IllegalArgumentException("列表不能为空");
+		}
+
+		int minIndex = 0;
+		WavePoint minValue = numbers.get(0);
+
+		for (int i = 1; i < numbers.size(); i++) {
+			if (numbers.get(i).getL() < minValue.getL()) {
+				minValue = numbers.get(i);
+				minIndex = i;
+			}
+		}
+
+		return minIndex;
+	}
+
 
 }

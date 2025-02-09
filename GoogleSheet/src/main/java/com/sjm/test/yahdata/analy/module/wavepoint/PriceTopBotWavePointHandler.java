@@ -14,15 +14,23 @@ import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePoint;
 import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePointAnalyticalResult;
 import com.sjm.test.yahdata.analy.module.wavepoint.bean.WaveShape;
 
+import com.sjm.test.yahdata.analy.wavepattern.DownBreakPattern;
+import com.sjm.test.yahdata.analy.wavepattern.UpBreakPattern;
+import com.sjm.test.yahdata.analy.wavepattern.UpBreakWPattern;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PriceTopBotWavePointHandler {
 	public static int NO_OF_DAYS = 60;
 
 	private WavePatternAnalyticalResultHelper wavePointResultHelper = null;
-	
+	private UpBreakPattern upBreakPattern;
+
+	private DownBreakPattern downBreakPattern;
+
 	public PriceTopBotWavePointHandler() {
 		wavePointResultHelper = new WavePatternAnalyticalResultHelper();
+		upBreakPattern = new UpBreakPattern();
+		downBreakPattern = new DownBreakPattern();
 	}
 	
 	//Default to get 100 records to analysis
@@ -116,6 +124,12 @@ public class PriceTopBotWavePointHandler {
 		if(sortedTopBotList.isEmpty() || sortedTopList.isEmpty() || sortedBotList.isEmpty()){
 			return "BOT/TOP EMPTY";
 		}
+
+		Set<String> result = new LinkedHashSet<String>();
+
+		result.addAll(upBreakPattern.find(stockList, sortedTopList, sortedBotList));
+		result.addAll(downBreakPattern.find(stockList, sortedTopList, sortedBotList));
+
 		StockBean last1StockBean = stockList.get(stockList.size()-1);
 		StockBean last2StockBean = stockList.get(stockList.size()-2);
 
@@ -126,7 +140,8 @@ public class PriceTopBotWavePointHandler {
 					last1StockBean.getBodyTop() > last1TopBot.getStockBean().getBodyTop() &&
 					last1StockBean.getL() >= last1TopBot.getStockBean().getBodyBottom() ){
 				double dif = (last1StockBean.getC() - last1TopBot.getH()) / last1TopBot.getH();
-				return "在前頂上 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+				result.add("在前頂上 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")");
+//				return "在前頂上 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
 			}
 					;
 		}else if(WaveType.BOT.equals(last1TopBot.getType())){
@@ -134,7 +149,8 @@ public class PriceTopBotWavePointHandler {
 					last1StockBean.getBodyBottom() < last1TopBot.getStockBean().getBodyBottom() &&
 					last1StockBean.getH() <= last1TopBot.getStockBean().getBodyTop() ){
 				double dif = (last1StockBean.getC() - last1TopBot.getL()) / last1TopBot.getL();
-				return "在前底下 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
+				result.add("在前底下 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")");
+//				return "在前底下 ("+last1TopBot.getStockBean().getTxnDate()+" "+GeneralHelper.toPct(dif)+")";
 			}
 		}
 
@@ -154,27 +170,28 @@ public class PriceTopBotWavePointHandler {
 				&& last1StockBean.getL() > lastBot.getStockBean().getBodyBottom()
 				&& last1StockBean.getBodyBottom() < last2StockBean.getBodyBottom();
 
-		if(isRebounding && isAdjusting) {
-			return "";
-		}
+//		if(isRebounding && isAdjusting) {
+//			return "";
+//		}
 
 		if(isSameTopBotLevel){
 			if(isAdjusting){
-				return "區間"+Const.WAIT+Const.DOWN;
+				result.add( "區間"+Const.WAIT+Const.DOWN);
 			}
 			if(isRebounding ){
-				return "區間"+Const.WAIT+Const.UP;
+				result.add("區間"+Const.WAIT+Const.UP);
 			}
 		}else{
 			if(isAdjusting ){
-				return "浪調整中";
+				result.add("浪調整中");
 			}
 			if(isRebounding ){
-				return "浪反彈中";
+				result.add("浪反彈中");
 			}
 		}
 
-		return Const.EMPTY;
+//		return Const.EMPTY;
+		return result.isEmpty()?Const.SPACE: result.toString().replace("[", "").replace("]", "");
 	}
 
 
