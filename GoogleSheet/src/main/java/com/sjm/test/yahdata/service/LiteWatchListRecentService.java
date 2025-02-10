@@ -647,7 +647,7 @@ public class LiteWatchListRecentService extends BaseApp{
 				GoogleSheetsCreateAndUploadExample.upload(sheetName, values);
 			} catch (Exception e) {
 				log.error("Error on upload to google sheets", e);
-				throw new RuntimeException(e);
+//				throw new RuntimeException(e);
 			}
 		}
     }

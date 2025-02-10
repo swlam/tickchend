@@ -44,9 +44,9 @@ public class StockDownloadApp extends BaseApp{
 //		app.downloadStockProfile(ALL_TICKER);
 
 //		app. doMain("CN", Const.INTERVAL_D,CNStockListConfig.ALL_AVAILABLE);
-//		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.ALL);
+		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.ALL);
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL);
-		app. doMain("US", Const.INTERVAL_D,USStockListConfig.CRYPTO);
+//		app. doMain("US", Const.INTERVAL_D,USStockListConfig.CRYPTO);
 
 //		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.HK_TEST);
 //		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.HSCEI_ELEMENT);

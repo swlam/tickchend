@@ -57,14 +57,14 @@ public class UpBreakPattern extends BaseWavePattern {
 		if (wavePoint.isPresent()) {
 			WavePoint wp = wavePoint.get();
 //			System.out.println("找到的 WavePoint 对象数据: " + wp);
-			msg.add("破" + wp.getDate() + "頂("+ GeneralHelper.to2DecimalPlaces(wp.getH())+")" );
+			msg.add(Const.UP+"破" + wp.getDate() + "頂("+ GeneralHelper.to2DecimalPlaces(wp.getH())+")" );
 
 //			msg.add("大于第" + (sortedTopHList.indexOf(wp) + 1) + "个元素 (" + wp.getH() + ")");
 		} else {
 			int maxIndex = findMaxPosition(sortedTopHList);
 			WavePoint maxWavePoint = sortedTopHList.get(maxIndex);
 //			System.out.println("已经是最大的数字，上一个最大的数字位置在第" + (maxIndex + 1) + "个元素 (" + maxWavePoint.getH() + ")");
-			msg.add("已破多個頂，上一个最大的頂在" + maxWavePoint.getDate() );
+			msg.add("已"+Const.UP+"破多Top，之前最大的頂在" + maxWavePoint.getDate() );
 		}
 
 		return msg;

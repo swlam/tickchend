@@ -2,6 +2,7 @@ package com.sjm.test.yahdata.analy.wavepattern;
 
 import com.maas.util.GeneralHelper;
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
+import com.sjm.test.yahdata.analy.conts.Const;
 import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePoint;
 
 import java.util.*;
@@ -45,14 +46,14 @@ public class DownBreakPattern extends BaseWavePattern {
 		if (wavePoint.isPresent()) {
 			WavePoint wp = wavePoint.get();
 //			System.out.println("找到的 WavePoint 对象数据: " + wp);
-			msg.add("破" + wp.getDate() + "底("+ GeneralHelper.to2DecimalPlaces(wp.getL())+")" );
+			msg.add(Const.DOWN+"破" + wp.getDate() + "底("+ GeneralHelper.to2DecimalPlaces(wp.getL())+")" );
 
 //			msg.add("大于第" + (sortedTopHList.indexOf(wp) + 1) + "个元素 (" + wp.getH() + ")");
 		} else {
 			int minIndex = findMinPosition(sortedBotLList);
 			WavePoint minWavePoint = sortedBotLList.get(minIndex);
 //			System.out.println("已经是最大的数字，上一个最大的数字位置在第" + (minIndex + 1) + "个元素 (" + minWavePoint.getH() + ")");
-			msg.add("已破多個底，上一个最小的底在" + minWavePoint.getDate() );
+			msg.add("已"+Const.DOWN+"破多Bot，之前最小的底在" + minWavePoint.getDate() );
 		}
 
 		return msg;
