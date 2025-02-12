@@ -19,34 +19,53 @@ public class DownBreakPattern extends BaseWavePattern {
 //				.sorted(Comparator.comparing(WavePoint::getDateInt))
 //				.collect(Collectors.toList());
 
-		List<WavePoint> sortedBotLList = sortedBotList.stream()
+		List<WavePoint> sortedBotLowestList = sortedBotList.stream()
 				.sorted(Comparator.comparing(WavePoint::getL).reversed())
 				.toList();
 
-//		return findDownBreakBot(stockList, sortedBotLList);
-//	}
-//
-//	public Set<String> findDownBreakBot(List<StockBean> stockList, List<WavePoint> sortedBotLList) {
+		int firstElementDateInt = sortedBotLowestList.getFirst().getDateInt();
+
+		List<WavePoint> sortedBotLList = sortedBotLowestList.stream()
+				.filter(wp -> wp.getDateInt()>=firstElementDateInt)
+				.toList();
+
+
 		Set<String> msg = new LinkedHashSet<>();
 		if (sortedBotLList.size() < 4) {
 			return msg;
 		}
-
+		WavePoint last1Bot = sortedBotList.getLast();
 		WavePoint last1Top = sortedTopList.getLast();
-		StockBean last1 = stockList.getLast();
 
-		if( last1.getH() > last1Top.getH()){
+		StockBean last1 = stockList.getLast();
+		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
+
+		if( last1.getH() > last1Top.getH() || last1.getL() > last1Bot.getStockBean().getBodyTop()){
 			return msg;
 		}
 
 		// Example usage of findWavePointWithClosePriceGreaterThanH
 		StockBean exampleStockBean = stockList.get(stockList.size() - 1); // Assuming you want to check the last stock bean
+//		StockBean last1 = stockList.getLast();
+
+
 		Optional<WavePoint> wavePoint = findWavePointWithClosePriceLowerThanL(exampleStockBean, sortedBotLList);
 
 		if (wavePoint.isPresent()) {
 			WavePoint wp = wavePoint.get();
-//			System.out.println("找到的 WavePoint 对象数据: " + wp);
-			msg.add(Const.DOWN+"破" + wp.getDate() + "底("+ GeneralHelper.to2DecimalPlaces(wp.getL())+")" );
+
+			boolean isDwBreakD0 = last3.getL()> wp.getL() &&
+					last2.getL() > wp.getL() &&
+					last1.getL() < wp.getL() &&
+					last1.getBodyBottom() < wp.getStockBean().getBodyBottom() &&
+					!last1.isRiseToday();
+
+			String txt = Const.DOWN+"破" + wp.getDate() + "底";
+			if(isDwBreakD0){
+				txt = Const.DOWN+Const.D0+"破" + wp.getDate() + "底";
+			}
+			msg.add(txt);
 
 //			msg.add("大于第" + (sortedTopHList.indexOf(wp) + 1) + "个元素 (" + wp.getH() + ")");
 		} else {

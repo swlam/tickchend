@@ -108,7 +108,7 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 		boolean bbD0 = last3.getH() < wpTopLast1.getH() &&
 				last2.getH() < wpTopLast1.getH() &&
 				last1.getH() > wpTopLast1.getH() &&
-				last1.getBodyTop() >= wpTopLast1.getH() &&
+				last1.getBodyTop() >= wpTopLast1.getStockBean().getBodyTop() &&
 				last1.isRiseToday();
 
 		boolean isUpBreakD1 = last3.getH()< wpTopLast1.getH() &&
@@ -118,7 +118,6 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 				last2.isRiseToday();
 
 		boolean bb = last2.getH()>= wpTopLast1.getH() && last1.getC() >= wpTopLast1.getH() ;
-
 
 		boolean isVolEnough = Const.IS_INTRADAY ?(last1.getDayVolumeChgPct() > 0.5):(last1.getDayVolumeChgPct() >= 1);
 

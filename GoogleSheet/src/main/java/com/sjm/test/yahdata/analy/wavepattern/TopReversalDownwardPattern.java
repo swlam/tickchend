@@ -54,7 +54,7 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 
 		boolean condition2 =
 				WaveType.BOT.equals(wpLast1.getType()) &&
-						(last.getC() < wpLast2.getStockBean().getBodyTop() || last2.getC() < wpLast2.getStockBean().getBodyTop()) &&
+						(last.getC() < wpLast2.getStockBean().getBodyTop() && last2.getC() < wpLast2.getStockBean().getBodyTop()) &&
 						(last.getH() > wpLast2.getH() || last2.getH() > wpLast2.getH() || last3.getH() > wpLast2.getH());
 
 		String confirmDate = last.getTxnDate(); //init the date

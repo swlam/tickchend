@@ -108,7 +108,7 @@ public class DownBreakBotWavePattern extends BaseWavePattern {
 		boolean bbD0 = last3.getL()> wpBotLast1.getL() &&
 				last2.getL() > wpBotLast1.getL() &&
 				last1.getL() < wpBotLast1.getL() &&
-				last1.getBodyBottom() <= wpBotLast1.getL() &&
+				last1.getBodyBottom() < wpBotLast1.getStockBean().getBodyBottom() &&
                 !last1.isRiseToday();
 
 		boolean isDwBreakD1 = last3.getL()>= wpBotLast1.getL() &&

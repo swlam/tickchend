@@ -31,8 +31,14 @@ public class UpBreakPattern extends BaseWavePattern {
 				.sorted(Comparator.comparing(WavePoint::getDateInt))
 				.collect(Collectors.toList());
 
-		List<WavePoint> sortedTopHList = sortedTopList.stream()
+		List<WavePoint> sortedTopHighestList = sortedTopList.stream()
 				.sorted(Comparator.comparing(WavePoint::getH).reversed())
+				.toList();
+
+		int firstElementDateInt = sortedTopHighestList.getFirst().getDateInt();
+
+		List<WavePoint> sortedTopHList = sortedTopHighestList.stream()
+				.filter(wp -> wp.getDateInt()>=firstElementDateInt)
 				.toList();
 
 //		return findUpBreakTop(stockList, sortedTopHList);
@@ -44,9 +50,14 @@ public class UpBreakPattern extends BaseWavePattern {
 			return msg;
 		}
 		WavePoint last1Bot = sortedBotList.getLast();
-		StockBean last1 = stockList.getLast();
+		WavePoint last1Top = sortedTopList.getLast();
 
-		if( last1.getL() < last1Bot.getL()){
+		StockBean last1 = stockList.getLast();
+		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
+
+
+		if( last1.getL() < last1Bot.getL() || last1.getH() < last1Top.getStockBean().getBodyBottom()){
 			return msg;
 		}
 
@@ -54,12 +65,22 @@ public class UpBreakPattern extends BaseWavePattern {
 		StockBean exampleStockBean = stockList.get(stockList.size() - 1); // Assuming you want to check the last stock bean
 		Optional<WavePoint> wavePoint = findWavePointWithClosePriceGreaterThanH(exampleStockBean, sortedTopHList);
 
+
+
 		if (wavePoint.isPresent()) {
 			WavePoint wp = wavePoint.get();
 //			System.out.println("找到的 WavePoint 对象数据: " + wp);
-			msg.add(Const.UP+"破" + wp.getDate() + "頂("+ GeneralHelper.to2DecimalPlaces(wp.getH())+")" );
 
-//			msg.add("大于第" + (sortedTopHList.indexOf(wp) + 1) + "个元素 (" + wp.getH() + ")");
+			String txt = Const.UP+"破" + wp.getDate() + "頂";
+			boolean isUpBreakD0 = last3.getH() < wp.getH() &&
+					last2.getH() < wp.getH() &&
+					last1.getH() > wp.getH() &&
+					last1.getBodyTop() > wp.getStockBean().getBodyTop() &&
+					last1.isRiseToday();
+			if(isUpBreakD0) {
+				txt = Const.UP + Const.D0 + "破" + wp.getDate() + "頂";
+			}
+			msg.add(txt);
 		} else {
 			int maxIndex = findMaxPosition(sortedTopHList);
 			WavePoint maxWavePoint = sortedTopHList.get(maxIndex);
