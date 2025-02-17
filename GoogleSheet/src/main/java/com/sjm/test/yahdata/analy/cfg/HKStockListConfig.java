@@ -3132,7 +3132,7 @@ public static List<String> DUAL_COUNTER_CNH = Arrays.asList(
 public static List<String> ETF = Arrays.asList(
 
  "2800.HK","2822.HK","2823.HK","3188.HK","2828.HK","3032.HK","3033.HK","2845.HK","3066.HK","3068.HK","7300.HK","7500.HK","7552.HK","7500.HK",
-	"3067.HK", "3005.HK", "3109.HK","3147.HK","3190.HK"
+	"3067.HK", "3005.HK", "3109.HK","3147.HK","3190.HK","3191.HK"
 );
 
 public static List<String> HK_OTHER = Arrays.asList( "2330.TW");
