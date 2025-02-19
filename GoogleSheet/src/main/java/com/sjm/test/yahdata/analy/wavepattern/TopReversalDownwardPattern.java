@@ -77,7 +77,7 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 				List<StockBean> subList = StreamTransformHelper.subListWithEndElement(stockList, wpLast1.getDate(), last.getTxnDate());
 				
 				//e.g. 100 + (110-100)/2 
-				double achieveBodyLevel =  prevTop.getStockBean().getBodyBottom() + Math.abs(prevTop.getStockBean().getBodyTop() - prevTop.getStockBean().getBodyBottom()) / 2.0;
+//				double achieveBodyLevel =  prevTop.getStockBean().getBodyBottom() + Math.abs(prevTop.getStockBean().getBodyTop() - prevTop.getStockBean().getBodyBottom()) / 2.0;
 
 				for(int i=1; i<subList.size(); i++) 
 				{

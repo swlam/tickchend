@@ -92,11 +92,11 @@ public class BottomReversalUpwardPattern extends BaseWavePattern {
 					if(elem.getC() >= achieveBodyLevel) {
 						confirmDate = elem.getTxnDate(); //first confirmDate
 						
-						boolean isAchieveBodyLevelRatio = this.findAchieveBodyLevelRatio(subList, prevBot.getStockBean(), elem, last1.getTxnDate());
+//						boolean isAchieveBodyLevelRatio = this.findAchieveBodyLevelRatio(subList, prevBot.getStockBean(), elem, last1.getTxnDate());
 						//find  max high
 						StockBean highestSk = StreamTransformHelper.findMaxHighStock(subList);
 
-						if(isAchieveBodyLevelRatio && highestSk.getC()<lastTop1.getStockBean().getBodyTop())
+						if(highestSk.getC()<lastTop1.getStockBean().getBodyTop())
 						{
 							isHit = true;
 							if(last1.getTxnDateInt() == elem.getTxnDateInt())
