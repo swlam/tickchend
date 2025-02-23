@@ -21,9 +21,9 @@ public class LiteWatchListRecentApp extends BaseApp{
 //		GlobalConfig.setYearOfStockData(YEARS);
 		Const.WAVE_CHECK_PERIOD_DAYS = 8;
 		COUNTRY_MARKET = "US";
-//		COUNTRY_MARKET = "CN";
-//		COUNTRY_MARKET = "HK";
-		Const.IS_INTRADAY = true;
+		COUNTRY_MARKET = "CN";
+		COUNTRY_MARKET = "HK";
+//		Const.IS_INTRADAY = true;
 
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();

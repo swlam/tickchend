@@ -123,7 +123,7 @@ public class BottomReversalUpwardPattern extends BaseWavePattern {
 		}
 		
 		if(isHit) {	
-			msg.add(KPatternConst.KP_BOTTOM_REVERSAL+extraMsg);
+			msg.add(Const.UP+KPatternConst.KP_BOTTOM_REVERSAL+extraMsg);
 		}
 		return msg;
 	}

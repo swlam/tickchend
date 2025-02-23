@@ -118,7 +118,7 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 		}
 
 		if(isHit) {	
-			msg.add(KPatternConst.KP_TOP_REVERSAL+extraMsg);
+			msg.add(Const.DOWN+KPatternConst.KP_TOP_REVERSAL+extraMsg);
 		}
 		return msg;
 	}

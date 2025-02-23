@@ -84,8 +84,18 @@ public class UpBreakPattern extends BaseWavePattern {
 		} else {
 			int maxIndex = findMaxPosition(sortedTopHList);
 			WavePoint maxWavePoint = sortedTopHList.get(maxIndex);
-//			System.out.println("已经是最大的数字，上一个最大的数字位置在第" + (maxIndex + 1) + "个元素 (" + maxWavePoint.getH() + ")");
-			msg.add("All"+Const.UP+"破多Top，之前最大的頂在" + maxWavePoint.getDate() );
+
+			String txt = "All"+Const.UP+"破多Top，之前最大的頂在" + maxWavePoint.getDate() ;
+			boolean isUpBreakD0 = last3.getH() < maxWavePoint.getH() &&
+					last2.getH() < maxWavePoint.getH() &&
+					last1.getH() > maxWavePoint.getH() &&
+					last1.getBodyTop() > maxWavePoint.getStockBean().getBodyTop() &&
+					last1.isRiseToday();
+			if(isUpBreakD0) {
+				txt = "All"+Const.UP+Const.D0+"破多Top，之前最大的頂在" + maxWavePoint.getDate() ;
+			}
+
+			msg.add(txt);
 		}
 
 		return msg;

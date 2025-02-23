@@ -71,8 +71,20 @@ public class DownBreakPattern extends BaseWavePattern {
 		} else {
 			int minIndex = findMinPosition(sortedBotLList);
 			WavePoint minWavePoint = sortedBotLList.get(minIndex);
-//			System.out.println("已经是最大的数字，上一个最大的数字位置在第" + (minIndex + 1) + "个元素 (" + minWavePoint.getH() + ")");
-			msg.add("All"+Const.DOWN+"破多Bot，之前最小的底在" + minWavePoint.getDate() );
+
+			boolean isDwBreakD0 = last3.getL()> minWavePoint.getL() &&
+					last2.getL() > minWavePoint.getL() &&
+					last1.getL() < minWavePoint.getL() &&
+					last1.getBodyBottom() < minWavePoint.getStockBean().getBodyBottom() &&
+					!last1.isRiseToday();
+
+			String txt = "All"+Const.DOWN+"破多Bot，之前最小的底在" + minWavePoint.getDate();
+			if(isDwBreakD0){
+				txt = "All"+Const.DOWN+Const.D0+"破多Bot，之前最小的底在" + minWavePoint.getDate();
+			}
+			msg.add(txt);
+
+
 		}
 
 		return msg;
