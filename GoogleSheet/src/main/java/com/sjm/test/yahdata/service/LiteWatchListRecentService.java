@@ -365,7 +365,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		msg.append("\t反轉型態\t反轉突破日\t反轉型態詳細");
 		msg.append("\t近日上破BB\t月內變多頭排列\t與50D最高價的差異\t近日出收集三胞胎形態");
 		msg.append("\t近日下破大陽/大陽量日子\t近日上破大陰/大陰量日子\t月內上破大量的日子\t月內下破大量的日子\t昨今日平均線有支持/阻力");
-		msg.append("\t近日Last穿頭破腳/破腳穿頭");
+		msg.append("\t近日Last穿頭破腳/破腳穿頭\t近日出下跌錘頭3日");
 
 		msg.append("\tRSI(9)\tRSI DIVER.\tRSI DIVER. DATES\tRSI DIVER.加劇");
 
@@ -540,6 +540,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
 				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日Last穿頭破腳/破腳穿頭
+				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日出下跌錘頭3日
 
 				msg.append("\t"+ GeneralHelper.to100(elemt.getRsi9()));	//RSI
 				msg.append("\t"+ (elemt.getRsiDiverence().getDivergenceType()==null?"":elemt.getRsiDiverence().getDivergenceType()));	//RSI DIVERENCE

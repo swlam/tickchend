@@ -208,6 +208,7 @@ public class InstantPerformanceResult {
 	
 	private String movingAverageCrossUpSummary;
 	private String lastEngulfingInRecentDays;
+	private String goingDown3HammerInRecentDays;
 //	private MACDData macdData;
 	
 	public InstantPerformanceResult(List<StockBean> stockList) {

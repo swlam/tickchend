@@ -724,6 +724,7 @@ public class BenchmarksPrograms {
 		String bbUpBreakAtime = this.getBollingerUpBreakForATimeInRecentDays(stockList, 5);
 		rtn.setBbUpBreakForATime(bbUpBreakAtime);
 		rtn.setLastEngulfingInRecentDays(this.getLastEngulfingInRecentDays(stockList,topList, botList, 5));
+		rtn.setGoingDown3HammerInRecentDays(this.getGoingDown3HammerInRecentDays(stockList, 10));
 
 		return rtn;
 
@@ -1385,6 +1386,27 @@ public class BenchmarksPrograms {
 
 		return hashSet.toString();
 
+
+	}
+
+
+	public String getGoingDown3HammerInRecentDays(List<StockBean> srcstockList, int days) {
+		if (srcstockList.size() < days) {
+			return "";
+		}
+		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		for(int i=0; i<stockList.size()-3; i++) {
+			StockBean first = stockList.get(i);
+			StockBean second = stockList.get(i+1);
+			StockBean third = stockList.get(i+2);
+
+			boolean is3Hammer = KHelper.isHammer(first) && KHelper.isHammer(second) && KHelper.isHammer(third);
+
+			boolean b = first.getH()> second.getH() && second.getH() > third.getH();
+			if(is3Hammer && b)
+				return "3Hammer_" + third.getTxnDate();
+		}
+		return "";
 
 	}
 	

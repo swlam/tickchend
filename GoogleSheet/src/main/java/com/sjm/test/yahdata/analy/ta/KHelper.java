@@ -212,7 +212,7 @@ public class KHelper {
 
 	public static boolean isHammer(StockBean curr, boolean requireStrong) {
 		double diffHL = curr.getH() - curr.getL();
-		double shootingLevel = curr.getH() - diffHL / 3;
+		double shootingLevel = curr.getH() - diffHL / 2;
 		boolean isBasicHarmer = (curr.getO() >= shootingLevel && curr.getC() >= shootingLevel );
 		if(requireStrong) {
 //			double shootingLevel = curr.getH() - diffHL / 3;
