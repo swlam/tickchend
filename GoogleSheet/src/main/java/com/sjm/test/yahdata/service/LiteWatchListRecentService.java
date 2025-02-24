@@ -540,7 +540,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //				msg.append("\t"+ elemt.getBigDarkBodyWithLessVol());	//月內大陰少量日期
 				msg.append("\t"+ elemt.getMovingAverageLongSideSupport());	//昨今日平均線有支持/阻力
 				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日Last穿頭破腳/破腳穿頭
-				msg.append("\t"+ elemt.getLastEngulfingInRecentDays());	//近日出下跌錘頭3日
+				msg.append("\t"+ elemt.getGoingDown3HammerInRecentDays());	//近日出下跌錘頭3日
 
 				msg.append("\t"+ GeneralHelper.to100(elemt.getRsi9()));	//RSI
 				msg.append("\t"+ (elemt.getRsiDiverence().getDivergenceType()==null?"":elemt.getRsiDiverence().getDivergenceType()));	//RSI DIVERENCE
