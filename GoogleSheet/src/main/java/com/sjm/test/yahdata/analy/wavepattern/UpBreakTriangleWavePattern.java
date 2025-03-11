@@ -87,7 +87,11 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 				&& last2.getBodyTop() < topLast1.getH()
 
 		){
-			msg.add(Const.UP+Const.D0+"破小三角");
+			String txt = Const.UP+Const.D0+"破小三角";
+			if(last1.getDayVolumeChgPct()>2.0) {
+				txt += Const.BIG_VOL;
+			}
+			msg.add(txt);
 		}else if(last1.getC() <= topLast1.getStockBean().getBodyTop()
 				&& last1.getC() >= topLast1.getStockBean().getBodyBottom()
 				&& last1.getH() < topLast1.getH()

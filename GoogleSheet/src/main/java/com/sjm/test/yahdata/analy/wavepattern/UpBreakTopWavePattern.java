@@ -148,6 +148,9 @@ public class UpBreakTopWavePattern extends BaseWavePattern {
 //					txt = Const.UP+Const.D0+"前TOP-2高低";
 //				}
 			}
+			if(last1.getDayVolumeChgPct()>2.0) {
+				txt += Const.BIG_VOL;
+			}
 			msg.add(txt);
 		}
 

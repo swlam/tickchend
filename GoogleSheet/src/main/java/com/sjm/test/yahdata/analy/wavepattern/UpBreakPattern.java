@@ -78,7 +78,10 @@ public class UpBreakPattern extends BaseWavePattern {
 					last1.getBodyTop() > wp.getStockBean().getBodyTop() &&
 					last1.isRiseToday();
 			if(isUpBreakD0) {
-				txt = Const.UP + Const.D0 + "破" + wp.getDate() + "頂";
+				txt = Const.UP+Const.D0 + "破" + wp.getDate() + "頂";
+				if(last1.getDayVolumeChgPct()>2.0) {
+					txt += Const.BIG_VOL;
+				}
 			}
 			msg.add(txt);
 		} else {

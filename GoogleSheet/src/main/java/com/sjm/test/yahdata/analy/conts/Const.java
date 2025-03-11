@@ -32,6 +32,7 @@ public class Const {
 	public static final String STEADY = "STEADY";
 	public static final String D0 = "D0";
 	public static final String D1 = "D1";
+	public static final String BIG_VOL = "BV";
 
 	public static final String WAIT = "待";
 	public static final String TOP = "TOP";
