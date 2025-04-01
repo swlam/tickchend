@@ -88,7 +88,7 @@ public class UpBreakTriangleWavePattern extends BaseWavePattern {
 
 		){
 			String txt = Const.UP+Const.D0+"破小三角";
-			if(last1.getDayVolumeChgPct()>2.0) {
+			if(last1.getDayVolumeChgPct()>2.0 || (Const.IS_INTRADAY && last1.getDayVolumeChgPct() > Const.INTRADAY_BIG_VOL)) {
 				txt += Const.BIG_VOL;
 			}
 			msg.add(txt);

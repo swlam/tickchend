@@ -114,7 +114,7 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 
 		if(condition2){
 			isHit = true;
-			extraMsg= "D(0-3)";
+			extraMsg= "D0-3";
 		}
 
 		if(isHit) {	

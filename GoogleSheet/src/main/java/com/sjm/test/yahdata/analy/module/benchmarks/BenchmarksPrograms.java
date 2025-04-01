@@ -1330,11 +1330,10 @@ public class BenchmarksPrograms {
 
 		Set<String> hashSet = new HashSet<String>();
 		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
-		for( int i=1; i<stockList.size()-1; i++) {
+		for( int i=1; i<stockList.size(); i++) {
 			StockBean curr = stockList.get(i);
 			StockBean prev = stockList.get(i - 1);
-			if (lastWP.getStockBean().getTxnDateInt() > curr.getTxnDateInt()
-					|| curr.getDayVolumeChgPct()<0.95 || curr.getL()< lastWP.getH()
+			if (lastWP.getStockBean().getTxnDateInt() > curr.getTxnDateInt() || curr.getDayVolumeChgPct() < 0.9
 			)
 			{
 				continue;
@@ -1353,7 +1352,7 @@ public class BenchmarksPrograms {
 					WavePoint last2 = sortedTopList.get(sortedTopList.size() - 2);
 					WavePoint last3 = sortedTopList.get(sortedTopList.size() - 3);
 
-					if(last2.getH() > lastWP.getH() || last3.getH() > lastWP.getH()) {
+					if(last2.getH() < lastWP.getH() || last3.getH() < lastWP.getH()) {
 						isMatch = true;
 					}
 				}else{
@@ -1371,7 +1370,7 @@ public class BenchmarksPrograms {
 					WavePoint last2 = sortedBotList.get(sortedBotList.size() - 2);
 					WavePoint last3 = sortedBotList.get(sortedBotList.size() - 3);
 
-					if (last2.getL() < lastWP.getL() || last3.getL() < lastWP.getL()) {
+					if (last2.getL() > lastWP.getL() || last3.getL() > lastWP.getL()) {
 						isMatch = true;
 					}
 				}else{
