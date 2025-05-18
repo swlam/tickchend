@@ -71,7 +71,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("APP","QQQ","DIA","SPY");//USStockListConfig.ETF;
+			CODE_POOL = Arrays.asList("AMD","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -80,7 +80,7 @@ public class LiteWatchListRecentService extends BaseApp{
 		}else if(Const.MARKET_HK.equalsIgnoreCase(COUNTRY_MARKET)){			
 			CODE_POOL =   HKStockListConfig.ALL;
 //			CODE_POOL =   HKStockListConfig.ETF;
-//			CODE_POOL = Arrays.asList("^HSI","2800.HK","2822.HK","3033.HK");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("^HSI","2800.HK","2822.HK","3033.HK","1088.HK");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "2800.HK";  
 			BASE_STOCK_B = "2822.HK";
@@ -350,12 +350,12 @@ public class LiteWatchListRecentService extends BaseApp{
 				.collect(Collectors.toList());
 		
 		StringBuilder msg = new StringBuilder();
-		msg.append("CODE ("+interval+")\t數據時間\tName\tSector\t所屬ETF\tDATE\t現價\tD%\t3D(o2c)%\t5D(o2c)%\tVol(-1D)%\tVol%\tEst.金額(B)");
+		msg.append("CODE ("+interval+")\t數據時間\tName\tSector\t所屬ETF\tDATE\t現價\tD%\t3D(o2c)%\t5D(o2c)%\tVol(-2D)%\tVol(-1D)%\tVol%\tEst.金額(B)");
 		msg.append("\tB-type\tS-type\tFLAT-type");
 
 		msg.append("\t小浪型\t小浪型state\tPrice Status");
 		msg.append("\t強弱(-1D)\t今天強弱");
-		msg.append("\tK线Status(D-1)\tK线(Status)");
+		msg.append("\tK线Status(D-1)\tK线(Status)\t重要K线");
 
 		msg.append("\tVol(5D vs 20D)");
 //		msg.append("\t"+WavePointAnalyticalResult.getColumnHeader());	//小浪方向\t突破Pct(小浪)\t小浪型狀\t上一個小浪頂底日
@@ -483,6 +483,7 @@ public class LiteWatchListRecentService extends BaseApp{
 				msg.append("\t"+ (elemt.getDailyChangePct()==null?Const.SPACE:GeneralHelper.toPct(elemt.getDailyChangePct())));
 				msg.append("\t"+ (elemt.getThreeDaysChangeO2CPct()==null?Const.NA:GeneralHelper.toPct(elemt.getThreeDaysChangeO2CPct())));
 				msg.append("\t"+ (elemt.getWeeksChangeO2CPct()==null?Const.NA:GeneralHelper.toPct(elemt.getWeeksChangeO2CPct())));
+				msg.append("\t"+ GeneralHelper.toPct(elemt.getPrev2StockBean().getDayVolumeChgPct()));	//Volume pct change (-2D)
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getPrevStockBean().getDayVolumeChgPct()));	//Volume pct change (-1D)
 				msg.append("\t"+ GeneralHelper.toPct(elemt.getCurrentStockBean().getDayVolumeChgPct()));	//Volume pct change
 				msg.append("\t"+ GeneralHelper.toDecimalPlaces(elemt.getEstTradeAmount(), 4));
@@ -499,7 +500,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 				msg.append("\t"+ elemt.getPrev1DayCandleStatus());//K线Status(D-1)
 				msg.append("\t"+ elemt.getDailyCandleStatus()); 			//K线(Status)
-//				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//K线(Desc)
+				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//重要K线
 
 
 //				msg.append("\t"+ elemt.getPrev1DayVolDescription());	//Volume(-1D)

@@ -38,7 +38,7 @@ public class InstantPerformanceResult {
 	private StockBean currentStockBean;
 	private StockBean prevStockBean;
 	private StockBean prev2StockBean;
-	
+	private StockBean prev3StockBean;
 	private double estTradeAmount;
 	private String sysPickLongCategory;
 	private String sysPickStagnantCategory;

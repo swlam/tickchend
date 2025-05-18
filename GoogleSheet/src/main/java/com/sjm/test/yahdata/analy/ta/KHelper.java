@@ -363,20 +363,20 @@ public class KHelper {
 			hashSet.add(CandlestickTradingPatternType.GAP_DOWN_BEARISH);
 		}
 
-		if(isOpenHighSustain) {
-			hashSet.add(CandlestickTradingPatternType.OPEN_HIGH_CLOSE_HIGH);
-		}
-
-		if(isOpenHighCloseLow) {
-			hashSet.add(CandlestickTradingPatternType.OPEN_HIGH_CLOSE_LOW);
-		}
-		if(isOpenLowCloseHigh) {
-			hashSet.add(CandlestickTradingPatternType.OPEN_LOW_CLOSE_HIGH);
-		}
-
-		if(isOpenLowCloseLow) {
-			hashSet.add(CandlestickTradingPatternType.OPEN_LOW_CLOSE_LOW);
-		}
+//		if(isOpenHighSustain) {
+//			hashSet.add(CandlestickTradingPatternType.OPEN_HIGH_CLOSE_HIGH);
+//		}
+//
+//		if(isOpenHighCloseLow) {
+//			hashSet.add(CandlestickTradingPatternType.OPEN_HIGH_CLOSE_LOW);
+//		}
+//		if(isOpenLowCloseHigh) {
+//			hashSet.add(CandlestickTradingPatternType.OPEN_LOW_CLOSE_HIGH);
+//		}
+//
+//		if(isOpenLowCloseLow) {
+//			hashSet.add(CandlestickTradingPatternType.OPEN_LOW_CLOSE_LOW);
+//		}
 
 
 		//三飛烏鴉

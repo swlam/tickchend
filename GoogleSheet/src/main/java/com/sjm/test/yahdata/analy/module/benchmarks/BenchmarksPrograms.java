@@ -625,8 +625,9 @@ public class BenchmarksPrograms {
 
 		rtn.setCurrentStockBean(nowStock);
 		rtn.setPrevStockBean(prevStock);
-		rtn.setPrev2StockBean(prevStock);
-		
+		rtn.setPrev2StockBean(prev2Stock);
+		rtn.setPrev3StockBean(prev3Stock);
+
 		Double ytd = this.getPerformance(stockList, "01-01", null);
 		Double q1 = this.getPerformance(stockList, "01-01", "03-31");
 		Double q2 = this.getPerformance(stockList, "04-01", "06-30");
