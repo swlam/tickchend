@@ -371,11 +371,27 @@ public class DailySummaryReport {
 //				                .map(InstantPerformanceResult::getCurrentStockBean)
 				                .map(
 				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getDailyChangePct())
-				                		+" V:"+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
+				                		+" V: "+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
 		                				+" "+ (stock.getSysPickLongCategory()+","+stock.getSysPickStagnantCategory()+","+stock.getSysPickShortCategory()).replaceAll("\\[|\\]", "").replaceAll(",,", ",")+" "
 		                				+ stock.getWaveShape().getShapeResult().replaceAll("NA", "")
 				                )
 				                .toList();
+
+		List<String> top10RSI9List = tmpList.stream()
+				.filter(x-> x.getCurrentStockBean().getRsi9()>sectorOrSymbolBean.getRsi9())
+				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
+				.limit(LIMIT_RESULTS*3)
+				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getRsi9).reversed())
+				.limit(LIMIT_RESULTS)
+//				                .map(InstantPerformanceResult::getCurrentStockBean)
+				.map(
+						stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getDailyChangePct())
+								+" RSI9: "+GeneralHelper.to100(stock.getCurrentStockBean().getRsi9())
+								+" V: "+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
+								+" "+ (stock.getSysPickLongCategory()+","+stock.getSysPickStagnantCategory()+","+stock.getSysPickShortCategory()).replaceAll("\\[|\\]", "").replaceAll(",,", ",")+" "
+								+ stock.getWaveShape().getShapeResult().replaceAll("NA", "")
+				)
+				.toList();
 					 
 //					 List<String> top10O2HFor3DaysList = tmpList.stream()
 //							 .filter(x->x.getCurrentStockBean().getEstTradeAmount() > REQUIRED_TRADE_AMOUNT
@@ -409,7 +425,19 @@ public class DailySummaryReport {
 				                		stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getDailyChangePct())+" V:"+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
 				                )
 				                .toList();
-					 
+
+		List<String> top10RSI9DownList = tmpList.stream()
+				.filter(x-> x.getCurrentStockBean().getRsi9()< sectorOrSymbolBean.getRsi9())
+				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getEstTradeAmount).reversed())
+				.limit(LIMIT_RESULTS*3)
+				.sorted(Comparator.comparingDouble(InstantPerformanceResult::getRsi9))
+				.limit(LIMIT_RESULTS)
+				.map(
+						stock -> stock.getCurrentStockBean().getStockCode() + ": " + GeneralHelper.toPct(stock.getDailyChangePct())
+								+" RSI9: "+GeneralHelper.to100(stock.getCurrentStockBean().getRsi9())
+								+" V: "+GeneralHelper.toPct(stock.getCurrentStockBean().getDayVolumeChgPct())
+				)
+				.toList();
 					 
 					 List<String> top10WithGoodMAList = tmpList.stream()
 							 	.filter(x-> x.getCurrentStockBean().getDayChgPct()>0.0
@@ -558,14 +586,17 @@ public class DailySummaryReport {
 							, "Down_Break_(待)"
 							};
 					sb.append("\t--------\t--------\t--------\n");
-					sb.append(sectorOrSymbol +"\t"+titles[0].toUpperCase() +"  "+ txnDate+"  " + sectorOrSymbol +"  "+LocalDateTime.now());
+					sb.append(sectorOrSymbol +"\t"+titles[0].toUpperCase() +"  "+ txnDate);
 
 
 					sb.append("\n"); sb.append(sectorOrSymbol);
 
 					if(sectorOrSymbolBean!=null) {
-						sb.append("\t 1D%: " + GeneralHelper.toPct(sectorOrSymbolBean.getDailyChangePct())
-								+ "\t 3D%(O2H): "+  GeneralHelper.toPct(sectorOrSymbolBean.getThreeDaysChangeO2HPct())
+						sb.append("\t 1D %: " + GeneralHelper.toPct(sectorOrSymbolBean.getDailyChangePct())
+								+ "\t 3D% (O2C): "+  GeneralHelper.toPct(sectorOrSymbolBean.getThreeDaysChangeO2CPct())
+								+ "\t 5D% (O2C): "+  GeneralHelper.toPct(sectorOrSymbolBean.getWeeksChangeO2CPct())
+								+ "\t MTD% (O2C): "+  GeneralHelper.toPct(sectorOrSymbolBean.getMtdChangeO2CPct())
+								+ "\t RSI9(5D): "+ sectorOrSymbolBean.getRsi9TrendIn5Days()
 								+ "\t V: "+ GeneralHelper.toPct(sectorOrSymbolBean.getCurrentStockBean().getDayVolumeChgPct())
 								+ "\t"+ (sectorOrSymbolBean.getSysPickLongCategory()+" " + sectorOrSymbolBean.getSysPickStagnantCategory()+" " + sectorOrSymbolBean.getSysPickShortCategory()).replaceAll("\\[|\\]", ""));
 					}
@@ -575,27 +606,29 @@ public class DailySummaryReport {
 
 
 
-					sb.append("\n"); sb.append(sectorOrSymbol +"  "+titles[1] +"  " + GeneralHelper.toPct(ratioPositiveDayChgPctCnt));
+					sb.append("\n"); sb.append(sectorOrSymbol +"  上升比例  " + GeneralHelper.toPct(ratioPositiveDayChgPctCnt));
 
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[2] +"\t" + GeneralHelper.toPct(ratioStrongerThanIndexCnt)+ " ("+ strongerThanIndexCnt + " / " +cnt+")");
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[3] +"\t" + GeneralHelper.toPct(ratioAbv20D));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[4] +"\t" + GeneralHelper.toPct(ratioAbv50D));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[5] +"\t" + GeneralHelper.toPct(ratioUp20DAbv50D) +"\t"+up20DAbv50DList);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[6] +"\t" + String.join(", ", top10List));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[7] +"\t" + String.join(", ", top10VolumnList));
-//					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10O2HFor3DaysList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[8] +"\t" + String.join(", ", top10WithGoodMAList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[9] +"\t" + String.join(", ", top10DownList));
-//					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[11] +"\t" + String.join(", ", top10O2LFor3DaysList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[10] +"\t" + String.join(", ", top10TodayStrongList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[11] +"\t" + String.join(", ", top10TodayWeakList));
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[12] +"\t" + cnt2Strong + " / "+ cnt2Weak + " / "+ cnt);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[13] +"\t" + "UpBreak % : "+GeneralHelper.toPct(cntUpBreakSignRatio) + "\t DwBreak %"+ GeneralHelper.toPct(cntDwBreakSignRatio) + "\t Up/Dw/總 : "+cntUpBreakSign + " / "+ cntDwBreakSign + " / "+ cnt);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[14] +"\t" + upBreakD0SignList.size() + ": "+ upBreakD0SignList);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[15] +"\t" + downBreakD0SignList.size() + ": "+ downBreakD0SignList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"強於 "+sectorOrSymbol+" 比例 (cnt / records)" +"\t" + GeneralHelper.toPct(ratioStrongerThanIndexCnt)+ " ("+ strongerThanIndexCnt + " / " +cnt+")");
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"大於20D比例" +"\t" + GeneralHelper.toPct(ratioAbv20D));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"大於50D比例" +"\t" + GeneralHelper.toPct(ratioAbv50D));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"20D大於50D的比例" +"\t" + GeneralHelper.toPct(ratioUp20DAbv50D) +"\t"+up20DAbv50DList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10List.size()+"_(強於 "+sectorOrSymbol+")" +"\t" + String.join(", ", top10List));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10RSI9List.size()+"_(RSI9強於 "+sectorOrSymbol+")" +"\t" + String.join(", ", top10RSI9List));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10VolumnList.size()+"_(Vol)" +"\t" + String.join(", ", top10VolumnList));
 
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[16] +"  " + upBreakReadyList.size() + ":\t "+ upBreakReadyList);
-					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+titles[17] +"  " + downBreakReadyList.size() + ":\t "+ downBreakReadyList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10WithGoodMAList.size()+"_(UP) 小多頭" +"\t" + String.join(", ", top10WithGoodMAList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10DownList.size()+"_(弱於 "+sectorOrSymbol+")" +"\t" + String.join(", ", top10DownList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10RSI9DownList.size()+"_(RSI9弱於 "+sectorOrSymbol+")" +"\t" + String.join(", ", top10RSI9DownList));
+
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10TodayStrongList.size()+"_(轉"+PatternTrendHelper.STRONG+")" +"\t" + String.join(", ", top10TodayStrongList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Top"+top10TodayWeakList.size()+"_(轉"+PatternTrendHelper.WEAK+")" +"\t" + String.join(", ", top10TodayWeakList));
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"強/弱/總數" +"\t" + cnt2Strong + " / "+ cnt2Weak + " / "+ cnt);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Break (Up vs Down)" +"\t" + "UpBreak % : "+GeneralHelper.toPct(cntUpBreakSignRatio) + "\t DwBreak %"+ GeneralHelper.toPct(cntDwBreakSignRatio) + "\t Up/Dw/總 : "+cntUpBreakSign + " / "+ cntDwBreakSign + " / "+ cnt);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Up_Break_(D0)" +"\t" + upBreakD0SignList.size() + ": "+ upBreakD0SignList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Down_Break_(D0)" +"\t" + downBreakD0SignList.size() + ": "+ downBreakD0SignList);
+
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Up_Break_(待)" +"  " + upBreakReadyList.size() + ":\t "+ upBreakReadyList);
+					sb.append("\n"); sb.append(sectorOrSymbol +"\t"+"Down_Break_(待)" +"  " + downBreakReadyList.size() + ":\t "+ downBreakReadyList);
 
 
 				if(hasDisplayData)

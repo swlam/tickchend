@@ -17,13 +17,13 @@ public class LiteWatchListRecentApp extends BaseApp{
 	public static String COUNTRY_MARKET = "US";//defaul.t
 
 	public static void main(String[] args) throws Exception{
-		GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS = false;
+//		GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS = false;
 //		GlobalConfig.setYearOfStockData(YEARS);
 		Const.WAVE_CHECK_PERIOD_DAYS = 8;
 		COUNTRY_MARKET = "US";
 //		COUNTRY_MARKET = "CN";
 //		COUNTRY_MARKET = "HK";
-//		Const.IS_INTRADAY = true;
+		Const.IS_INTRADAY = true;
 //
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();

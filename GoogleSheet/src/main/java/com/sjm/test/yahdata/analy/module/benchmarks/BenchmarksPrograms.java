@@ -164,11 +164,11 @@ public class BenchmarksPrograms {
 					StockBean last4 = stockList.get(stockList.size() - 4);
 					StockBean last5 = stockList.get(stockList.size() - 5);
 					recentHBean.setRsi9(last1.getRsi9());
-					String rsiTrend = GeneralHelper.to2DecimalPlaces(last5.getRsi9())
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last4.getRsi9())
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last3.getRsi9()) 
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last2.getRsi9())
-					 		+ " _ " + GeneralHelper.to2DecimalPlaces(last1.getRsi9());
+					String rsiTrend = GeneralHelper.to100(last5.getRsi9())
+							+ " _ " + GeneralHelper.to100(last4.getRsi9())
+							+ " _ " + GeneralHelper.to100(last3.getRsi9())
+							+ " _ " + GeneralHelper.to100(last2.getRsi9())
+					 		+ " _ " + GeneralHelper.to100(last1.getRsi9());
 
 					recentHBean.setRsi9TrendIn5Days(rsiTrend);
 //				}
@@ -618,7 +618,7 @@ public class BenchmarksPrograms {
 		StockBean nowStock = stockList.get(stockList.size() - 1);
 		StockBean prevStock = stockList.get(stockList.size() - 2);
 		StockBean prev2Stock = stockList.get(stockList.size() - 3);
-		StockBean prev3Stock = stockList.get(stockList.size() - 3);
+		StockBean prev3Stock = stockList.get(stockList.size() - 4);
 
 
 		InstantPerformanceResult rtn = new InstantPerformanceResult(stockList);

@@ -368,7 +368,9 @@ public class DailySummaryReportDeepSeek {
 		List<String> downRsi9List = generateStockList(filteredList, limitResults, x -> x.getCurrentStockBean().getRsi9()<0.5);
 
 		List<String> top10List = generateTopList(filteredList, limitResults, x -> x.getCurrentStockBean().getDayChgPct() > sectorOrSymbolBean.getDailyChangePct());
+		List<String> top10Rsi9List = generateTopList(filteredList, limitResults, x -> x.getCurrentStockBean().getRsi9() > sectorOrSymbolBean.getRsi9());
 		List<String> top10DownList = generateTopList(filteredList, limitResults, x -> x.getCurrentStockBean().getDayChgPct() < sectorOrSymbolBean.getDailyChangePct());
+		List<String> top10Rsi9DownList = generateTopList(filteredList, limitResults, x -> x.getCurrentStockBean().getRsi9() < sectorOrSymbolBean.getRsi9());
 		List<String> top10WithGoodMAList = generateTopList(filteredList, limitResults, x -> x.getCurrentStockBean().getDayChgPct() > 0.0
 				&& x.getCurrentStockBean().getC() > x.getCurrentStockBean().getPriceSma().getMa20()
 				&& x.getCurrentStockBean().getPriceSma().getMa10() > x.getCurrentStockBean().getPriceSma().getMa50()
@@ -392,7 +394,7 @@ public class DailySummaryReportDeepSeek {
 		return new AnalysisResults(
 				ratioPositiveDayChgPctCnt, ratioStrongerThanIndexCnt, ratioAbv20D, ratioAbv50D, ratioUp20DAbv50D, ratioUpRsi9, ratioDownRsi9,
 				up20DList, up50DList,up20DAbv50DList, upRsi9List, downRsi9List,
-				top10List, top10DownList, top10WithGoodMAList, top10VolumnList, top10TodayStrongList, top10TodayWeakList,
+				top10List, top10Rsi9List, top10DownList,top10Rsi9DownList, top10WithGoodMAList, top10VolumnList, top10TodayStrongList, top10TodayWeakList,
 				cnt2Strong, cnt2Weak, cntUpBreakSign, cntDwBreakSign, upBreakD0SignList, upBreakReadyList, downBreakReadyList, downBreakD0SignList,
 				strongerThanIndexCnt, cnt // Pass the new fields
 		);
@@ -458,7 +460,10 @@ public class DailySummaryReportDeepSeek {
 
 		if (sectorOrSymbolBean != null) {
 			sb.append("\n").append(sectorOrSymbol).append("\t 1D%: ").append(GeneralHelper.toPct(sectorOrSymbolBean.getDailyChangePct()))
-					.append("\t 3D%(O2H): ").append(GeneralHelper.toPct(sectorOrSymbolBean.getThreeDaysChangeO2HPct()))
+					.append("\t 3D%(O2C): ").append(GeneralHelper.toPct(sectorOrSymbolBean.getThreeDaysChangeO2CPct()))
+					.append("\t 5D%(O2C): ").append(GeneralHelper.toPct(sectorOrSymbolBean.getWeeksChangeO2CPct()))
+					.append("\t MTD%(O2C): ").append(GeneralHelper.toPct(sectorOrSymbolBean.getMtdChangeO2CPct()))
+					.append("\t RSI9(5D): ").append(sectorOrSymbolBean.getRsi9TrendIn5Days())
 					.append("\t V: ").append(GeneralHelper.toPct(sectorOrSymbolBean.getCurrentStockBean().getDayVolumeChgPct()))
 					.append("\t").append((sectorOrSymbolBean.getSysPickLongCategory() + " " + sectorOrSymbolBean.getSysPickStagnantCategory() + " " + sectorOrSymbolBean.getSysPickShortCategory()).replaceAll("\\[|\\]", ""));
 		}
@@ -471,11 +476,13 @@ public class DailySummaryReportDeepSeek {
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("大於20D比例").append("\t").append(GeneralHelper.toPct(results.ratioAbv20D)).append("\t").append(results.up20DList);
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("大於50D比例").append("\t").append(GeneralHelper.toPct(results.ratioAbv50D)).append("\t").append(results.up50DList);
 
-		sb.append("\n").append(sectorOrSymbol).append("\t").append("小多頭比例(>20,10>50,50>250)").append("\t").append(GeneralHelper.toPct(results.ratioUp20DAbv50D)).append("\t").append(results.up20DAbv50DList);
+		sb.append("\n").append(sectorOrSymbol).append("\t").append("20D大於50D的比例").append("\t").append(GeneralHelper.toPct(results.ratioUp20DAbv50D)).append("\t").append(results.up20DAbv50DList);
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10List.size()).append("_(強於 ").append(sectorOrSymbol).append(")").append("\t").append(String.join(", ", results.top10List));
+		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10Rsi9List.size()).append("_(RSI9強於 ").append(sectorOrSymbol).append(")").append("\t").append(String.join(", ", results.top10Rsi9List));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10VolumnList.size()).append("_(Vol)").append("\t").append(String.join(", ", results.top10VolumnList));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10WithGoodMAList.size()).append("_(UP) 小多頭").append("\t").append(String.join(", ", results.top10WithGoodMAList));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10DownList.size()).append("_(弱於 ").append(sectorOrSymbol).append(")").append("\t").append(String.join(", ", results.top10DownList));
+		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10Rsi9DownList.size()).append("_(RSI9弱於 ").append(sectorOrSymbol).append(")").append("\t").append(String.join(", ", results.top10Rsi9DownList));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10TodayStrongList.size()).append("_(轉").append(PatternTrendHelper.STRONG).append(")").append("\t").append(String.join(", ", results.top10TodayStrongList));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("Top").append(results.top10TodayWeakList.size()).append("_(轉").append(PatternTrendHelper.WEAK).append(")").append("\t").append(String.join(", ", results.top10TodayWeakList));
 		sb.append("\n").append(sectorOrSymbol).append("\t").append("強/弱/總數 ").append("\t").append(results.cnt2Strong).append(" / ").append(results.cnt2Weak).append(" / ").append(results.cnt);
@@ -504,7 +511,9 @@ public class DailySummaryReportDeepSeek {
 		List<String> downRsi9List;
 
 		List<String> top10List;
+		List<String> top10Rsi9List;
 		List<String> top10DownList;
+		List<String> top10Rsi9DownList;
 		List<String> top10WithGoodMAList;
 		List<String> top10VolumnList;
 		List<String> top10TodayStrongList;
@@ -524,7 +533,7 @@ public class DailySummaryReportDeepSeek {
 							   double ratioUpRsi9, double ratioDownRsi9,
 							   List<String> up20DList, List<String> up50DList, List<String> up20DAbv50DList,
 							   List<String> upRsi9List, List<String> downRsi9List,
-							   List<String> top10List, List<String> top10DownList, List<String> top10WithGoodMAList,
+							   List<String> top10List, List<String> top10Rsi9List, List<String> top10DownList,List<String> top10Rsi9DownList, List<String> top10WithGoodMAList,
 							   List<String> top10VolumnList, List<String> top10TodayStrongList, List<String> top10TodayWeakList, long cnt2Strong, long cnt2Weak,
 							   long cntUpBreakSign, long cntDwBreakSign, List<String> upBreakD0SignList, List<String> upBreakReadyList, List<String> downBreakReadyList,
 							   List<String> downBreakD0SignList, long strongerThanIndexCnt, long cnt) { // Update constructor
@@ -541,7 +550,9 @@ public class DailySummaryReportDeepSeek {
 			this.downRsi9List = downRsi9List;
 			this.upRsi9List = upRsi9List;
 			this.top10List = top10List;
+			this.top10Rsi9List = top10Rsi9List;
 			this.top10DownList = top10DownList;
+			this.top10Rsi9DownList = top10Rsi9DownList;
 			this.top10WithGoodMAList = top10WithGoodMAList;
 			this.top10VolumnList = top10VolumnList;
 			this.top10TodayStrongList = top10TodayStrongList;
