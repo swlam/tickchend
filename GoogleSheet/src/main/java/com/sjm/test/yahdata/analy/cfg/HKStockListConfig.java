@@ -2900,7 +2900,8 @@ public static List<String> H_SHARES = Arrays.asList("0939.HK",
 		"1000.HK",
 		"1289.HK",
 		"6189.HK",
-		"1749.HK");
+		"1749.HK",
+        "3690.HK");
 
 
 public static List<String> RED_CHIPS = Arrays.asList(

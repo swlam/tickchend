@@ -28,7 +28,7 @@ import com.sjm.test.yahdata.analy.model.StatisticsResult;
 import com.sjm.test.yahdata.analy.module.benchmarks.BenchmarksPrograms;
 import com.sjm.test.yahdata.analy.module.lowhighdist.bean.LowHighDateSimplifyResult;
 import com.sjm.test.yahdata.analy.probability.bean.BenchmarkBeanResult;
-import com.sjm.test.yahdata.analy.report.DailySummaryReport;
+//import com.sjm.test.yahdata.analy.report.DailySummaryReport;
 import com.sjm.test.yahdata.analy.ta.helper.SectorAnalystHelper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -157,8 +157,8 @@ public class LiteWatchListRecentService extends BaseApp{
 			List<InstantPerformanceResult> results = instantPerformanceResultList.stream().filter(x-> x.getCurrentStockBean().getTxnDateInt() == lastBean.getTxnDateInt()).toList();
 			this.exportSimple(results, COUNTRY_MARKET, DEFAULT_INTERVAL, targetMonth);
 
-			if(!statisticsResultList.isEmpty())
-				DailySummaryReport.exportStat(statisticsResultList);
+//			if(!statisticsResultList.isEmpty())
+//				DailySummaryReport.exportStat(statisticsResultList);
 
 		DailySummaryReportDeepSeek.printSimpleStatisticsResult(results, COUNTRY_MARKET, ICONIC_CODE);
 		//export the stock pick result 

@@ -165,10 +165,10 @@ public class BenchmarksPrograms {
 					StockBean last5 = stockList.get(stockList.size() - 5);
 					recentHBean.setRsi9(last1.getRsi9());
 					String rsiTrend = GeneralHelper.to100(last5.getRsi9())
-							+ " _ " + GeneralHelper.to100(last4.getRsi9())
-							+ " _ " + GeneralHelper.to100(last3.getRsi9())
-							+ " _ " + GeneralHelper.to100(last2.getRsi9())
-					 		+ " _ " + GeneralHelper.to100(last1.getRsi9());
+							+ "_" + GeneralHelper.to100(last4.getRsi9())
+							+ "_" + GeneralHelper.to100(last3.getRsi9())
+							+ "_" + GeneralHelper.to100(last2.getRsi9())
+					 		+ "_" + GeneralHelper.to100(last1.getRsi9());
 
 					recentHBean.setRsi9TrendIn5Days(rsiTrend);
 //				}

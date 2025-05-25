@@ -456,7 +456,7 @@ public class DailySummaryReportDeepSeek {
 	private static void displayResults(AnalysisResults results, String type, String sectorOrSymbol, String txnDate, InstantPerformanceResult sectorOrSymbolBean) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\t--------\t--------\t--------\n");
-		sb.append(sectorOrSymbol).append("\t").append("[").append(type).append("]").append("  ").append(txnDate).append("  ").append(sectorOrSymbol).append("  ").append(LocalDateTime.now());
+		sb.append(sectorOrSymbol).append("\t").append("[").append(type).append("]").append("  ").append(txnDate);
 
 		if (sectorOrSymbolBean != null) {
 			sb.append("\n").append(sectorOrSymbol).append("\t 1D%: ").append(GeneralHelper.toPct(sectorOrSymbolBean.getDailyChangePct()))
