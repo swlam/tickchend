@@ -45,7 +45,7 @@ public class StockDownloadApp extends BaseApp{
 
 //		app. doMain("CN", Const.INTERVAL_D,CNStockListConfig.ALL_AVAILABLE);
 		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.H_SHARES);
-//		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL);
+		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL);
 //
 
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.CRYPTO);
