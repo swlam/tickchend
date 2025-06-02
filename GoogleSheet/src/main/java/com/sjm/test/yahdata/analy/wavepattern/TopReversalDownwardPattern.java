@@ -52,6 +52,13 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 				last.getC() < wpLast3.getStockBean().getBodyTop()
 				&& !isBigBullishBody;
 
+		boolean condition1n2 =
+				WaveType.TOP.equals(wpLast2.getType())
+						&& WaveType.BOT.equals(wpLast1.getType())
+						&&  wpLast2.getH() > wpLast1.getH()
+						&& (last.getC()> wpLast2.getH() || last2.getC()> wpLast2.getH()  || last3.getC()> wpLast2.getH());
+
+
 		boolean condition2 =
 				WaveType.BOT.equals(wpLast1.getType()) &&
 						(last.getC() < wpLast2.getStockBean().getBodyTop() && last2.getC() < wpLast2.getStockBean().getBodyTop()) &&
@@ -82,7 +89,7 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 				for(int i=1; i<subList.size(); i++) 
 				{
 					StockBean elem = subList.get(i);
-					if(elem.getC() <prevTop.getStockBean().getBodyTop() && elem.getH() < prevTop.getH()) {
+					if(elem.getC() <prevTop.getStockBean().getBodyTop() ) {
 						confirmDate = elem.getTxnDate(); //first confirmDate
 
 //						boolean isAchieveBodyLevelRatio = this.findAchieveBodyLevelRatio(subList, prevTop.getStockBean(), elem, last.getTxnDate());
@@ -109,6 +116,13 @@ public class TopReversalDownwardPattern extends BaseWavePattern {
 							continue;
 					}
 				}
+			}
+		}else if(condition1n2) {
+			boolean b = (last.getC()< wpLast2.getStockBean().getBodyTop() && last2.getC()> wpLast2.getStockBean().getBodyTop() && last.getL() < last2.getL())
+					&& last.getC() < last.getO();
+			if(b) {
+				isHit = true;
+				extraMsg= "D0";
 			}
 		}
 

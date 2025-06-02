@@ -71,7 +71,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("AMD","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("TEAM","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";

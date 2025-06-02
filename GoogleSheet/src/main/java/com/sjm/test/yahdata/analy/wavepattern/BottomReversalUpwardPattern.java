@@ -58,7 +58,7 @@ public class BottomReversalUpwardPattern extends BaseWavePattern {
 
 		boolean condition2 =
 				WaveType.TOP.equals(wpLast1.getType()) &&
-				(last1.getC() > wpLast2.getStockBean().getBodyBottom() && last2.getC() > wpLast2.getStockBean().getBodyBottom()) &&
+				(last1.getBodyBottom() > wpLast2.getStockBean().getBodyBottom() && last2.getBodyBottom() > wpLast2.getStockBean().getBodyBottom()) &&
 				(last1.getL() < wpLast2.getL() || last2.getL() < wpLast2.getL() || last3.getL() < wpLast2.getL());
 
 		
