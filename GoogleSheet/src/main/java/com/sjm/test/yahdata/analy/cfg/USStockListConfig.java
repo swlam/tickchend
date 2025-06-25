@@ -64,6 +64,7 @@ public class USStockListConfig {
 	public static List<String> TECH 
 	 = Arrays.asList(
 	"CIEN",
+	"CRCL",
 	"NVEI",
 	"AUR",
 	"LITE",

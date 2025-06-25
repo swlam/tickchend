@@ -34,10 +34,7 @@ public class StockDownloadApp extends BaseApp{
 	* */
 
 	public static void main(String[] args) {
-
-		
 		StockDownloadApp app = new StockDownloadApp();
-
 
 //		ALL_TICKER = Arrays.asList("NVDA","AAPL","MSFT","GOOG","BABA", "TSLA");
 //		ALL_TICKER = Arrays.asList("NVDA");.
