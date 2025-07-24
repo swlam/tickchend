@@ -418,7 +418,7 @@ public class KHelper {
 
 		if(ratioCounterMaxPct >1 && ratio > 2) {
 			bodyType = KBodyType.XL.getValue();
-		}if(ratioCounterMaxPct >0.8 && ratio >= 1.8) {
+		}if(ratioCounterMaxPct >0.4 && ratio >= 1.8) {
 				bodyType = KBodyType.L.getValue();
 		}else if(last.getBodyDailyChgPct()>= prev.getBodyDailyChgPct() && ratio >=1.5 && ratio <=1.8) {
 			bodyType = KBodyType.M.getValue();
@@ -441,6 +441,10 @@ public class KHelper {
 	}
 	public static String isBigBodyPrevDay(List<StockBean> list){
 		List<StockBean> subList = list.subList(0, list.size()-1);
+		return convertKBodyName(subList);
+	}
+	public static String isBigBodyPrev2Day(List<StockBean> list){
+		List<StockBean> subList = list.subList(0, list.size()-2);
 		return convertKBodyName(subList);
 	}
 	public static String convertKBodyName(List<StockBean> list)

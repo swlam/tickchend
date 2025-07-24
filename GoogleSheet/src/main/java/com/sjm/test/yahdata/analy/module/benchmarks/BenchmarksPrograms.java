@@ -667,6 +667,7 @@ public class BenchmarksPrograms {
 		rtn.setDailyImportantCandlestickTradingPattern(KHelper.getTodayImportantCandlestickTradingPattern(stockList));
 		rtn.setDailyCandleStatus(KHelper.isBigBodyToday(stockList));
 		rtn.setPrev1DayCandleStatus(KHelper.isBigBodyPrevDay(stockList));
+		rtn.setPrev2DayCandleStatus(KHelper.isBigBodyPrev2Day(stockList));
 		rtn.setDailyVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prevStock, nowStock));
 		rtn.setPrev1DayVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prev2Stock, prevStock));
 		rtn.setPrev2DayVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prev3Stock, prev2Stock));

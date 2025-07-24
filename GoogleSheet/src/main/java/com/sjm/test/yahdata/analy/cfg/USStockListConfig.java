@@ -706,6 +706,7 @@ public class USStockListConfig {
 	"DECK",
 	"DELL",
 	"DFS",
+	"DFDV",
 	"DG",
 	"DGX",
 	"DHI",

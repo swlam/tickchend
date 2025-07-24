@@ -71,7 +71,7 @@ public class LiteWatchListRecentService extends BaseApp{
 //			CODE_POOL =   USStockListConfig.MAIN;
 //			CODE_POOL =   Stream.of(USStockListConfig.QQQ_COMPONENTS).flatMap(Collection::stream) .collect(Collectors.toList());S
 
-//			CODE_POOL = Arrays.asList("TEAM","QQQ","DIA","SPY");//USStockListConfig.ETF;
+//			CODE_POOL = Arrays.asList("NET","QQQ","DIA","SPY");//USStockListConfig.ETF;
 
 			ICONIC_CODE = "SPY";
 			BASE_STOCK_B = "QQQ";
@@ -355,6 +355,7 @@ public class LiteWatchListRecentService extends BaseApp{
 
 		msg.append("\t小浪型\t小浪型state\tPrice Status");
 		msg.append("\t強弱(-1D)\t今天強弱");
+		msg.append("\tK线Status(D-2)");
 		msg.append("\tK线Status(D-1)\tK线(Status)\t重要K线");
 
 		msg.append("\tVol(5D vs 20D)");
@@ -498,6 +499,7 @@ public class LiteWatchListRecentService extends BaseApp{
 				msg.append("\t"+ elemt.getStrongWeakTypePrevDay().getType());	//昨天強弱
 				msg.append("\t"+ elemt.getStrongWeakTypeToday().getType());	//今天強弱
 
+				msg.append("\t"+ elemt.getPrev2DayCandleStatus());//K线Status(D-2)
 				msg.append("\t"+ elemt.getPrev1DayCandleStatus());//K线Status(D-1)
 				msg.append("\t"+ elemt.getDailyCandleStatus()); 			//K线(Status)
 				msg.append("\t"+ elemt.getDailyImportantCandlestickTradingPattern());	//重要K线

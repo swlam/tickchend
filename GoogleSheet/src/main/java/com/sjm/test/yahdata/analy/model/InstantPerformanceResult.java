@@ -48,6 +48,7 @@ public class InstantPerformanceResult {
 	private String dailyCandleStatus;
 	private String dailyVolDescription;
 	private String prev1DayCandleStatus;
+	private String prev2DayCandleStatus;
 	private String prev1DayVolDescription;
 	private String prev2DayVolDescription;
 	private String priceStatus;
