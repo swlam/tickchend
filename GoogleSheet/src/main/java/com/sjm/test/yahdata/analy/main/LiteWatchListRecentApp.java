@@ -12,19 +12,19 @@ import lombok.extern.slf4j.Slf4j;
 public class LiteWatchListRecentApp extends BaseApp{
 	
 	private static String DEFAULT_INTERVAL = Const.INTERVAL_D;
-	public static String targetMonth = "-07-";
-	public static String END_DATE = "2028-05-30";
+	public static String targetMonth = "-08-";
+	public static String END_DATE = "2045-08-06";
 	public static String COUNTRY_MARKET = "US";//defaul.t
 
 	public static void main(String[] args) throws Exception{
 //		GlobalConfig.IS_UPLOAD_TO_GOOGLE_SHEETS = false;
 //		GlobalConfig.setYearOfStockData(YEARS);
-		Const.WAVE_CHECK_PERIOD_DAYS = 10;
+		Const.WAVE_CHECK_PERIOD_DAYS = 8;
 		COUNTRY_MARKET = "US";
 //		COUNTRY_MARKET = "CN";
 //		COUNTRY_MARKET = "HK";
 		Const.IS_INTRADAY = true;
-//
+
 
 		LiteWatchListRecentService service = new LiteWatchListRecentService();
 		service.setEndDate(END_DATE);
