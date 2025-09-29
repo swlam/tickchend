@@ -11,6 +11,7 @@ import com.sjm.test.yahdata.analy.helper.CFGHelper;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.sjm.test.yahdata.analy.helper.StreamTransformHelper;
 import com.sjm.test.yahdata.analy.model.InstantPerformanceResult;
@@ -71,11 +72,17 @@ public class DatabaseSeeder implements ApplicationListener<ContextRefreshedEvent
 
     BenchmarksPrograms bchkProgram = new BenchmarksPrograms();
     List<InstantPerformanceResult> instantPerformanceResultList = bchkProgram.doBenchmarks(CODE_POOL, stockPeriodList, DEFAULT_INTERVAL, lastBean.getTxnDateInt());
-    List<InstantPerformanceResult> results = instantPerformanceResultList.stream().filter(x-> x.getCurrentStockBean().getTxnDateInt() == lastBean.getTxnDateInt()).toList();
+//    List<InstantPerformanceResult> results = instantPerformanceResultList.stream()
+//            .filter(x-> x.getCurrentStockBean().getTxnDateInt() == lastBean.getTxnDateInt()).toList();
 
-
+    List<InstantPerformanceResult> results = instantPerformanceResultList.stream()
+            .filter(x -> x.getCurrentStockBean().getTxnDateInt() == lastBean.getTxnDateInt())
+            .collect(Collectors.toList()); // 使用 Collectors.toList()
       stockTargetListRepository.saveAll(results);
       System.out.println("EXPORT to MongoDB");
 
   }
 }
+
+
+

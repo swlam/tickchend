@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.maas.util.DateHelper;
 import com.maas.util.GeneralHelper;
+import com.sjm.test.yahdata.analy.analyzer.CandlePatternDetector;
+import com.sjm.test.yahdata.analy.analyzer.LargeCandleStickAnalyzer;
 import com.sjm.test.yahdata.analy.bean.PvrStockBean;
 import com.sjm.test.yahdata.analy.bean.StrongWeakTypeBean;
 import com.sjm.test.yahdata.analy.bean.VolumePriceBean;
@@ -115,6 +116,13 @@ public class BenchmarksPrograms {
 			try {
 
 				List<StockBean> stockList = StreamTransformHelper.extractByStockCode(fullTrunkList, code);
+
+
+//				List<MACDCalculator.MACDResult> macdResults = MACDCalculator.calculateMACD(stockList);
+//				for (MACDCalculator.MACDResult result : macdResults) {
+//					System.out.println(result);
+//				}
+
 				if (stockList == null || stockList.size() < 10) {					
 					log.warn("SKIP " + code + " due to Hist data size = "+stockList.size()+". The " + cntSk + " stock has currently been processed.");
 					continue;
@@ -156,11 +164,11 @@ public class BenchmarksPrograms {
 					StockBean last4 = stockList.get(stockList.size() - 4);
 					StockBean last5 = stockList.get(stockList.size() - 5);
 					recentHBean.setRsi9(last1.getRsi9());
-					String rsiTrend = GeneralHelper.to2DecimalPlaces(last5.getRsi9())
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last4.getRsi9())
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last3.getRsi9()) 
-							+ " _ " + GeneralHelper.to2DecimalPlaces(last2.getRsi9())
-					 		+ " _ " + GeneralHelper.to2DecimalPlaces(last1.getRsi9());
+					String rsiTrend = GeneralHelper.to100(last5.getRsi9())
+							+ "_" + GeneralHelper.to100(last4.getRsi9())
+							+ "_" + GeneralHelper.to100(last3.getRsi9())
+							+ "_" + GeneralHelper.to100(last2.getRsi9())
+					 		+ "_" + GeneralHelper.to100(last1.getRsi9());
 
 					recentHBean.setRsi9TrendIn5Days(rsiTrend);
 //				}
@@ -610,15 +618,16 @@ public class BenchmarksPrograms {
 		StockBean nowStock = stockList.get(stockList.size() - 1);
 		StockBean prevStock = stockList.get(stockList.size() - 2);
 		StockBean prev2Stock = stockList.get(stockList.size() - 3);
-		StockBean prev3Stock = stockList.get(stockList.size() - 3);
+		StockBean prev3Stock = stockList.get(stockList.size() - 4);
 
 
 		InstantPerformanceResult rtn = new InstantPerformanceResult(stockList);
 
 		rtn.setCurrentStockBean(nowStock);
 		rtn.setPrevStockBean(prevStock);
-		rtn.setPrev2StockBean(prevStock);
-		
+		rtn.setPrev2StockBean(prev2Stock);
+		rtn.setPrev3StockBean(prev3Stock);
+
 		Double ytd = this.getPerformance(stockList, "01-01", null);
 		Double q1 = this.getPerformance(stockList, "01-01", "03-31");
 		Double q2 = this.getPerformance(stockList, "04-01", "06-30");
@@ -658,6 +667,7 @@ public class BenchmarksPrograms {
 		rtn.setDailyImportantCandlestickTradingPattern(KHelper.getTodayImportantCandlestickTradingPattern(stockList));
 		rtn.setDailyCandleStatus(KHelper.isBigBodyToday(stockList));
 		rtn.setPrev1DayCandleStatus(KHelper.isBigBodyPrevDay(stockList));
+		rtn.setPrev2DayCandleStatus(KHelper.isBigBodyPrev2Day(stockList));
 		rtn.setDailyVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prevStock, nowStock));
 		rtn.setPrev1DayVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prev2Stock, prevStock));
 		rtn.setPrev2DayVolDescription(VolumePriceStructureHelper.getComparisonOfTwoDaysTradingVolumes(prev3Stock, prev2Stock));
@@ -694,12 +704,16 @@ public class BenchmarksPrograms {
 
 		String maLongArrangeWithinTheMonth = this.getMovingAvgLongArrangementWithinTheMonth(stockList, days);					
 		rtn.setMovingAvgLongArrangementWithinTheMonth(maLongArrangeWithinTheMonth);
+
+		rtn.setPercentageDifferenceFromHighestPrice(this.getPercentageDifferenceFromHighestPrice(stockList, 50));
 		rtn.setTriplePregnancyInPassFewDays(this.findTriplePregnancyInPassFewDays(stockList, 10));
 		
-		String bigDarkBodyWithMoreVol = KHelper.getBigDarkBodyWithinTheDays(stockList, 10);
-		rtn.setBigDarkBodyWithMoreVol(bigDarkBodyWithMoreVol);
-		
-		
+
+		rtn.setBigDarkBodyWithMoreVolAndBreakUp(LargeCandleStickAnalyzer.findRecentLargeDarkCandleWithHighVolumeAndBreakUp(stockList, 15));
+		rtn.setBigWhiteBodyWithMoreVolAndBreakDown(LargeCandleStickAnalyzer.findRecentLargeWhiteCandleWithHighVolumeAndBreakdown(stockList, 15));
+		rtn.setHighVolumeAndBreakUp(LargeCandleStickAnalyzer.findRecentHighVolume(stockList, 20));
+		rtn.setHighVolumeAndBreakDown(LargeCandleStickAnalyzer.findRecentHighVolumeGoDown(stockList, 20));
+
 //		String upDownBreakThreeWavePointToday = this.getUpDownBreak3WavePoint(stockList, waveShape, days);
 //		rtn.setUpDownBreakThreeWavePointToday(upDownBreakThreeWavePointToday);
 		
@@ -712,6 +726,7 @@ public class BenchmarksPrograms {
 		String bbUpBreakAtime = this.getBollingerUpBreakForATimeInRecentDays(stockList, 5);
 		rtn.setBbUpBreakForATime(bbUpBreakAtime);
 		rtn.setLastEngulfingInRecentDays(this.getLastEngulfingInRecentDays(stockList,topList, botList, 5));
+		rtn.setGoingDown3HammerInRecentDays(this.getGoingDown3HammerInRecentDays(stockList, 10));
 
 		return rtn;
 
@@ -1055,7 +1070,39 @@ public class BenchmarksPrograms {
 			return null;
 		}
 	}
-	
+
+	public String getPercentageDifferenceFromHighestPrice(List<StockBean> srcstockList, int days) {
+		if(srcstockList.size() < days) {
+			return Const.EMPTY;
+		}
+
+
+		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		StockBean maxStock = null;
+//		StockBean minStock = null;
+
+		maxStock = stockList.stream().max(Comparator.comparingDouble(StockBean::getH)).orElse(null);
+//		minStock = stockList.stream().min(Comparator.comparingDouble(StockBean::getL)).orElse(null);
+
+
+		if(maxStock.getTxnDateInt() == srcstockList.getLast().getTxnDateInt() ){
+			return "TODAY";
+		}
+
+		// 获取最后一天的 C 值
+		double lastDayCValue = srcstockList.get(srcstockList.size() - 1).getC();
+
+		// 计算与最高价和最低价的百分比差异
+//		double maxPercentageDifference = ((lastDayHValue - maxStock.getH()) / maxStock.getH()) * 100;
+//		double minPercentageDifference = ((lastDayHValue - minStock.getH()) / minStock.getH()) * 100;
+
+		double maxDifference = ((lastDayCValue - maxStock.getH()) / maxStock.getH());
+		//Percentage difference from highest price
+//		System.out.println("与最高价的百分比差异: " + maxPercentageDifference + "%");
+//		System.out.println("与最低价的百分比差异: " + minPercentageDifference + "%");
+
+		return GeneralHelper.toPct(maxDifference);
+	}
 
 	//New high reached within the month, newHighReachedWithinTheMonth
 		public String getMovingAvgLongArrangementWithinTheMonth(List<StockBean> srcstockList, int days) {
@@ -1155,102 +1202,16 @@ public class BenchmarksPrograms {
 		if (srcstockList.size() < days) {
 			return Const.SPACE;
 		}
-		int pregnancyDays = 3;
 
-		String returnDate = "";
-		List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		return CandlePatternDetector.findTriplePregnancyInPassFewDays(srcstockList, days);
 
-		for (int i = 0; i < stockBeans.size() - (pregnancyDays ); i++) {
-			StockBean a = stockBeans.get(i);
-			List<StockBean> subsequentBeans = IntStream.range(i + 1, i + pregnancyDays+1)
-					.mapToObj(stockBeans::get)
-					.collect(Collectors.toList());
-
-			if (subsequentBeans.stream().allMatch(b -> isCovering(a, b))) {
-				returnDate = subsequentBeans.get(subsequentBeans.size() - 1).getTxnDate();
-			}
-		}
-
-		return returnDate;
+//		List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+//      return CandlePatternDetector.findNpletsResult(stockBeans);
 	}
 
-	private boolean isCovering(StockBean a, StockBean b) {
-		// 实现 isCovering 方法的逻辑
-		// 示例：假设 a 的最高价大于等于 b 的最高价且 a 的最低价小于等于 b 的最低价
-		return a.getBodyTop() >= b.getBodyTop() && a.getBodyBottom() <= b.getBodyBottom();
-	}
-		
-//		public String findTriplePregnancyInPassFewDays(List<StockBean> srcstockList, int days) {
-//			if(srcstockList.size() < days) {
-//				return Const.SPACE;
-//			}
-//
-//			String returnDate = "";
-//			List<StockBean> stockBeans = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
-//			for (int i = 0; i < stockBeans.size() - 3; i++) {
-//				StockBean a = stockBeans.get(i);
-//				StockBean b = stockBeans.get(i + 1);
-//				StockBean c = stockBeans.get(i + 2);
-//				StockBean d = stockBeans.get(i + 3);
-//				if (isCovering(a, b) && isCovering(a, c) && isCovering(a, d)) {
-//					returnDate = d.getTxnDate();
-//				}
-//			}
-//
-//
-//			return returnDate;
-//
-//		}
-//
-//		private static boolean isCovering(StockBean a, StockBean b) {
-//			return a.o <= b.o && a.o <= b.c && a.c >= b.o && a.c >= b.c;
-//		}
 
-//		public String getUpDownBreak3WavePoint(List<StockBean> srcstockList, WaveShape wavePointResult, int days) {
-//
-//			if(wavePointResult.getSortedTopList().isEmpty()|| wavePointResult.getSortedTopList().size() <3)
-//				return Const.SPACE;
-//
-//			StockBean last1 = srcstockList.get(srcstockList.size()-1);
-//			StockBean last2 = srcstockList.get(srcstockList.size()-2);
-//
-//			WavePoint lastTop1 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-1);
-//			WavePoint lastTop2 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-2);
-//			WavePoint lastTop3 = wavePointResult.getSortedTopList().get(wavePointResult.getSortedTopList().size()-3);
-//
-//			boolean bUpBCheck1 = (last1.getBodyBottom() <= lastTop1.getH() && last1.getBodyBottom() <= lastTop2.getH() && last1.getBodyBottom() <= lastTop3.getH());
-//			boolean bUpBCheck2 = (last1.getC() >= lastTop1.getH()) && (last1.getC() >= lastTop2.getH()) && (last1.getC() >= lastTop3.getH());
-//			boolean bNoUpBreakYesterday = last2.getBodyTop() < lastTop1.getH();
-//			boolean bUpBCheck3 =  (Const.IS_INTRADAY==true)?true:last1.getDayVolumeChgPct() >1.2;
-//			boolean bUpBreakOne = (last1.getC() >= lastTop1.getH()) && (last1.getC() < lastTop2.getH()) && (last1.getC() < lastTop3.getH()) ;
-//
-//
-//			if(wavePointResult.getSortedBotList().isEmpty() || wavePointResult.getSortedBotList().size() <3)
-//				return Const.SPACE;
-//
-//			WavePoint lastBot1 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-1);
-//			WavePoint lastBot2 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-2);
-//			WavePoint lastBot3 = wavePointResult.getSortedBotList().get(wavePointResult.getSortedBotList().size()-3);
-//
-//			boolean bDownBreakCheck1 = (last1.getBodyTop() >= lastBot1.getL() && last1.getBodyTop() >= lastBot2.getL() && last1.getBodyTop() >= lastBot3.getL());
-//			boolean bDownBreakCheckt2 = (last1.getC() < lastBot1.getL()) && (last1.getC() < lastBot2.getL()) && (last1.getC() < lastBot3.getL());
-//			boolean bNoDownBreakYesterday = (last1.getBodyBottom() > lastBot1.getL());
-//			boolean bDownBreakOne = (last1.getC() < lastBot1.getL()) && (last1.getC() > lastBot2.getL()) && (last1.getC() > lastBot3.getL()) ;
-//
-//
-//
-//			Set<String> result = new HashSet<String>();
-//			if(bUpBCheck1 && bUpBCheck2 && bUpBCheck3 && bNoUpBreakYesterday)
-//				result.add("UP破小3頂(D0)");
-//			if(bUpBCheck1 && bUpBCheck3 && bUpBreakOne && bNoUpBreakYesterday)
-//				result.add("UP破小1頂(D0)");
-//			if(bDownBreakCheck1 && bDownBreakCheckt2 && bNoDownBreakYesterday)
-//				result.add("DOWN破小3底(D0)");
-//			if(bDownBreakCheck1 && bDownBreakOne && bNoDownBreakYesterday)
-//				result.add("DOWN破小1底(D0)");
-//
-//			return result.isEmpty()?"":result.toString();
-//		}
+
+
 		
 		public String getLargeVolumeWithinTheMonth(List<StockBean> srcstockList, int days) {
 			if(srcstockList.size() < days)
@@ -1371,11 +1332,10 @@ public class BenchmarksPrograms {
 
 		Set<String> hashSet = new HashSet<String>();
 		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
-		for( int i=1; i<stockList.size()-1; i++) {
+		for( int i=1; i<stockList.size(); i++) {
 			StockBean curr = stockList.get(i);
 			StockBean prev = stockList.get(i - 1);
-			if (lastWP.getStockBean().getTxnDateInt() > curr.getTxnDateInt()
-					|| curr.getDayVolumeChgPct()<0.95 || curr.getL()< lastWP.getH()
+			if (lastWP.getStockBean().getTxnDateInt() > curr.getTxnDateInt() || curr.getDayVolumeChgPct() < 0.9
 			)
 			{
 				continue;
@@ -1394,7 +1354,7 @@ public class BenchmarksPrograms {
 					WavePoint last2 = sortedTopList.get(sortedTopList.size() - 2);
 					WavePoint last3 = sortedTopList.get(sortedTopList.size() - 3);
 
-					if(last2.getH() > lastWP.getH() || last3.getH() > lastWP.getH()) {
+					if(last2.getH() < lastWP.getH() || last3.getH() < lastWP.getH()) {
 						isMatch = true;
 					}
 				}else{
@@ -1412,7 +1372,7 @@ public class BenchmarksPrograms {
 					WavePoint last2 = sortedBotList.get(sortedBotList.size() - 2);
 					WavePoint last3 = sortedBotList.get(sortedBotList.size() - 3);
 
-					if (last2.getL() < lastWP.getL() || last3.getL() < lastWP.getL()) {
+					if (last2.getL() > lastWP.getL() || last3.getL() > lastWP.getL()) {
 						isMatch = true;
 					}
 				}else{
@@ -1427,6 +1387,27 @@ public class BenchmarksPrograms {
 
 		return hashSet.toString();
 
+
+	}
+
+
+	public String getGoingDown3HammerInRecentDays(List<StockBean> srcstockList, int days) {
+		if (srcstockList.size() < days) {
+			return "";
+		}
+		List<StockBean> stockList = srcstockList.subList(srcstockList.size() - days, srcstockList.size());
+		for(int i=0; i<stockList.size()-3; i++) {
+			StockBean first = stockList.get(i);
+			StockBean second = stockList.get(i+1);
+			StockBean third = stockList.get(i+2);
+
+			boolean is3Hammer = KHelper.isHammer(first) && KHelper.isHammer(second) && KHelper.isHammer(third);
+
+			boolean b = first.getH()> second.getH() && second.getH() > third.getH();
+			if(is3Hammer && b)
+				return "3Hammer_" + third.getTxnDate();
+		}
+		return "";
 
 	}
 	

@@ -112,71 +112,41 @@ public abstract class BaseWavePattern {
 	}
 
 
-//	public static List<WavePoint> distinctSortedTopBotList(List<WavePoint> sortedTopBotList){
-//		List<WavePoint> returnSortedTopBotList = new ArrayList<WavePoint>();
-//		if(sortedTopBotList.isEmpty())
-//			return returnSortedTopBotList;
-//
-//		WavePoint latestWavePoint = sortedTopBotList.get(sortedTopBotList.size()-1);
-//		final boolean isTopBegin;
-//		if(latestWavePoint.getType()==WaveType.TOP){
-//			isTopBegin = true;
-//		}else{
-//			isTopBegin = false;
-//		}
-//
-//
-//		returnSortedTopBotList.add(latestWavePoint);
-//
-//
-//
-//		// Find the next TOP after the latest BOT
-//		Optional<WavePoint> nextTB1 = sortedTopBotList.stream()
-//				.filter(wavePoint -> isTopBegin?(WaveType.BOT == wavePoint.getType()):(WaveType.TOP == wavePoint.getType()) )
-//				.filter(wavePoint -> wavePoint.getDateInt()<latestWavePoint.getDateInt())
-//				.max(Comparator.comparing(WavePoint::getDateInt));
-//
-//
-//
-//
-//		if (nextTB1.isPresent()) {
-//			WavePoint nextTB1Wp = nextTB1.get();
-//			returnSortedTopBotList.add(nextTB1Wp);
-//
-//
-//			// Find the next BOT after the found TOP
-//			Optional<WavePoint> nextTB2 = sortedTopBotList.stream()
-////						.filter(wavePoint -> WaveType.BOT == wavePoint.getType())
-//					.filter(wavePoint -> isTopBegin?(WaveType.TOP == wavePoint.getType()):(WaveType.BOT == wavePoint.getType()) )
-//					.filter(wavePoint -> wavePoint.getDateInt()<nextTB1Wp.getDateInt())
-//					//.filter(wavePoint -> wavePoint.getDate().isAfter(nextTopWavePoint.getDate()))
-//					.max(Comparator.comparing(WavePoint::getDateInt));
-//
-//
-//			if (nextTB2.isPresent()) {
-//
-//				WavePoint nextTB2Wp = nextTB2.get();
-//				returnSortedTopBotList.add(nextTB2Wp);
-//
-//				Optional<WavePoint> nextTB3 = sortedTopBotList.stream()
-////						.filter(wavePoint -> WaveType.BOT == wavePoint.getType())
-//						.filter(wavePoint -> isTopBegin?(WaveType.BOT == wavePoint.getType()):(WaveType.TOP == wavePoint.getType()) )
-//						.filter(wavePoint -> wavePoint.getDateInt()<nextTB2Wp.getDateInt())
-//						//.filter(wavePoint -> wavePoint.getDate().isAfter(nextTopWavePoint.getDate()))
-//						.max(Comparator.comparing(WavePoint::getDateInt));
-//				if (nextTB3.isPresent()) {
-//					returnSortedTopBotList.add(nextTB3.get());
-//				}
-//
-//
-//			} else {
-////				System.out.println("No next BOT found after the next TOP.");
-//			}
-//		} else {
-////			System.out.println("No next TOP found after the latest BOT.");
-//		}
-//		Collections.reverse(returnSortedTopBotList);
-//
-//	return returnSortedTopBotList;
-//	}
+	public int findMaxPosition(List<WavePoint> numbers) {
+		if (numbers == null || numbers.isEmpty()) {
+			throw new IllegalArgumentException("列表不能为空");
+		}
+
+		int maxIndex = 0;
+		WavePoint maxValue = numbers.get(0);
+
+		for (int i = 1; i < numbers.size(); i++) {
+			if (numbers.get(i).getH() > maxValue.getH()) {
+				maxValue = numbers.get(i);
+				maxIndex = i;
+			}
+		}
+
+		return maxIndex;
+	}
+
+	public int findMinPosition(List<WavePoint> numbers) {
+		if (numbers == null || numbers.isEmpty()) {
+			throw new IllegalArgumentException("列表不能为空");
+		}
+
+		int minIndex = 0;
+		WavePoint minValue = numbers.get(0);
+
+		for (int i = 1; i < numbers.size(); i++) {
+			if (numbers.get(i).getL() < minValue.getL()) {
+				minValue = numbers.get(i);
+				minIndex = i;
+			}
+		}
+
+		return minIndex;
+	}
+
+
 }

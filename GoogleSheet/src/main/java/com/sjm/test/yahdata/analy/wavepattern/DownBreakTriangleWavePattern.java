@@ -13,7 +13,7 @@ import com.sjm.test.yahdata.analy.helper.StreamTransformHelper;
 import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePoint;
 import com.sjm.test.yahdata.analy.ta.KHelper;
 
-public class DownBreakTriangleWavePattern extends BaseWavePattern {
+public class DownBreakTriangleWavePattern extends BaseTriangleWavePattern {
 
 	@Override
 	public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
@@ -29,8 +29,9 @@ public class DownBreakTriangleWavePattern extends BaseWavePattern {
 		if(sortedTopList.size()<3 || sortedBotList.size()<3)
 			return msg;
 		
-		StockBean last = stockList.get(stockList.size()-1);
-		
+		StockBean last1 = stockList.getLast();
+		StockBean last2 = stockList.get(stockList.size()-2);
+
 		WavePoint topLast1 = sortedTopList.get(sortedTopList.size()-1);
 		WavePoint topLast2 = sortedTopList.get(sortedTopList.size()-2);
 		WavePoint topLast3 = sortedTopList.get(sortedTopList.size()-3);
@@ -40,44 +41,73 @@ public class DownBreakTriangleWavePattern extends BaseWavePattern {
 		WavePoint botLast3 = sortedBotList.get(sortedBotList.size()-3);
 		
 		
-		boolean ispass1 = false;
-		boolean ispass2 = false;
-		if(topLast3.getStockBean().getH()>=topLast2.getStockBean().getH() && topLast2.getStockBean().getH()>=topLast1.getStockBean().getH()) {
-			ispass1 = true;
-		}
-		
-//		if(topLast3.getStockBean().getBodyTop()>=topLast2.getStockBean().getBodyTop() && topLast2.getStockBean().getBodyTop()>=topLast1.getStockBean().getBodyTop()) {
+//		boolean ispass1 = false;
+//		boolean ispass2 = false;
+//		boolean ispass3 = false;
+//
+//		if(topLast3.getStockBean().getH()>=topLast2.getStockBean().getH()
+//				&& topLast2.getStockBean().getH()>=topLast1.getStockBean().getH()) {
 //			ispass1 = true;
 //		}
-
-
-		
-		if(botLast3.getStockBean().getL()<=botLast2.getStockBean().getL() && botLast2.getStockBean().getL()<=botLast1.getStockBean().getL()) {
-			ispass2 = true;
-		}
-		
-//		if(botLast3.getStockBean().getBodyBottom()<=botLast2.getStockBean().getBodyBottom() && botLast2.getStockBean().getBodyBottom()<=botLast1.getStockBean().getBodyBottom()) {
+//
+////		if(topLast3.getStockBean().getBodyTop()>=topLast2.getStockBean().getBodyTop() && topLast2.getStockBean().getBodyTop()>=topLast1.getStockBean().getBodyTop()) {
+////			ispass1 = true;
+////		}
+//
+//
+//
+//		if(botLast3.getStockBean().getL()<=botLast2.getStockBean().getL() && botLast2.getStockBean().getL()<=botLast1.getStockBean().getL()) {
 //			ispass2 = true;
 //		}
+//
+////		if(botLast3.getStockBean().getBodyBottom()<=botLast2.getStockBean().getBodyBottom() && botLast2.getStockBean().getBodyBottom()<=botLast1.getStockBean().getBodyBottom()) {
+////			ispass2 = true;
+////		}
+//
+//		if( topLast1.getL() > botLast3.getL()){
+//			ispass3 = true;
+//		}
+//
+//
+//		List<StockBean>  botToEndList = StreamTransformHelper.subListWithEndElement(stockList, botLast1.getDate(), last1.getTxnDate());;
+//		List<StockBean>  targetStockList1 = botToEndList.subList(1, botToEndList.size());
+//		StockBean relativeLowSk = StreamTransformHelper.findMinLowStock(targetStockList1);
+//		if(relativeLowSk.getH() < botLast1.getL()){
+//			ispass2 = false;
+//		}
+//
+//		if(!(ispass1 && ispass2 && ispass3))
+//			return msg;
 
-		List<StockBean>  botToEndList = StreamTransformHelper.subListWithEndElement(stockList, botLast1.getDate(), last.getTxnDate());;
-		List<StockBean>  targetStockList1 = botToEndList.subList(1, botToEndList.size());
-		StockBean relativeLowSk = StreamTransformHelper.findMinLowStock(targetStockList1);
-		if(relativeLowSk.getH() < botLast1.getL()){
-			ispass2 = false;
-		}
+		boolean isTrangleWave = this.isTrangleWave(stockList, sortedTopList, sortedBotList);
+		if(!isTrangleWave)
+			return msg;
 
 
 //		double thresholdMinRequired = topLast1.getStockBean().getL() * 0.95;
 		double thresholdRequired = botLast1.getStockBean().getL() * 1.03;
-		
-		if(ispass1 && ispass2
-			&& topLast1.getL() > botLast3.getL()
-			&& last.getC()<=thresholdRequired && KHelper.isBearishCandle(last))
+
+
+		if(last1.getC()<=thresholdRequired && KHelper.isBearishCandle(last1)
+			&& last2.getBodyBottom() > botLast1.getL()
+			&& last1.getC() <= botLast1.getL()
+		)
+		{
+			msg.add(Const.DOWN+Const.D0+"破小三角");
+		}else if(last1.getC()<=thresholdRequired && KHelper.isBearishCandle(last1)
+				&& last2.getL() > botLast1.getL()
+				&& last1.getC() <= botLast1.getStockBean().getBodyTop() && last1.getC() >= botLast1.getStockBean().getBodyBottom()
+				&& last1.getL() > botLast1.getL()
+		)
 		{
 			msg.add(Const.WAIT+Const.DOWN+"破小三角");
-			
+
+		}else if(last1.getC() <= botLast1.getStockBean().getBodyBottom() && last2.getBodyBottom() < botLast1.getL()){
+			msg.add(Const.DOWN+"破小三角");
+		}else{
+			msg.add("小三角");
 		}
+
 		
 		return msg;
 	}

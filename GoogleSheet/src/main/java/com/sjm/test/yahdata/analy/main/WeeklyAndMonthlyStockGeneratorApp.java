@@ -3,8 +3,8 @@ package com.sjm.test.yahdata.analy.main;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.temporal.IsoFields;
+import java.util.*;
 
 import com.sjm.test.yahdata.analy.bean.raw.StockBean;
 import com.sjm.test.yahdata.analy.bean.raw.StockData;
@@ -39,13 +39,13 @@ public class WeeklyAndMonthlyStockGeneratorApp extends BaseApp{
 				StockDataCsvWriter csvWriter = new StockDataCsvWriter();
 				
 //				// Generate the weekly stock data
-		        List<StockData> stockDataList = generateWeeklyStocks(symbol, dailyStocks);
+		        List<StockData> stockDataList = convertDailyToWeekly(symbol, dailyStocks);
 		        String path = GlobalConfig.getDefaultDownloadPath(Const.INTERVAL_W);
 		        
 		        csvWriter.writeStocksToCSV(stockDataList, path + symbol);
 				
 				// Generate the monthly stock data
-		        stockDataList = generateMonthlyStocks(symbol, dailyStocks);
+		        stockDataList = convertDailyToMonthly(symbol, dailyStocks);
 		        path = GlobalConfig.getDefaultDownloadPath(Const.INTERVAL_M);
 				csvWriter.writeStocksToCSV(stockDataList, path + symbol);
 				
@@ -58,10 +58,92 @@ public class WeeklyAndMonthlyStockGeneratorApp extends BaseApp{
 		
 		log.info("Export "+cnt+" csv files from D to W, Done.");
     }
-	
-	
-	
-	
+
+    public static List<StockData> convertDailyToWeekly(String symbol, List<StockBean> dailyStockList) {
+        List<StockData> weeklyStockList = new ArrayList<>();
+        Map<String, StockData> weeklyMap = new HashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (StockBean dailyStock : dailyStockList) {
+            LocalDate date = LocalDate.parse(dailyStock.getTxnDate(), formatter);
+            int weekOfYear = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+            int year = date.get(IsoFields.WEEK_BASED_YEAR);
+
+            String weekKey = year + "-" + weekOfYear;
+
+            if (!weeklyMap.containsKey(weekKey)) {
+//                tockData weeklyStock = new StockData(symbol, "W", weekStartDateString, weeklyOpenValue, weeklyCloseValue,
+//                        weeklyHighValue, weeklyLowValue, weeklyVolume);
+                        // 初始化每周的第一条记录作为开盘价
+                weeklyMap.put(weekKey, new StockData(
+                        dailyStock.getStockCode(), "W",
+                        dailyStock.getTxnDate(),
+                        dailyStock.getO(),
+                        dailyStock.getC(),
+                        dailyStock.getH(),
+                        dailyStock.getL(),
+                        dailyStock.getVolume()
+                ));
+            } else {
+                StockData weeklyStock = weeklyMap.get(weekKey);
+                // 更新收盘价
+                weeklyStock.setC(dailyStock.getC());
+                // 更新最高价
+                weeklyStock.setH(Math.max(weeklyStock.getH(), dailyStock.getH()));
+                // 更新最低价
+                weeklyStock.setL(Math.min(weeklyStock.getL(), dailyStock.getL()));
+                // 更新成交量
+                weeklyStock.setVolume(weeklyStock.getVolume() + dailyStock.getVolume());
+            }
+        }
+
+        weeklyStockList.addAll(weeklyMap.values());
+        Collections.sort(weeklyStockList, Comparator.comparing(StockData::getDayOneDate));
+        return weeklyStockList;
+    }
+
+    public static List<StockData> convertDailyToMonthly(String symbol, List<StockBean> dailyStockList) {
+        List<StockData> monthlyStockList = new ArrayList<>();
+        Map<String, StockData> monthlyMap = new HashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (StockBean dailyStock : dailyStockList) {
+            LocalDate date = LocalDate.parse(dailyStock.getTxnDate(), formatter);
+            int year = date.getYear();
+            int month = date.getMonthValue();
+
+            String monthKey = year + "-" + month;
+
+            if (!monthlyMap.containsKey(monthKey)) {
+                // 初始化每月的第一条记录作为开盘价
+                monthlyMap.put(monthKey, new StockData(
+                        dailyStock.getStockCode(), "M",
+                        dailyStock.getTxnDate(),
+                        dailyStock.getO(),
+                        dailyStock.getC(),
+                        dailyStock.getH(),
+                        dailyStock.getL(),
+                        dailyStock.getVolume()
+                ));
+            } else {
+                StockData monthlyStock = monthlyMap.get(monthKey);
+                // 更新收盘价
+                monthlyStock.setC(dailyStock.getC());
+                // 更新最高价
+                monthlyStock.setH(Math.max(monthlyStock.getH(), dailyStock.getH()));
+                // 更新最低价
+                monthlyStock.setL(Math.min(monthlyStock.getL(), dailyStock.getL()));
+                // 更新成交量
+                monthlyStock.setVolume(monthlyStock.getVolume() + dailyStock.getVolume());
+            }
+        }
+
+        monthlyStockList.addAll(monthlyMap.values());
+        Collections.sort(monthlyStockList, Comparator.comparing(StockData::getDayOneDate));
+        return monthlyStockList;
+    }
+
+    @Deprecated
 	public static List<StockData> generateWeeklyStocks(String symbol, List<StockBean> dailyStocks) {
         List<StockData> historicalStocks = new ArrayList<>();
         LocalDate weekStartDate = null;
@@ -122,7 +204,8 @@ public class WeeklyAndMonthlyStockGeneratorApp extends BaseApp{
         return historicalStocks;
     }
 
-    
+
+    @Deprecated
 	public static List<StockData> generateMonthlyStocks(String symbol, List<StockBean> dailyStocks) {
         List<StockData> historicalStocks = new ArrayList<>();
         LocalDate monthlyStartDate = null;

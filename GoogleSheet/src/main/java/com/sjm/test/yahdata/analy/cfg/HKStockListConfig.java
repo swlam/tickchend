@@ -112,6 +112,7 @@ public static List<String> TICKERS = Arrays.asList(
 "1220.HK",
 "0048.HK",
 "6163.HK",
+"6181.HK",
 "0928.HK",
 "0379.HK",
 "1143.HK",
@@ -179,6 +180,7 @@ public static List<String> TICKERS = Arrays.asList(
 "2700.HK",
 "1120.HK",
 "6812.HK",
+"0325.HK",
 "0399.HK",
 "1900.HK",
 "0918.HK",
@@ -830,7 +832,7 @@ public static List<String> TICKERS = Arrays.asList(
 "2356.HK",
 "1883.HK",
 "2038.HK",
-
+"9880.HK",
 "0639.HK",
 "1896.HK",
 "1477.HK",
@@ -1249,7 +1251,7 @@ public static List<String> HSI_ELEMENT = Arrays.asList(
         "0011.HK",
         "0012.HK",
         "0016.HK",
-        "0017.HK",
+//        "0017.HK",
         "0027.HK",
         "0066.HK",
         "0101.HK",
@@ -1279,6 +1281,7 @@ public static List<String> HSI_ELEMENT = Arrays.asList(
         "0968.HK",
         "0981.HK",
         "0992.HK",
+        "1024.HK",
         "1038.HK",
         "1044.HK",
         "1088.HK",
@@ -1299,6 +1302,7 @@ public static List<String> HSI_ELEMENT = Arrays.asList(
         "1997.HK",
         "2015.HK",
         "2020.HK",
+        "2057.HK",
         "2269.HK",
         "2313.HK",
         "2318.HK",
@@ -1320,6 +1324,7 @@ public static List<String> HSI_ELEMENT = Arrays.asList(
         "9618.HK",
         "9633.HK",
         "9888.HK",
+        "9901.HK",
         "9961.HK",
         "9988.HK",
         "9999.HK"
@@ -1389,29 +1394,29 @@ public static List<String> HSTECH = Arrays.asList(
         "0241.HK",
         "0268.HK",
         "0285.HK",
+        "0300.HK",
         "0522.HK",
         "0700.HK",
-        "0772.HK",
         "0780.HK",
         "0981.HK",
         "0992.HK",
         "1024.HK",
+        "1211.HK",
         "1347.HK",
-        "1797.HK",
+        "1698.HK",
         "1810.HK",
         "2015.HK",
         "2382.HK",
         "3690.HK",
         "3888.HK",
-        "6060.HK",
         "6618.HK",
         "6690.HK",
         "9618.HK",
         "9626.HK",
+        "9660.HK",
         "9866.HK",
         "9868.HK",
         "9888.HK",
-        "9898.HK",
         "9961.HK",
         "9988.HK",
         "9999.HK"
@@ -1447,6 +1452,7 @@ public static List<String> HK_BIOTECH = Arrays.asList(
 "2269.HK",
 "2359.HK",
 "2552.HK",
+"2555.HK",
 "2616.HK",
 "2696.HK",
 "3347.HK",
@@ -2636,6 +2642,7 @@ public static List<String> H_SHARES = Arrays.asList("0939.HK",
 		"1099.HK",
 		"2252.HK",
 		"6689.HK",
+        "6936.HK",
 		"1919.HK",
 		"9863.HK",
 		"1055.HK",
@@ -2896,7 +2903,8 @@ public static List<String> H_SHARES = Arrays.asList("0939.HK",
 		"1000.HK",
 		"1289.HK",
 		"6189.HK",
-		"1749.HK");
+		"1749.HK",
+        "3690.HK");
 
 
 public static List<String> RED_CHIPS = Arrays.asList(
@@ -3129,7 +3137,7 @@ public static List<String> DUAL_COUNTER_CNH = Arrays.asList(
 public static List<String> ETF = Arrays.asList(
 
  "2800.HK","2822.HK","2823.HK","3188.HK","2828.HK","3032.HK","3033.HK","2845.HK","3066.HK","3068.HK","7300.HK","7500.HK","7552.HK","7500.HK",
-	"3067.HK", "3005.HK", "3109.HK","3147.HK","3190.HK"
+	"3067.HK", "3005.HK", "3109.HK","3147.HK","3190.HK","3191.HK"
 );
 
 public static List<String> HK_OTHER = Arrays.asList( "2330.TW");
@@ -3170,6 +3178,6 @@ Stream.of( TICKERS,HSI_ELEMENT,
 		SHENZHEN_LIST, SHANGHAI_LIST)
     .flatMap(Collection::stream).distinct().sorted().collect(Collectors.toList());
 
-public static List<String> ALL = Stream.of( TICKERS, MAIN, USStockListConfig.CRYPTO)
+public static List<String> ALL = Stream.of( TICKERS, MAIN)
     .flatMap(Collection::stream).distinct().sorted().collect(Collectors.toList());
 }

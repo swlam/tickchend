@@ -184,6 +184,8 @@ public class DataFileReader {
 			bean.setL(Double.parseDouble(ls.get(3)));
 			bean.setC(Double.parseDouble(ls.get(4)));
 //			bean.setAdjC(Double.parseDouble(ls.get(5)));
+			bean.setBodyTop( Math.max(bean.getO(), bean.getC()));
+			bean.setBodyBottom( Math.min(bean.getO(), bean.getC()));
 
 			bean.setVolume(Double.parseDouble(ls.get(6)));
 

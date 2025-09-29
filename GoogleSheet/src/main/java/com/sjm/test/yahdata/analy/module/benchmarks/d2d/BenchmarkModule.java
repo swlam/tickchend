@@ -49,6 +49,11 @@ public class BenchmarkModule {
 	public List<BenchmarkBean> doDataRangeLogic(List<StockBean> allSameMonthDataList, String startMMDD, String endMMDD
 			) throws Exception, Exception {
 
+		List<BenchmarkBean> rtnBenchmarkList = new ArrayList<BenchmarkBean>();
+		if(allSameMonthDataList==null || allSameMonthDataList.isEmpty()){
+			return rtnBenchmarkList;
+		}
+
 		String firstTxnDate = allSameMonthDataList.get(0).getTxnDate();
 		String lastTxnDate = allSameMonthDataList.get(allSameMonthDataList.size() - 1).getTxnDate();
 
@@ -63,7 +68,7 @@ public class BenchmarkModule {
 
 		int yyyy = localDate.getYear();
 
-		List<BenchmarkBean> rtnBenchmarkList = new ArrayList<BenchmarkBean>();
+
 
 		do {
 

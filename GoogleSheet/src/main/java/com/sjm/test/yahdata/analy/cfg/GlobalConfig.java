@@ -18,8 +18,8 @@ public class GlobalConfig {
 
 	
 	public static final int LAST_DATE_OF_MONTH = 29;
-	
 
+	public static boolean IS_UPLOAD_TO_GOOGLE_SHEETS = true;
 	public static String STRATEGRY = Const.STRATEGY_FILTER_NONE;
 	
 	public static final boolean TO_PERCENTAGE_ENABLE = false;

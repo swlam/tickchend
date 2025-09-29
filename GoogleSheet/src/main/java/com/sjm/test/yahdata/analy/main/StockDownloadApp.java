@@ -34,19 +34,18 @@ public class StockDownloadApp extends BaseApp{
 	* */
 
 	public static void main(String[] args) {
-
-		
 		StockDownloadApp app = new StockDownloadApp();
 
-
 //		ALL_TICKER = Arrays.asList("NVDA","AAPL","MSFT","GOOG","BABA", "TSLA");
-//		ALL_TICKER = Arrays.asList("NVDA");
+//		ALL_TICKER = Arrays.asList("NVDA");.
 //		app.downloadStockProfile(ALL_TICKER);
 
 //		app. doMain("CN", Const.INTERVAL_D,CNStockListConfig.ALL_AVAILABLE);
 //		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.ALL);
 		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL);
-//		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL);
+//
+
+//		app. doMain("US", Const.INTERVAL_D,USStockListConfig.CRYPTO);
 
 //		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.HK_TEST);
 //		app. doMain("HK", Const.INTERVAL_D,HKStockListConfig.HSCEI_ELEMENT);
@@ -60,7 +59,6 @@ public class StockDownloadApp extends BaseApp{
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.DOW_COMPONENTS)
 //
 //
-//		;
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.SPX_COMPONENTS);
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.IWM_TOP_20_HOLDING);
 //		app. doMain("US", Const.INTERVAL_D,USStockListConfig.ALL_ETF);

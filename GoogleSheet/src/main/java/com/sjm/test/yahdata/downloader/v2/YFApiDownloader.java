@@ -32,7 +32,7 @@ public class YFApiDownloader {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://query2.finance.yahoo.com/v8/finance/chart/" + ticker + "?period1=631152000&period2=3471292800&interval=1d&events=history")
+                .url("https://query2.finance.yahoo.com/v8/finance/chart/" + ticker + "?period1=631152000&period2=4471292800&interval=1d&events=history")
                 .build();
         Gson gson = new Gson();
 

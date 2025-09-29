@@ -26,12 +26,13 @@ public class WavePatternAnalyticalResultHelper {
 	private UpBreakTriangleWavePattern upBreakTriangleWavePattern;
 	private DownBreakTriangleWavePattern downBreakTriangleWavePattern;
 
-	private TopReversalWavePattern topReversalWavePattern;
-	private BottomReversalWavePattern bottomReversalWavePattern;
+	private TopReversalDownwardPattern topReversalDownwardPattern;
+	private BottomReversalUpwardPattern bottomReversalUpwardPattern;
 
 	private FlatBottomWaitingBreakWavePattern flatBottomWaitingBreakWavePattern;
 	private FlatTopWaitingBreakWavePattern flatTopWaitingBreakWavePattern;
-
+	private UpBreakWPattern upBreakWPattern;
+//	private UpBreakPattern upBreakPattern;
 
 	public WavePatternAnalyticalResultHelper() {
 		handler = new PriceVolDirectionHandler();
@@ -42,12 +43,13 @@ public class WavePatternAnalyticalResultHelper {
 		upBreakTriangleWavePattern = new UpBreakTriangleWavePattern();
 		downBreakTriangleWavePattern = new DownBreakTriangleWavePattern();
 
-		topReversalWavePattern = new TopReversalWavePattern();
-		bottomReversalWavePattern = new BottomReversalWavePattern();
+		topReversalDownwardPattern = new TopReversalDownwardPattern();
+		bottomReversalUpwardPattern = new BottomReversalUpwardPattern();
 
 		flatTopWaitingBreakWavePattern = new FlatTopWaitingBreakWavePattern();
 		flatBottomWaitingBreakWavePattern = new FlatBottomWaitingBreakWavePattern();
-
+		upBreakWPattern = new UpBreakWPattern();
+//		upBreakPattern = new UpBreakPattern();
 	}
 	
 	//for wp=TOP AND (c < wp.H)
@@ -479,11 +481,11 @@ public class WavePatternAnalyticalResultHelper {
 	
 	public String findShape(List<StockBean> stockList, List<WavePoint> sortedTopBotList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
 		
-		Set<String> result = new LinkedHashSet<String>(); 
-		
+		Set<String> result = new LinkedHashSet<String>();
+//		result.addAll( upBreakPattern.find(stockList, sortedTopList, sortedBotList));
 		result.addAll( upBreakTriangleWavePattern.find(		stockList, sortedTopList, sortedBotList ));
 		result.addAll( downBreakTriangleWavePattern.find(	stockList, sortedTopList, sortedBotList ));
-		result.addAll( findReadyUpBreakW(		stockList, sortedTopBotList));
+		result.addAll( upBreakWPattern.find(		stockList, sortedTopList, sortedBotList));
 		result.addAll( findReadyDownBreakM(		stockList, sortedTopBotList));
 		result.addAll( downBreakWavePattern.find(		stockList, sortedTopList, sortedBotList));
 		result.addAll( upBreakWavePattern.find(		stockList, sortedTopList, sortedBotList));
@@ -498,8 +500,8 @@ public class WavePatternAnalyticalResultHelper {
 //		result.addAll( findFlatBottomByBotQty(			stockList, sortedTopBotList, botQty));
 		
 		
-		result.addAll( topReversalWavePattern.find(			stockList, sortedTopList, sortedBotList));
-		result.addAll( bottomReversalWavePattern.find(		stockList, sortedTopList, sortedBotList));
+		result.addAll( topReversalDownwardPattern.find(stockList, sortedTopList, sortedBotList));
+		result.addAll( bottomReversalUpwardPattern.find(stockList, sortedTopList, sortedBotList));
 //		result.addAll( findWaveHigherHigh(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHigherHighWithUpBegin(		stockList, sortedTopBotList));
 //		result.addAll( findWaveHeadAndShoulder(		stockList, sortedTopBotList));
@@ -924,106 +926,7 @@ public class WavePatternAnalyticalResultHelper {
 	
 	 private static final double DEVIATION = 0.02;
 	 
-	 private Set<String> findReadyUpBreakW(List<StockBean> stockList, List<WavePoint> sortedTopBotList) {
-			Set<String> attributes = new LinkedHashSet<String>();
 
-			
-			StockBean last1 = stockList.get(stockList.size()-1);
-			StockBean last2 = stockList.get(stockList.size()-2);
-
-		 	if(sortedTopBotList.size()<4 )
-				 return attributes;
-
-			WavePoint last1Bot = sortedTopBotList.get(sortedTopBotList.size()-1); //BOT
-			WavePoint last2Top = sortedTopBotList.get(sortedTopBotList.size()-2); //TOP ,need to break this 
-			WavePoint last3Bot = sortedTopBotList.get(sortedTopBotList.size()-3); //BOT
-			WavePoint last4Top = sortedTopBotList.get(sortedTopBotList.size()-4);//TOP
-			
-//			double topHighDiffPct = Math.abs( (last2Top.getH() - last4Top.getH()) / last4Top.getH() );
-//			boolean isSameTopHigh = (topHighDiffPct <= DEVIATION);
-			
-//			double botLowDiff = Math.abs( (last1Bot.getL() - last3Bot.getL()) / last3Bot.getL() );
-//			boolean isSameBottom = (botLowDiff <= DEVIATION);
-			
-			int daysDiffInTop = StreamTransformHelper.txDaysBetween(stockList, last4Top.getDate(), last2Top.getDate());
-			int daysDiffInBottom = StreamTransformHelper.txDaysBetween(stockList, last3Bot.getDate(), last1Bot.getDate());
-			
-			
-			boolean isValidKBody = true;
-			
-			if(KHelper.getBodySize(stockList)>=KBodyType.L.getValue() && last1.isOpenLowCloseHigh()==false )
-				isValidKBody = false;
-			
-//			Set<String> attributes = new HashSet<String>();
-			if(WaveType.BOT==last1Bot.getType() && WaveType.TOP==last2Top.getType() && WaveType.BOT==last3Bot.getType() && WaveType.TOP==last4Top.getType()) 
-			{
-
-				boolean isSameTop = (last2Top.getStockBean().getH() >= last4Top.getStockBean().getBodyBottom() && last2Top.getStockBean().getH() < last4Top.getStockBean().getH() ) || (last4Top.getStockBean().getH() >=last2Top.getStockBean().getBodyBottom() && last4Top.getStockBean().getH() < last2Top.getStockBean().getH() );
-				boolean isSameBottom = (last1Bot.getStockBean().getL() > last3Bot.getStockBean().getL() && last1Bot.getStockBean().getL() < last3Bot.getStockBean().getBodyTop()) ||
-						(last3Bot.getStockBean().getL() > last1Bot.getStockBean().getL() && last3Bot.getStockBean().getL() < last1Bot.getStockBean().getBodyTop());
-
-				boolean b1 = last2Top.getStockBean().getC() > last1Bot.getStockBean().getH() && last2Top.getStockBean().getC() > last3Bot.getStockBean().getH();
-				boolean b2 = last4Top.getStockBean().getC() > last1Bot.getStockBean().getH() && last4Top.getStockBean().getC() > last3Bot.getStockBean().getH();
-				
-				
-				boolean b3 = last1.getDayChgPct()>0 && last1.getC() > last1Bot.getStockBean().getBodyTop() && last1.getC() > last3Bot.getStockBean().getBodyTop();
-
-
-				boolean bActualBreak = last1.getBodyTop() >= last2Top.getStockBean().getH();				
-				boolean bReadyBreak = last1.getH() <= last2Top.getStockBean().getH() && last1.getC() > last2Top.getL();
-							
-				
-//				String bottomShap = "";
-//				double toleranceRatio = 0.03;
-//				double diff = (last1Bot.getL() - last3Bot.getL())/last3Bot.getL();
-//				if(diff >= toleranceRatio) {
-//					bottomShap = "-LH";//lh
-//				}else if(diff <= -toleranceRatio) {
-//					bottomShap = "-HL";//hl
-//				}
-//				isBidBody
-						
-				
-				
-				if(b1 && b2 && b3 && isSameBottom && bActualBreak) {
-
-					if(isValidKBody && last2.getH() <= last2Top.getStockBean().getH()) {
-						attributes.add(Const.UP+Const.D0+"破小W");
-
-					}else{
-						attributes.add(Const.UP+"破小W");
-
-					}
-					
-
-				}
-				
-				if(b1 && b2 && b3 && isSameBottom && bReadyBreak) {
-					attributes.add(Const.WAIT+Const.UP+"破小W");
-				}
-				
-				
-				//adding other attributes about the W pattern
-				if(!attributes.isEmpty() && isSameTop && daysDiffInTop >10) {
-					attributes.add("平頂");
-				}
-				
-				if(!attributes.isEmpty() && isSameBottom && daysDiffInBottom >10) {
-					attributes.add("平底");
-				}
-				
-//				double toleranceRatio = 0.03;
-				double diff = (last1Bot.getL() - last3Bot.getL())/last3Bot.getL();
-				if(!attributes.isEmpty() && diff >= DEVIATION) {
-					attributes.add("LH");//lh
-				}else if(!attributes.isEmpty() && diff <= -DEVIATION) {
-					attributes.add("HL");//hl
-				}
-				
-			}
-			
-			return attributes;
-		}
 	
 	 private Set<String> findReadyDownBreakM(List<StockBean> stockList, List<WavePoint> sortedTopBotList) {
 			Set<String> msg = new LinkedHashSet<String>();
@@ -1065,7 +968,9 @@ public class WavePatternAnalyticalResultHelper {
 				boolean b3 = last1.getDayChgPct()<0 && last1.getC() < last1Top.getStockBean().getBodyBottom() && last1.getC() <last3Top.getStockBean().getBodyBottom();
 				boolean isSameTop = (last1Top.getStockBean().getH() >= last3Top.getStockBean().getBodyBottom() && last1Top.getStockBean().getH() < last3Top.getStockBean().getH() ) || (last3Top.getStockBean().getH() >=last1Top.getStockBean().getBodyBottom() && last3Top.getStockBean().getH() < last1Top.getStockBean().getH() );
 				
-				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();				
+				/*boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getL();*/
+
+				boolean bActualBreak = last1.getBodyBottom() <= last2Bot.getStockBean().getBodyBottom() && last1.getL() < last2Bot.getL();
 				boolean bReadyBreak = last1.getL() >= last2Bot.getStockBean().getL();
 
 				

@@ -11,7 +11,7 @@ import java.util.Set;
 
 //Double Top waiting to be broken
 public class FlatTopWaitingBreakWavePattern extends BaseWavePattern{
-    private static final int WINDOW_SIZE = 2;
+    private static final int WINDOW_SIZE = 3;
     @Override
     public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
 //        return Set.of();
@@ -33,6 +33,7 @@ public class FlatTopWaitingBreakWavePattern extends BaseWavePattern{
 
         WavePoint last1Top = sortedTopList.get(sortedTopList.size()-1);
         WavePoint last2Top = sortedTopList.get(sortedTopList.size()-2);
+        WavePoint last3Top = sortedTopList.get(sortedTopList.size()-3);
 
         WavePoint last1Bot = sortedBotList.get(sortedBotList.size()-1);
 
@@ -48,16 +49,33 @@ public class FlatTopWaitingBreakWavePattern extends BaseWavePattern{
 //				   }
 //			   }
 
+        boolean isPatternMValid = checkFlatTopPattern(last1Top, last2Top);
+        boolean isPattern3BottomValid = checkFlatTopPattern(last1Top, last2Top, last3Top);
+
+
         boolean b1 = last1.getC() < last1Top.getH() && last1.getC() >= last1Bot.getH();
 
-        boolean bFlatTop1 = last1Top.getStockBean().getBodyTop() > last2Top.getStockBean().getBodyBottom() && last1Top.getStockBean().getBodyTop() < last2Top.getH();
-        boolean bFlatTop2 = last2Top.getStockBean().getBodyTop() > last1Top.getStockBean().getBodyBottom() && last2Top.getStockBean().getBodyTop() < last1Top.getH();
+        boolean bbD0 = last2.getH()< last1Top.getH() && last1.getH()  > last1Top.getH() &&
+                last1.getC() > last1Top.getStockBean().getBodyTop() &&
+                last1.isRiseToday();
+
+
+//        boolean bFlatTop1 = last1Top.getStockBean().getBodyTop() > last2Top.getStockBean().getBodyBottom() && last1Top.getStockBean().getBodyTop() < last2Top.getH();
+//        boolean bFlatTop2 = last2Top.getStockBean().getBodyTop() > last1Top.getStockBean().getBodyBottom() && last2Top.getStockBean().getBodyTop() < last1Top.getH();
 
         boolean b2 = KHelper.isBullishCandle(last1) && last1.getBodyTop() >= last2.getBodyTop() && last1.getH() > last2.getH() && last1.getVolume() >= last2.getVolume();
         boolean bEnterLastTopKBody = last1.getBodyTop() > last1Top.getStockBean().getBodyBottom() ;
 
-        if(b1 && (bFlatTop1 && bFlatTop2) && b2 && bEnterLastTopKBody) {
-            attributes.add(windowSize+"平頂"+Const.WAIT+Const.UP);
+//        if(b1 && (bFlatTop1 && bFlatTop2) && b2 && bEnterLastTopKBody) {
+//            attributes.add(windowSize+"平頂"+Const.WAIT+Const.UP);
+//        }
+
+        if (b2 && bEnterLastTopKBody) {
+            if (b1) {
+                addPatternAttribute(attributes, isPattern3BottomValid, isPatternMValid,  Const.WAIT+Const.UP);
+            } else if (bbD0) {
+                addPatternAttribute(attributes, isPattern3BottomValid, isPatternMValid, Const.UP + Const.D0);
+            }
         }
 
         return attributes;
@@ -76,5 +94,31 @@ public class FlatTopWaitingBreakWavePattern extends BaseWavePattern{
         return true;
     }
 
+
+    private void addPatternAttribute(Set<String> attributes, boolean isPattern3BottomValid, boolean isPatternMValid, String prefix) {
+        if (isPattern3BottomValid) {
+            attributes.add(prefix + "_3頂");
+        } else if (isPatternMValid) {
+            attributes.add(prefix + "_2頂");
+        }
+    }
+
+    private boolean isFlatTop(WavePoint currentTop, WavePoint previousTop) {
+        return currentTop.getStockBean().getBodyTop() > previousTop.getStockBean().getBodyBottom()  &&
+                currentTop.getStockBean().getBodyTop() < previousTop.getH();
+    }
+
+    private boolean checkFlatTopPattern(WavePoint last1Bot, WavePoint... otherBots) {
+        for (WavePoint otherBot : otherBots) {
+            if (!isFlatTop(last1Bot, otherBot)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
+
+
+
 

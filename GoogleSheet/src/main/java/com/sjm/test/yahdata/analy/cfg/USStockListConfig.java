@@ -21,7 +21,8 @@ public class USStockListConfig {
 			 "VNAM","VNM",
 			 "WEAT","CORN","GLD","SLV","UNG",
 			 "COPX","CPER",
-			 "IGPT","PNQI","IXN","MDY"
+			 "IGPT","PNQI","IXN","MDY",
+			 "UGE"
 			 
 	);
 	
@@ -38,6 +39,8 @@ public class USStockListConfig {
 	 = Arrays.asList(
 			 "TSLQ"
 	);
+	public static List<String> ETF_CRYPTO
+			= Arrays.asList( "BMNR","SBET","BTBT","BTCS");
 	
 	public static List<String> INDEX 
 	 = Arrays.asList(
@@ -63,6 +66,7 @@ public class USStockListConfig {
 	public static List<String> TECH 
 	 = Arrays.asList(
 	"CIEN",
+	"CRCL",
 	"NVEI",
 	"AUR",
 	"LITE",
@@ -704,6 +708,7 @@ public class USStockListConfig {
 	"DECK",
 	"DELL",
 	"DFS",
+	"DFDV",
 	"DG",
 	"DGX",
 	"DHI",
@@ -791,6 +796,7 @@ public class USStockListConfig {
 	"FFIV",
 	"FHN",
 	"FICO",
+	"FIG",
 	"FIGS",
 	"FIS",
 	"FITB",
@@ -2152,6 +2158,7 @@ public class USStockListConfig {
 	"LI",
 	"XPEV",
 	"ZTO",
+	"ZK",
 	"BGNE",
 	"YUMC",
 	"BEKE",
@@ -2259,7 +2266,9 @@ public class USStockListConfig {
 	"MPNGY",
 	"AAGIY",
 	"EM",
-	"DOYU"
+	"DOYU",
+	"ATAT",
+	"EH"
 	);
 	
 	
@@ -4526,7 +4535,7 @@ public class USStockListConfig {
 			"VYMI");
 
 	public static List<String> ALL_ETF =
-			Stream.of( ETF, ETF_COUNTRY,ETF_INVERSE, OTHER_ETF_INVERSE)
+			Stream.of( ETF, ETF_COUNTRY,ETF_INVERSE, OTHER_ETF_INVERSE, ETF_CRYPTO)
 		    .flatMap(Collection::stream).distinct().sorted()
 		    .collect(Collectors.toList());
 	

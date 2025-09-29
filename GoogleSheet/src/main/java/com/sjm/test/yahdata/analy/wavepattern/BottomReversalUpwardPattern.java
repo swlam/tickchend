@@ -16,7 +16,7 @@ import com.sjm.test.yahdata.analy.helper.StreamTransformHelper;
 import com.sjm.test.yahdata.analy.module.wavepoint.bean.WavePoint;
 import com.sjm.test.yahdata.analy.ta.KHelper;
 
-public class BottomReversalWavePattern extends BaseWavePattern {
+public class BottomReversalUpwardPattern extends BaseWavePattern {
 
 	@Override
 	public Set<String> find(List<StockBean> stockList, List<WavePoint> sortedTopList, List<WavePoint> sortedBotList) {
@@ -32,81 +32,81 @@ public class BottomReversalWavePattern extends BaseWavePattern {
 
 	
 	
-	public Set<String> findBottomReversal(List<StockBean> stockList, List<WavePoint> sortedTopBotList){
+	private Set<String> findBottomReversal(List<StockBean> stockList, List<WavePoint> sortedTopBotList){
 		Set<String> msg = new LinkedHashSet<String>();
 		if(sortedTopBotList.size()<3 )
 			return msg;
-		StockBean last = stockList.get(stockList.size()-1);
-		
-		WavePoint wpLast1 = sortedTopBotList.get(sortedTopBotList.size() - 1);
+		StockBean last1 = stockList.get(stockList.size()-1);
+		StockBean last2 = stockList.get(stockList.size()-2);
+		StockBean last3 = stockList.get(stockList.size()-3);
+
+		WavePoint wpLast1 = sortedTopBotList.getLast();
 		WavePoint wpLast2 = sortedTopBotList.get(sortedTopBotList.size() - 2);
 		WavePoint wpLast3 = sortedTopBotList.get(sortedTopBotList.size() - 3);
 		
 //		WavePoint minByL = sortedTopBotList.stream()
 //			      .min(Comparator.comparing(WavePoint::getL))
 //			      .orElseThrow(NoSuchElementException::new);
-		boolean isBigBodyDark = (KHelper.getBodySize(stockList) >= KBodyType.GENERAL.getValue() && KHelper.isBearishCandle(last));
+		boolean isBigBearishBody = (KHelper.getBodySize(stockList) >= KBodyType.GENERAL.getValue() && KHelper.isBearishCandle(last1));
 		
 		boolean condition1 = WaveType.BOT.equals(wpLast3.getType())
-				&& WaveType.TOP.equals(wpLast2.getType()) && WaveType.BOT.equals(wpLast1.getType())
-				&& wpLast1.getStockBean().getBodyTop() < wpLast3.getL()
-				&& last.getC() >= wpLast3.getStockBean().getBodyTop()
-				&& !isBigBodyDark;
-		boolean condition2 = WaveType.TOP.equals(wpLast3.getType())
-				&& WaveType.BOT.equals(wpLast2.getType())
-				&& WaveType.BOT.equals(wpLast1.getType()) 
-				&& wpLast1.getStockBean().getBodyTop() < wpLast2.getL()
-				&& last.getC() >= wpLast2.getStockBean().getBodyTop()
-				&& !isBigBodyDark;
+				&& WaveType.TOP.equals(wpLast2.getType()) &&
+				WaveType.BOT.equals(wpLast1.getType()) &&
+				wpLast1.getStockBean().getBodyTop() < wpLast3.getL() &&
+				last1.getC() > wpLast3.getStockBean().getBodyBottom() &&
+				!isBigBearishBody;
+
+		boolean condition2 =
+				WaveType.TOP.equals(wpLast1.getType()) &&
+				(last1.getBodyBottom() > wpLast2.getStockBean().getBodyBottom() && last2.getBodyBottom() > wpLast2.getStockBean().getBodyBottom()) &&
+				(last1.getL() < wpLast2.getL() || last2.getL() < wpLast2.getL() || last3.getL() < wpLast2.getL());
+
 		
-		
-		String confirmDate = last.getTxnDate(); //init the date
+		String confirmDate = last1.getTxnDate(); //init the date
 		
 		boolean isHit = false;
 		String extraMsg = "";
 		
 		WavePoint prevBot = null;
-		if( condition1 ) {
-			prevBot = wpLast3;
-		}else if( condition2 ) {
-			prevBot = wpLast2;
-		}
+
 		
-		
-		if( condition1 || condition2) 
+		if( condition1 )
 		{
+			prevBot = wpLast3;
 			
 			List<WavePoint> sortedTopList = sortedTopBotList.stream().filter(x->x.getType()==WaveType.TOP)
 					.sorted(Comparator.comparing(e -> e.getDateInt())).collect(Collectors.toList());
 
-			WavePoint lastTop1 = sortedTopList.get(sortedTopList.size()-1);
+			WavePoint lastTop1 = sortedTopList.getLast();
 			
-			if(last.getC() > prevBot.getStockBean().getBodyBottom()) //&& minByL.getDateInt() == wpLast1.getDateInt())
+			if(last1.getC() > prevBot.getStockBean().getBodyBottom()) //&& minByL.getDateInt() == wpLast1.getDateInt())
 			{
-				List<StockBean> subList = StreamTransformHelper.subListWithEndElement(stockList, wpLast1.getDate(), last.getTxnDate());
+				List<StockBean> subList = StreamTransformHelper.subListWithEndElement(stockList, wpLast1.getDate(), last1.getTxnDate());
 				
 				//e.g. 100 + (110-100)/2 
 				double achieveBodyLevel = prevBot.getStockBean().getBodyBottom() + Math.abs(prevBot.getStockBean().getBodyTop() - prevBot.getStockBean().getBodyBottom()) / 2.0;
 
 				for(int i=1; i<subList.size(); i++) 
 				{
-					StockBean elemt = subList.get(i);
-					if(elemt.getC() >= achieveBodyLevel) {
-						confirmDate = elemt.getTxnDate(); //first confirmDate
+					StockBean elem = subList.get(i);
+					if(elem.getC() >= achieveBodyLevel) {
+						confirmDate = elem.getTxnDate(); //first confirmDate
 						
-						boolean result = this.findAchiveBodyLevelRatio(subList, prevBot.getStockBean(), elemt, last.getTxnDate());
-						if(result)
+//						boolean isAchieveBodyLevelRatio = this.findAchieveBodyLevelRatio(subList, prevBot.getStockBean(), elem, last1.getTxnDate());
+						//find  max high
+						StockBean highestSk = StreamTransformHelper.findMaxHighStock(subList);
+
+						if(highestSk.getC()<lastTop1.getStockBean().getBodyTop())
 						{
 							isHit = true;
-							if(last.getTxnDateInt() == elemt.getTxnDateInt())
+							if(last1.getTxnDateInt() == elem.getTxnDateInt())
 								extraMsg= "D0";
 
-							if(last.getTxnDateInt() > elemt.getTxnDateInt()+1 && last.getTxnDateInt() < elemt.getTxnDateInt()+5)
+							if(last1.getTxnDateInt() > elem.getTxnDateInt()+1 && last1.getTxnDateInt() < elem.getTxnDateInt()+5)
 								extraMsg= "D(1-5)";
-						
-							//find  max high
-							StockBean highestSk = StreamTransformHelper.findMaxHighStock(subList);
-							if(highestSk.getH() > lastTop1.getStockBean().getH())
+
+
+							if(highestSk.getBodyBottom() < lastTop1.getStockBean().getH() && last1.getH() < highestSk.getH() && last1.getL() < highestSk.getL() )
 								extraMsg += "(回)";
 							
 							break;
@@ -116,14 +116,19 @@ public class BottomReversalWavePattern extends BaseWavePattern {
 				}
 			}
 		}
+
+		if(condition2){
+			isHit = true;
+			extraMsg= "D0-3";
+		}
 		
 		if(isHit) {	
-			msg.add(KPatternConst.KP_BOTTOM_REVERSAL+extraMsg);
+			msg.add(Const.UP+KPatternConst.KP_BOTTOM_REVERSAL+extraMsg);
 		}
 		return msg;
 	}
 	
-	private boolean findAchiveBodyLevelRatio(List<StockBean> stockList, StockBean botStock, StockBean firstConfirmedStock, String currentDate) {
+	private boolean findAchieveBodyLevelRatio(List<StockBean> stockList, StockBean botStock, StockBean firstConfirmedStock, String currentDate) {
 		List<StockBean> subList = StreamTransformHelper.subListWithEndElement(stockList, firstConfirmedStock.getTxnDate(), currentDate);
 //		long count = subList.stream()
 //		            .filter(x -> x.getBodyBottom() >= achiveBodyLevel)

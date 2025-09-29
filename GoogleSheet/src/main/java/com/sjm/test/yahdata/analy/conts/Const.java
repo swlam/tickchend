@@ -18,6 +18,8 @@ public class Const {
 	public static final String CALC_END = Const.H;
 	
 	public static final int CHART_SHOW_DAYS = 50;
+	public static int WAVE_CHECK_PERIOD_DAYS = 8;
+	public static double INTRADAY_BIG_VOL = 0.8;
 //	public static String CALC_FALL_START = Const.H;
 //	public static String CALC_FALL_END = Const.L;
 	
@@ -31,6 +33,7 @@ public class Const {
 	public static final String STEADY = "STEADY";
 	public static final String D0 = "D0";
 	public static final String D1 = "D1";
+	public static final String BIG_VOL = "BV";
 
 	public static final String WAIT = "待";
 	public static final String TOP = "TOP";

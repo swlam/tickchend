@@ -38,7 +38,7 @@ public class InstantPerformanceResult {
 	private StockBean currentStockBean;
 	private StockBean prevStockBean;
 	private StockBean prev2StockBean;
-	
+	private StockBean prev3StockBean;
 	private double estTradeAmount;
 	private String sysPickLongCategory;
 	private String sysPickStagnantCategory;
@@ -48,6 +48,7 @@ public class InstantPerformanceResult {
 	private String dailyCandleStatus;
 	private String dailyVolDescription;
 	private String prev1DayCandleStatus;
+	private String prev2DayCandleStatus;
 	private String prev1DayVolDescription;
 	private String prev2DayVolDescription;
 	private String priceStatus;
@@ -194,17 +195,21 @@ public class InstantPerformanceResult {
 //	private String yearHighAchievedThisMonth;
 	private String movingAvgLongArrangementWithinTheMonth;
 	private String triplePregnancyInPassFewDays;
+	private String percentageDifferenceFromHighestPrice;
 //	private String upDownBreakThreeWavePointToday;
 	private String largeVolumeWithinTheMonth;
 	private String movingAverageLongSideSupport;
 	private String bbUpBreakForATime;
-	private String bigDarkBodyWithMoreVol;
-	
+	private String bigDarkBodyWithMoreVolAndBreakUp;
+	private String bigWhiteBodyWithMoreVolAndBreakDown;
+	private String highVolumeAndBreakUp;
+	private String highVolumeAndBreakDown;
 	private String concentratedVolumePriceRange;
 	private String closestVolumePriceRange;
 	
 	private String movingAverageCrossUpSummary;
 	private String lastEngulfingInRecentDays;
+	private String goingDown3HammerInRecentDays;
 //	private MACDData macdData;
 	
 	public InstantPerformanceResult(List<StockBean> stockList) {
