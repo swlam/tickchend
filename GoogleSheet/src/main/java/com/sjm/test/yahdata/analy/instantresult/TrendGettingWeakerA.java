@@ -38,10 +38,9 @@ public class TrendGettingWeakerA extends BaseTrendGettingWeakDirection{
 				|| KPatternConst.ISLAND_TOP_REVERSAL.contains(x.getIsland().getIslandType())
 				|| isTodayWeek
 				|| (
-					x.getDailyCandleStatus().contains(KPatternConst.L_DARK_K)
-					|| x.getDailyCandleStatus().contains(KPatternConst.M_DARK_K)
-					|| x.getDailyCandleStatus().contains(KPatternConst.G_DARK_K)					 
-					)
+						(x.getCurrentStockBean().getBodyTop() <	x.getPrevStockBean().getBodyTop() ) &&
+						(x.getDailyCandleStatus().contains(KPatternConst.L_DARK_K) || x.getDailyCandleStatus().contains(KPatternConst.M_DARK_K) || x.getDailyCandleStatus().contains(KPatternConst.G_DARK_K))
+				)
 				||
 				(
 				x.getCurrentStockBean().getC() < x.getPrevStockBean().getBodyBottom() && x.getCurrentStockBean().getC() < x.getCurrentStockBean().getO()
@@ -71,15 +70,15 @@ public class TrendGettingWeakerA extends BaseTrendGettingWeakDirection{
 	}
 	
 	private boolean checkWeakIn2Days(InstantPerformanceResult x) {
-		return this.isTodayStrong(x) == false && this.isPrevDayWeak(x);								
+		return !this.isTodayStrong(x)  && this.isPrevDayWeak(x);
 	}
 	
 	private boolean checkWeakIn3Days(InstantPerformanceResult x) {
-		return this.isTodayStrong(x) == false && this.isPrevDayStrong(x)==false && this.isPrev2DayWeak(x);								
+		return !this.isTodayStrong(x) && !this.isPrevDayStrong(x) && this.isPrevDayWeak(x);
 	}
 	
 	private boolean isNotBottomReversal(InstantPerformanceResult x) {
-		boolean hasIslandType = x.getIsland().getIslandType().isEmpty()==false;
+		boolean hasIslandType = !x.getIsland().getIslandType().isEmpty();
 		boolean isReversal = KPatternConst.ISLAND_BOTTOM_REVERSAL.contains(x.getIsland().getIslandType());
 		
 		boolean isReversalResult = (hasIslandType ==false) && (isReversal==true);

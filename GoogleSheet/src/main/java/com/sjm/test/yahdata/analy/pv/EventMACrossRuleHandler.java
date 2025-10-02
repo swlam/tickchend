@@ -90,7 +90,7 @@ public class EventMACrossRuleHandler {
 		
 		VolumePriceBean tmp = new VolumePriceBean(curr.getStockCode());
 		tmp.setSignSet(signSet);
-		tmp.setChainIdx(stockListIdx);
+//		tmp.setChainIdx(stockListIdx);
 		tmp.setBenchmarkEvent(isBenchmarkEvent);
 		tmp.setOccurenceEvent(isOccurenceEvent);
 		try {

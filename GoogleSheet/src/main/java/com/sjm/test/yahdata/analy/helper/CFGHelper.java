@@ -101,6 +101,9 @@ public class CFGHelper {
 		try {
 			List<StockProfileBean> ls = BenchmarkProbabilityAnalysisReportDataSourceManager.loadStockProfileDataFromDisk(csvFile);
 			for (StockProfileBean stockMetaBean : ls) {
+				if(stockMetaBean==null) {
+					continue;
+				}
 				String code = stockMetaBean.getCode();
 
 				getStockProfileMap().put(code, stockMetaBean);

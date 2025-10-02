@@ -83,12 +83,13 @@ public class GapDownAndStandUpRule extends VolRuleBase{
 			
 			//
 			boolean isStandOnOccur = cur.getBodyTop()>firstGapDownStock.getH()&& cur.getC()>firstGapDownStock.getC();
-			
-			boolean isFillTheDownGapOccur = cur.getH()>=firstGapDownPrevStock.getH() 
-					&& cur.getBodyTop()>=firstGapDownPrevStock.getBodyTop()
-					&& cur.getC()>=firstGapDownPrevStock.getC();			
-			
-			if(isStandOnOccur==true && isFillTheDownGapOccur ==true) {
+
+			boolean isFillTheDownGapOccur = cur.getH()>=firstGapDownPrevStock.getBodyBottom()
+					&& cur.getBodyTop()>=firstGapDownPrevStock.getBodyBottom()
+					&& cur.getC()>=firstGapDownPrevStock.getC();
+
+
+			if(isStandOnOccur && isFillTheDownGapOccur && firstStandUpStockBean==null) {
 				firstStandUpStockBean = cur;
 				break;
 			}

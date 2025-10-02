@@ -83,7 +83,7 @@ public class BigDropAndStandUpFormRule extends VolRuleBase{
 	private boolean isBigDrop(StockBean prev, StockBean cur) {
 		double downRatio = (cur.getC() - cur.getO()) / cur.getO();
 		double downRatio2 = (cur.getC() - prev.getC()) / prev.getC();
-		if(downRatio < -0.05 && downRatio2<-0.05 && cur.getC()< prev.getBodyBottom()) {
+		if(downRatio < -0.05 && downRatio2<-0.05 && cur.getC()< prev.getL()) {
 			return true;
 		}
 		return false;
@@ -171,7 +171,7 @@ public class BigDropAndStandUpFormRule extends VolRuleBase{
 					&& cur.getBodyTop()>firstBigDropPrevStock.getBodyTop() 
 					&& cur.getC()>firstBigDropPrevStock.getC();			
 			
-			if(isStandOnOccur==true && isFillTheDownGapOccur ==true) {
+			if(isStandOnOccur && isFillTheDownGapOccur && firstStandUpStockBean==null) {
 				firstStandUpStockBean = cur;
 				break;
 			}

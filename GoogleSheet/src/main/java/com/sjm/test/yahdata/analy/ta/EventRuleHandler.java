@@ -278,7 +278,7 @@ public class EventRuleHandler {
 		VolumePriceBean tmp = new VolumePriceBean(curr.getStockCode());
 		tmp.setTxnDate(curr.getTxnDate());
 		tmp.setSignSet(signSet);
-		tmp.setChainIdx(stockListIdx);
+//		tmp.setChainIdx(stockListIdx);
 		tmp.setBenchmarkEvent(isBenchmarkEvent);
 		tmp.setOccurenceEvent(isOccurenceEvent);
 		try {
@@ -395,7 +395,7 @@ public class EventRuleHandler {
 
 	public  List<VolumePriceBean> goThruRules(List<StockBean> trunkList, int MIN_DATA_SIZE,  List<CandleEventTagEnum> candlePatternArray) {
 		
-		
+		StockBean lastStockBean = trunkList.getLast();
 		if(trunkList==null || trunkList.size()<MIN_DATA_SIZE) {
 			log.warn("Return goThruRules() function , due to Hist data size < "+MIN_DATA_SIZE);
 			return new ArrayList<VolumePriceBean>(0);
@@ -416,28 +416,44 @@ public class EventRuleHandler {
 			startIdxWindow = trunkList.size() - MIN_DATA_SIZE ;
 //			startIdxLoop = 0;
 		}
-		
-		for (int i = 0; i < MIN_DATA_SIZE; i++) {		
 
-			List<StockBean> prevList = trunkList.subList(0, startIdxWindow) ;
-			
-			StockBean curr = trunkList.get(startIdxWindow);
-			
-//			startIdxLoop++;
-			startIdxWindow++;
-			
-			
-			VolumePriceBean tmp = this.fireRules(prevList, curr, i, candlePatternArray);
-			if(tmp!=null)
-				resultList.add(tmp);
-			
-			if(BacktestConfig.isPrintCandleTag)
-				tmp.printResult();
-			
-		}
+
+		List<StockBean> prevList = trunkList.subList(0, startIdxWindow) ;
+		StockBean curr = trunkList.get(startIdxWindow);
+
+		VolumePriceBean tmp = this.fireRules(prevList, curr, -1, candlePatternArray);
+		if(tmp!=null)
+			resultList.add(tmp);
+
+		if(BacktestConfig.isPrintCandleTag)
+			tmp.printResult();
+
+
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+
+//		for (int i = 0; i < MIN_DATA_SIZE; i++) {
+//
+//			List<StockBean> prevList = trunkList.subList(0, startIdxWindow) ;
+//
+//			StockBean curr = trunkList.get(startIdxWindow);
+//
+////			startIdxLoop++;
+//			startIdxWindow++;
+//
+//
+//			VolumePriceBean tmp = this.fireRules(prevList, curr, i, candlePatternArray);
+//			if(tmp!=null)
+//				resultList.add(tmp);
+//
+//			if(BacktestConfig.isPrintCandleTag)
+//				tmp.printResult();
+//
+//		}
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
 		return resultList;
 		
 	}

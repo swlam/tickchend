@@ -27,10 +27,10 @@ public class MonthlyAnalysisReportApp {
 	public static  List<String> CODE_POOL = Stream.of(USStockListConfig.ALL, HKStockListConfig.ALL, CNStockListConfig.ALL_AVAILABLE).flatMap(Collection::stream) .collect(Collectors.toList());
 	
 	public static String COUNTRY_MARKET = "US";
-	public static String targetMonth = "-08-";
+	public static String targetMonth = "-20-";
 	public static String BENCHMARK_BOUDARY = Const.END2END_O2C;
 	
-	public static int YEARS = 20;
+	public static int YEARS = 10;
 	
 	public static final boolean IS_EXPORT_FILE = true;
 	

@@ -47,12 +47,13 @@ public class BestTimingToBuyApp extends BaseApp{
 	private static final double REQUIRE_C2H_PCT = 0.02;	// 5%
 	private static final double REQUIRE_C2L_PCT = -0.01;	// -3%
 	
-	public static String START_MMDD= "07-31";
-	public static String END_MMDD= "09-15";
+	public static String START_MMDD= "09-30";
+	public static String END_MMDD= "12-30";
 	public static final int REQUIRED_YRS = 7;
 	
 	public static final boolean IS_EXPORT_FILE = true;
-	
+//	public static final boolean IS_EXPORT_FILE = false;
+
 //	private static  List<String> TICKER_POOL = Stream.of(//USStockListConfig.INDEX,
 //			CNStockListConfig.SZSE_ChiNext_ETF, CNStockListConfig.CSI_300_ETF).flatMap(Collection::stream).distinct().collect(Collectors.toList());
 
@@ -68,14 +69,14 @@ public class BestTimingToBuyApp extends BaseApp{
 //			ADDITIONAL_TICKER
 //			USStockListConfig.INDEX, HKStockListConfig.ETF, HKStockListConfig.STOCK_INDEX, USStockListConfig.MAIN
 //			, USStockListConfig.CRYPTO, USStockListConfig.ETF, USStockListConfig.SPX_COMPONENTS, USStockListConfig.QQQ_COMPONENTS, USStockListConfig.DOW_COMPONENTS
-//			,USStockListConfig.CHINA_CONCEPT
-//			,USStockListConfig.SPX_COMPONENTS
+			USStockListConfig.CHINA_CONCEPT,
+			USStockListConfig.SPX_COMPONENTS
 //			USStockListConfig.MAIN
 //			,USStockListConfig.DOW_COMPONENTS
-//			,USStockListConfig.QQQ_COMPONENTS
-//			USStockListConfig.ETF
+			,USStockListConfig.QQQ_COMPONENTS
+			,USStockListConfig.ETF
 //			,HKStockListConfig.ETF
-			USStockListConfig.ALL
+//			USStockListConfig.ALL
 //			CNStockListConfig.ALL_AVAILABLE,
 //			HKStockListConfig.HSI_ELEMENT,
 //			HKStockListConfig.HSCEI_ELEMENT,

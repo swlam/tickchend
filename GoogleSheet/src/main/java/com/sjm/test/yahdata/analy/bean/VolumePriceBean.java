@@ -28,13 +28,13 @@ public class VolumePriceBean extends StockBean {
 		this.signSet = signSet;
 	}
 
-	public void setChainIdx(Integer chainIdx) {
-		this.chainIdx = chainIdx;
-	}
-	
-	public Integer getChainIdx() {
-		return this.chainIdx;
-	}
+//	public void setChainIdx(Integer chainIdx) {
+//		this.chainIdx = chainIdx;
+//	}
+//
+//	public Integer getChainIdx() {
+//		return this.chainIdx;
+//	}
 	
 
 	

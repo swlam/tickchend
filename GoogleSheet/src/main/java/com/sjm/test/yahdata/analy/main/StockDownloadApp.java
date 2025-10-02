@@ -71,7 +71,7 @@ public class StockDownloadApp extends BaseApp{
 //		app. downloadStock("US", Const.INTERVAL_D,USStockListConfig.CURRENCY);
 		
 //		app. downloadStock("HK", Const.INTERVAL_W,HKStockListConfig.ALL);
-//		app. downloadStock("US", Const.INTERVAL_W,USStockListConfig.ALL);		
+//		app. downloadStock("US", Const.INTERVAL_W,USStockListConfig.ALL);
 //		app. downloadStock("CN", Const.INTERVAL_W,CNStockListConfig.ALL);
 //
 //		app. downloadStock("HK", Const.INTERVAL_M,HKStockListConfig.ALL);

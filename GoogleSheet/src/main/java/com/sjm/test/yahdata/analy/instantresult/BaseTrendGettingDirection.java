@@ -199,6 +199,8 @@ public abstract class BaseTrendGettingDirection {
 	public String checkRsiStatus(InstantPerformanceResult x) {
 		String msg = "";
 		double rsiMiddle = 0.5;
+
+		double rsiObLv0 = 0.65;
 		double rsiObLv1 = 0.7;
 		double rsiObLv2 = 0.8;
 		double rsiObLv3 = 0.9;
@@ -219,6 +221,10 @@ public abstract class BaseTrendGettingDirection {
 			msg = "超買";
 		}else if( (x.getCurrentStockBean().getRsi9()>rsiObLv1 && x.getPrevStockBean().getRsi9()<rsiMiddle ) || (x.getCurrentStockBean().getRsi14()>=rsiObLv1 && x.getPrevStockBean().getRsi14()<rsiMiddle)) {
 			msg = "超買";
+		}else if( (x.getCurrentStockBean().getRsi9()>rsiObLv0 && x.getPrevStockBean().getRsi9()>rsiObLv0 ) || (x.getCurrentStockBean().getRsi14()>=rsiObLv0 && x.getPrevStockBean().getRsi14()>=rsiObLv0)) {
+			msg = "小超買";
+		}else if( (x.getCurrentStockBean().getRsi9()>rsiObLv0 && x.getPrevStockBean().getRsi9()<rsiMiddle ) || (x.getCurrentStockBean().getRsi14()>=rsiObLv0 && x.getPrevStockBean().getRsi14()<rsiMiddle)) {
+			msg = "小超買";
 		}else if ((x.getCurrentStockBean().getRsi9()<=rsiOsLv3 && x.getPrevStockBean().getRsi9()<=rsiOsLv3) || (x.getCurrentStockBean().getRsi14()<=rsiOsLv2 && x.getPrevStockBean().getRsi14()<=rsiOsLv3)) {
 			msg = "超賣x3";
 		}else if ((x.getCurrentStockBean().getRsi9()<rsiOsLv3 && x.getPrevStockBean().getRsi9()>rsiMiddle) || (x.getCurrentStockBean().getRsi14()<=rsiOsLv2 && x.getPrevStockBean().getRsi14()>rsiMiddle)) {
